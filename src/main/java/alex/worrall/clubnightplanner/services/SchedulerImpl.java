@@ -4,7 +4,12 @@ import alex.worrall.clubnightplanner.models.Court;
 import alex.worrall.clubnightplanner.models.Player;
 import alex.worrall.clubnightplanner.models.Schedule;
 
-import java.util.*;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class SchedulerImpl implements Scheduler{
@@ -20,6 +25,11 @@ public class SchedulerImpl implements Scheduler{
         for (String courtName : availableCourts) {
             Player playerA = players.get(0);
             Player playerB = getBestMatch(playerA, players);
+            if (playerB == null) {
+                //To prevent a bad swap slightly later
+                priorityPlayers.remove(playerA);
+                break;
+            }
             Court court = new Court(courtName, playerA, playerB);
             courts.add(court);
             //Remove priority players who now have games and prevent multiple games in same
@@ -61,8 +71,7 @@ public class SchedulerImpl implements Scheduler{
         for (Court court : courts) {
             Player playerA = court.getPlayerA();
             Player playerB = court.getPlayerB();
-            playerA.addPlayedOpponent(playerB);
-            playerB.addPlayedOpponent(playerA);
+            addOpponentPlayed(playerA, playerB);
         }
         currentSchedules.put(timeSlot, new Schedule(timeSlot, courts));
     }
@@ -113,6 +122,9 @@ public class SchedulerImpl implements Scheduler{
         for (Player played : player.getOpponentsPlayed()) {
             yetToPlay.remove(played);
         }
+        if (yetToPlay.size() == 0) {
+            return null;
+        }
         Player bestMatch = yetToPlay.get(0);
         for (int i = 1; i < yetToPlay.size(); i++) {
             Player potential = yetToPlay.get(i);
@@ -128,10 +140,105 @@ public class SchedulerImpl implements Scheduler{
         return currentSchedules;
     }
 
+    //If scheduling hasn't already happened, simply add the player. If it has, modify the
+    //existing schedule
     public void addPlayer(String name, int level) {
-        activePlayers.add(new Player(name, level));
+        if (currentSchedules.size() == 0) {
+            activePlayers.add(new Player(name, level));
+        } else {
+            try {
+                Method addNewPlayer = this.getClass().getDeclaredMethod("addNewPlayer",
+                        String.class, int.class);
+                modifyPlayerList(addNewPlayer, name, level);
+            } catch (NoSuchMethodException e) {
+                e.printStackTrace();
+            }
+        }
     }
+
+    //Modifies the players' opponents lists. Type of modification depends on the method passed
+    private void modifyPlayerList(Method method, Object ...methodArgs) {
+        List<Schedule> toBeRescheduled = new ArrayList<>();
+        //Set player data to be up to date with only completed schedules
+        for (Schedule schedule : currentSchedules.values()) {
+            if (schedule.isPlayed()) {
+                continue;
+            }
+            int timeslot = schedule.getTimeSlot();
+            List<String> availableCourts =
+                    schedule.getCourts()
+                            .stream()
+                            .map(c -> c.getCourtName())
+                            .collect(Collectors.toList());
+            unschedule(schedule);
+            toBeRescheduled.add(schedule);
+        }
+        try {
+            method.invoke(this, methodArgs);
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        for (Schedule schedule : toBeRescheduled) {
+            List<String> courtNames = schedule.getCourts()
+                    .stream()
+                    .map(c -> c.getCourtName())
+                    .collect(Collectors.toList());
+            generateSchedule(schedule.getTimeSlot(), courtNames);
+        }
+    }
+
+    private void addNewPlayer(String name, int level) {
+        Player newPlayer = new Player(name, level);
+        activePlayers.add(newPlayer);
+        setNewPlayerPriority(newPlayer);
+    }
+
+    //New player set to have same number of played matches as a priority player (so they
+    //don't have ultimate priority)
+    private void setNewPlayerPriority(Player newPlayer) {
+        List<Player> orderedPlayers = getNextPlayers();
+        orderedPlayers.remove(newPlayer);
+        if (orderedPlayers.size() == 0) {
+            return;
+        }
+        final int opponentsPlayed = orderedPlayers.get(0).getOpponentsPlayed().size();
+        for (int i = 0; i < opponentsPlayed; i++) {
+            Player arbitrary = new Player("arbitrary " + i, newPlayer.getLevel());
+            addOpponentPlayed(newPlayer, arbitrary);
+        }
+    }
+
+    //Correct data for opponents played when schedule is changed
+    private void unschedule(Schedule schedule) {
+        List<Court> courts = schedule.getCourts();
+        for (Court court : courts) {
+            Player playerA = court.getPlayerA();
+            Player playerB = court.getPlayerB();
+
+            List<Player> opponentsPlayedA = playerA.getOpponentsPlayed();
+            opponentsPlayedA.remove(playerB);
+            playerA.setOpponentsPlayed(opponentsPlayedA);
+
+            List<Player> opponentsPlayedB = playerB.getOpponentsPlayed();
+            opponentsPlayedB.remove(playerA);
+            playerB.setOpponentsPlayed(opponentsPlayedB);
+        }
+    }
+
+    private void addOpponentPlayed(Player playerA, Player playerB) {
+        List<Player> opponentsPlayedA = playerA.getOpponentsPlayed();
+        opponentsPlayedA.add(playerB);
+        playerA.setOpponentsPlayed(opponentsPlayedA);
+
+        List<Player> opponentsPlayedB = playerB.getOpponentsPlayed();
+        opponentsPlayedB.add(playerA);
+        playerB.setOpponentsPlayed(opponentsPlayedB);
+    }
+
     public List<Player> getPlayers() {
         return this.activePlayers;
+    }
+    public void markScheduleComplete(Schedule schedule) {
+        schedule.setPlayed(true);
     }
 }

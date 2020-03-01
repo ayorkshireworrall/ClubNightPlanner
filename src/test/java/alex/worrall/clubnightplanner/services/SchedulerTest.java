@@ -60,7 +60,27 @@ public class SchedulerTest {
         assertEqualPlayTime();
         scheduler.generateSchedule(4, courtNames);
         assertEqualPlayTime();
-        Schedule schedule1 = scheduler.getSchedules().get(1);
+        assertCloseMatches(2.7);
+    }
+
+    @Test
+    public void testAddPlayer() {
+        List<String> courtNames = new ArrayList<>();
+        courtNames.add("Court1");
+        courtNames.add("Court2");
+        courtNames.add("Court3");
+        courtNames.add("Court4");
+        courtNames.add("Court5");
+        scheduler.generateSchedule(1, courtNames);
+        scheduler.generateSchedule(2, courtNames);
+        courtNames.add("Court6");
+        courtNames.add("Court7");
+        scheduler.generateSchedule(3, courtNames);
+        scheduler.generateSchedule(4, courtNames);
+        scheduler.markScheduleComplete(scheduler.getSchedules().get(1));
+        scheduler.markScheduleComplete(scheduler.getSchedules().get(2));
+        scheduler.addPlayer("Fred", 16);
+        printPlayersCurrentMatches();
         assertCloseMatches(2.7);
     }
 

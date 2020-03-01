@@ -53,7 +53,7 @@ public class Player {
         return opponentsPlayed;
     }
 
-    public void addPlayedOpponent(Player opponent) {
-        this.opponentsPlayed.add(opponent);
+    public void setOpponentsPlayed(List<Player> opponentsPlayed) {
+        this.opponentsPlayed = opponentsPlayed;
     }
 }

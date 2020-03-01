@@ -10,4 +10,5 @@ public interface Scheduler {
     public Map<Integer, Schedule> getSchedules();
     public void addPlayer(String name, int level);
     public List<Player> getPlayers();
+    public void markScheduleComplete(Schedule schedule);
 }
