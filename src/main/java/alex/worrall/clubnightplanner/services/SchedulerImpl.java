@@ -8,6 +8,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -23,6 +24,9 @@ public class SchedulerImpl implements Scheduler{
         List<Player> priorityPlayers = getPriorityPlayers(players);
         //First create a basic court list with the next players and their best unplayed opponents
         for (String courtName : availableCourts) {
+            if (players.size() < 1) {
+                break;
+            }
             Player playerA = players.get(0);
             Player playerB = getBestMatch(playerA, players);
             if (playerB == null) {
@@ -39,33 +43,9 @@ public class SchedulerImpl implements Scheduler{
             players.remove(playerA);
             players.remove(playerB);
         }
-        if (!priorityPlayers.isEmpty()) {
-            //Identify courts where non priority players are playing
-            List<Court> potentialSwapCourts = new ArrayList<>();
-            for (Court court : courts) {
-                Player playerA = court.getPlayerA();
-                Player playerB = court.getPlayerB();
-                if (playerA.getOpponentsPlayed().size() < playerB.getOpponentsPlayed().size()) {
-                    potentialSwapCourts.add(court);
-                }
-            }
-            for (Player priorityPlayer : priorityPlayers) {
-                //If all courts already have priority players on them
-                if (potentialSwapCourts.size() == 0) {
-                    break;
-                }
-                Court targetCourt = null;
-                int bestLevelMatch = 100000;
-                //Find best court for the priority player to join
-                for (Court court : potentialSwapCourts) {
-                    int level = court.getPlayerA().getLevel();
-                    if (Math.abs(priorityPlayer.getLevel() - level) < bestLevelMatch) {
-                        targetCourt = court;
-                    }
-                }
-                targetCourt.setPlayerB(priorityPlayer);
-                potentialSwapCourts.remove(targetCourt);
-            }
+        //Don't change court fixtures if player prioritisation is already fair
+        if (!priorityPlayers.isEmpty() || priorityPlayers.equals(players)) {
+            addMissedPriorityPlayers(priorityPlayers, getSwappableCourts(courts));
         }
         //Update player models now court schedule has been finalised
         for (Court court : courts) {
@@ -76,26 +56,66 @@ public class SchedulerImpl implements Scheduler{
         currentSchedules.put(timeSlot, new Schedule(timeSlot, courts));
     }
 
+    //Put missed priority players against their best match on the courts that could be fairly
+    // swapped based on the number of games played
+    private void addMissedPriorityPlayers(List<Player> priorityPlayers, List<Court> swappableCourts) {
+        for (Player priorityPlayer : priorityPlayers) {
+            //If all courts already have priority players on them
+            if (swappableCourts.size() == 0) {
+                break;
+            }
+            Court targetCourt = null;
+            int bestLevelMatch = 2147483647;
+            //Find best court for the priority player to join
+            for (Court court : swappableCourts) {
+                int level = court.getPlayerA().getLevel();
+                if (Math.abs(priorityPlayer.getLevel() - level) < bestLevelMatch) {
+                    targetCourt = court;
+                }
+            }
+            //note that this modifies the actual court object referenced in the list from which
+            //swappableCourts are derived
+            targetCourt.setPlayerB(priorityPlayer);
+            swappableCourts.remove(targetCourt);
+        }
+    }
+
+    //Check for courts where a non priority player is playing. Can check in this way on the
+    // assumption that all courts should contain at least one priority player whose opponent may
+    // have played one more game than them
+    private List<Court> getSwappableCourts(List<Court> courts) {
+        List<Court> potentialSwapCourts = new ArrayList<>();
+        for (Court court : courts) {
+            Player playerA = court.getPlayerA();
+            Player playerB = court.getPlayerB();
+            if (playerA.getOpponentsPlayed().size() < playerB.getOpponentsPlayed().size()) {
+                potentialSwapCourts.add(court);
+            }
+        }
+        return potentialSwapCourts;
+    }
+
     //create a list of the players who have played less games (should always be at most one less
-    //game than any other player on the list)
+    //game than any other player on the list). Assumes list ordered by least played first
     private List<Player> getPriorityPlayers(List<Player> players) {
+        Player firstPlayer = players.get(0);
+        Player lastPlayer = players.get(players.size() - 1);
         List<Player> priorityPlayers = new ArrayList<>();
-        if (players.get(0).getOpponentsPlayed().size() != players.get(players.size() - 1).getOpponentsPlayed().size()) {
+        //Don't prioritise / stop prioritising when player's number of games is equal to the last
+        //player's number of played games
+        if (firstPlayer.getOpponentsPlayed().size() != lastPlayer.getOpponentsPlayed().size()) {
             for (Player player : players) {
-                if (player.getOpponentsPlayed().size() == players.get(players.size() - 1).getOpponentsPlayed().size()) {
+                if (player.getOpponentsPlayed().size() == lastPlayer.getOpponentsPlayed().size()) {
                     break;
                 }
                 priorityPlayers.add(player);
             }
         } else {
-            //clone don't modify player list object
+            //clone don't modify player list object (mutations will occur later that shouldn't
+            //affect original list)
             priorityPlayers = new ArrayList<>(players);
         }
         return priorityPlayers;
-    }
-
-    public void removePlayer(Player player) {
-        this.activePlayers.remove(player);
     }
 
     //Order active players based on who has played the least matches so far
@@ -156,6 +176,33 @@ public class SchedulerImpl implements Scheduler{
         }
     }
 
+    private void addNewPlayer(String name, int level) {
+        Player newPlayer = new Player(name, level);
+        activePlayers.add(newPlayer);
+        setNewPlayerPriority(newPlayer);
+    }
+
+    public void removePlayer(String playerId) {
+        try {
+            Method removeExistingPlayer = this.getClass().getDeclaredMethod("removeExistingPlayer",
+                    String.class);
+            modifyPlayerList(removeExistingPlayer, playerId);
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void removeExistingPlayer(String playerId) {
+        Iterator<Player> playerIterator = activePlayers.iterator();
+        while(playerIterator.hasNext()) {
+            Player player = playerIterator.next();
+            if (player.getUuid().equals(playerId)) {
+                playerIterator.remove();
+                break;
+            }
+        }
+    }
+
     //Modifies the players' opponents lists. Type of modification depends on the method passed
     private void modifyPlayerList(Method method, Object ...methodArgs) {
         List<Schedule> toBeRescheduled = new ArrayList<>();
@@ -185,12 +232,6 @@ public class SchedulerImpl implements Scheduler{
                     .collect(Collectors.toList());
             generateSchedule(schedule.getTimeSlot(), courtNames);
         }
-    }
-
-    private void addNewPlayer(String name, int level) {
-        Player newPlayer = new Player(name, level);
-        activePlayers.add(newPlayer);
-        setNewPlayerPriority(newPlayer);
     }
 
     //New player set to have same number of played matches as a priority player (so they

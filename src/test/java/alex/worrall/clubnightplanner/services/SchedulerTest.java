@@ -84,6 +84,29 @@ public class SchedulerTest {
         assertCloseMatches(2.7);
     }
 
+    @Test
+    public void testRemovePlayer() {
+        List<String> courtNames = new ArrayList<>();
+        courtNames.add("Court1");
+        courtNames.add("Court2");
+        courtNames.add("Court3");
+        courtNames.add("Court4");
+        courtNames.add("Court5");
+        scheduler.generateSchedule(1, courtNames);
+        scheduler.generateSchedule(2, courtNames);
+        courtNames.add("Court6");
+        courtNames.add("Court7");
+        scheduler.generateSchedule(3, courtNames);
+        scheduler.generateSchedule(4, courtNames);
+        scheduler.markScheduleComplete(scheduler.getSchedules().get(1));
+        scheduler.markScheduleComplete(scheduler.getSchedules().get(2));
+        //Will remove Henry
+        Player playerToRemove = scheduler.getPlayers().get(0);
+        scheduler.removePlayer(playerToRemove.getUuid());
+        printPlayersCurrentMatches();
+        assertCloseMatches(2.7);
+    }
+
     //Check that on average players are playing closely grouped games but always worth checking
     // actual fixtures as this could be misleading. Designed to fail easily
     private void assertCloseMatches(double diffLimit) {
