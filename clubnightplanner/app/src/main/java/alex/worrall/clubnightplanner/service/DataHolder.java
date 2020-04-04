@@ -59,6 +59,10 @@ public class DataHolder {
         this.fixtures.put(pos, fixture);
     }
 
+    void addCourt(Court court) {
+        courts.add(court);
+    }
+
     public void clearData() {
         this.players = new ArrayList<>();
         this.courts = new ArrayList<>();

@@ -243,7 +243,7 @@ public class Scheduler {
     }
 
     //Correct data for opponents played when fixture is changed
-    private void unschedule(Fixture fixture) {
+    void unschedule(Fixture fixture) {
         List<Court> courts = fixture.getCourts();
         for (Court court : courts) {
             Player playerA = court.getPlayerA();
