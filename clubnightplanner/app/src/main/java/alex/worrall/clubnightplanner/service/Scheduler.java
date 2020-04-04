@@ -211,11 +211,6 @@ public class Scheduler {
                 continue;
             }
             int timeslot = fixture.getTimeSlot();
-            List<String> availableCourts =
-                    fixture.getCourts()
-                            .stream()
-                            .map(c -> c.getCourtName())
-                            .collect(Collectors.toList());
             unschedule(fixture);
             toBeRescheduled.add(fixture);
         }
@@ -223,12 +218,15 @@ public class Scheduler {
             method.invoke(this, methodArgs);
         } catch (IllegalAccessException e) {
             e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
         }
         for (Fixture fixture : toBeRescheduled) {
-            List<String> courtNames = fixture.getCourts()
-                    .stream()
-                    .map(c -> c.getCourtName())
-                    .collect(Collectors.toList());
+            List<Court> courts = fixture.getCourts();
+            List<String> courtNames = new ArrayList<>();
+            for (Court court : courts) {
+                courtNames.add(court.getCourtName());
+            }
             generateSchedule(fixture.getTimeSlot(), courtNames);
         }
     }
