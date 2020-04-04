@@ -14,8 +14,7 @@ import alex.worrall.clubnightplanner.ui.main.fixtures.Fixture;
 import alex.worrall.clubnightplanner.ui.main.players.Player;
 
 public class Scheduler {
-    private List<Player> activePlayers = new ArrayList<>();
-    private Map<Integer, Fixture> currentSchedules = new HashMap<>();
+    DataHolder dataHolder = DataHolder.getInstance();
 
     public void generateSchedule(Integer timeSlot, List<String> availableCourts) {
         List<Court> courts = new ArrayList<>();
@@ -52,7 +51,7 @@ public class Scheduler {
             Player playerB = court.getPlayerB();
             addOpponentPlayed(playerA, playerB);
         }
-        currentSchedules.put(timeSlot, new Fixture(timeSlot, courts));
+        dataHolder.putFixture(timeSlot, new Fixture(timeSlot, courts));
     }
 
     //Put missed priority players against their best match on the courts that could be fairly
@@ -119,6 +118,7 @@ public class Scheduler {
 
     //Order active players based on who has played the least matches so far
     private List<Player> getNextPlayers() {
+        List<Player> activePlayers = dataHolder.getPlayers();
         List<Player> prioritisedPlayers = new ArrayList<Player>(activePlayers);
         for (int i = 0; i < activePlayers.size(); i++) {
             for (int j = 0; j < activePlayers.size() - (i+1); j++) {
@@ -155,15 +155,11 @@ public class Scheduler {
         return bestMatch;
     }
 
-    public Map<Integer, Fixture> getSchedules() {
-        return currentSchedules;
-    }
-
     //If scheduling hasn't already happened, simply add the player. If it has, modify the
     //existing schedule
     public void addPlayer(String name, int level) {
-        if (currentSchedules.size() == 0) {
-            activePlayers.add(new Player(name, level));
+        if (dataHolder.getFixtures().size() == 0) {
+            dataHolder.addPlayer(new Player(name, level));
         } else {
             try {
                 Method addNewPlayer = this.getClass().getDeclaredMethod("addNewPlayer",
@@ -177,7 +173,7 @@ public class Scheduler {
 
     private void addNewPlayer(String name, int level) {
         Player newPlayer = new Player(name, level);
-        activePlayers.add(newPlayer);
+        dataHolder.addPlayer(newPlayer);
         setNewPlayerPriority(newPlayer);
     }
 
@@ -192,7 +188,7 @@ public class Scheduler {
     }
 
     private void removeExistingPlayer(String playerId) {
-        Iterator<Player> playerIterator = activePlayers.iterator();
+        Iterator<Player> playerIterator = dataHolder.getPlayers().iterator();
         while(playerIterator.hasNext()) {
             Player player = playerIterator.next();
             if (player.getUuid().equals(playerId)) {
@@ -206,7 +202,7 @@ public class Scheduler {
     private void modifyPlayerList(Method method, Object ...methodArgs) {
         List<Fixture> toBeRescheduled = new ArrayList<>();
         //Set player data to be up to date with only completed schedules
-        for (Fixture fixture : currentSchedules.values()) {
+        for (Fixture fixture : dataHolder.getFixtures().values()) {
             if (fixture.isPlayed()) {
                 continue;
             }
@@ -271,10 +267,6 @@ public class Scheduler {
         List<Player> opponentsPlayedB = playerB.getOpponentsPlayed();
         opponentsPlayedB.add(playerA);
         playerB.setOpponentsPlayed(opponentsPlayedB);
-    }
-
-    public List<Player> getPlayers() {
-        return this.activePlayers;
     }
     public void markScheduleComplete(Fixture fixture) {
         fixture.setPlayed(true);
