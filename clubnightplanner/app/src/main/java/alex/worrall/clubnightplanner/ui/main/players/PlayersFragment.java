@@ -8,18 +8,25 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import alex.worrall.clubnightplanner.R;
+import java.util.List;
 
-public class PlayersFragment extends Fragment {
+import alex.worrall.clubnightplanner.R;
+import alex.worrall.clubnightplanner.service.ServiceApi;
+
+public class PlayersFragment extends Fragment implements PlayerRecyclerViewAdapter.ItemClickListener {
 
     private PlayersViewModel viewModel;
+    private ServiceApi service;
 
     public static PlayersFragment newInstance() {
         return new PlayersFragment();
@@ -28,8 +35,15 @@ public class PlayersFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+        service = new ServiceApi();
         View root = inflater.inflate(R.layout.fragment_players, container, false);
         FloatingActionButton fab = root.findViewById(R.id.fab_players);
+        RecyclerView recyclerView = root.findViewById(R.id.players_list);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        List<Player> viewData = service.getPlayers();
+        PlayerRecyclerViewAdapter adapter = new PlayerRecyclerViewAdapter(getContext(), viewData);
+        adapter.setClickListener(this);
+        recyclerView.setAdapter(adapter);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -47,4 +61,9 @@ public class PlayersFragment extends Fragment {
         // TODO: Use the ViewModel
     }
 
+    @Override
+    public void onItemClick(View view, int position) {
+        List<Player> players = service.getPlayers();
+        Toast.makeText(getContext(), "You clicked " + players.get(position).getName(), Toast.LENGTH_SHORT).show();
+    }
 }
