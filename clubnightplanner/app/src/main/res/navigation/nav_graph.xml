@@ -7,9 +7,9 @@
 
     <fragment
         android:id="@+id/FirstFragment"
-        android:name="alex.worrall.clubnightplanner.FirstFragment"
+        android:name="alex.worrall.clubnightplanner.ui.main.players.AddPlayerFragment"
         android:label="@string/first_fragment_label"
-        tools:layout="@layout/fragment_first">
+        tools:layout="@layout/fragment_add_player">
 
         <action
             android:id="@+id/action_FirstFragment_to_SecondFragment"
