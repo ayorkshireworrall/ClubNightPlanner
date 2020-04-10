@@ -1,5 +1,6 @@
 package alex.worrall.clubnightplanner.service;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,7 +12,7 @@ import alex.worrall.clubnightplanner.ui.main.players.Player;
 public class DataHolder {
     private List<Player> players;
     private List<String> availableCourts;
-    private Map<Integer, Fixture> fixtures;
+    private Map<LocalTime, Fixture> fixtures;
     private static final DataHolder DATA_HOLDER = new DataHolder();
     private Map<String, String> dulllNameMapping;
 
@@ -42,11 +43,11 @@ public class DataHolder {
         this.availableCourts = availableCourts;
     }
 
-    Map<Integer, Fixture> getFixtures() {
+    Map<LocalTime, Fixture> getFixtures() {
         return fixtures;
     }
 
-    void setFixtures(Map<Integer, Fixture> fixtures) {
+    void setFixtures(Map<LocalTime, Fixture> fixtures) {
         this.fixtures = fixtures;
     }
 
@@ -57,7 +58,7 @@ public class DataHolder {
         return player;
     }
 
-    void putFixture(int pos, Fixture fixture) {
+    void putFixture(LocalTime pos, Fixture fixture) {
         this.fixtures.put(pos, fixture);
     }
 
@@ -72,7 +73,7 @@ public class DataHolder {
     void clearData() {
         this.players = new ArrayList<>();
         this.availableCourts = new ArrayList<>();
-        this.fixtures = new HashMap<Integer, Fixture>();
+        this.fixtures = new HashMap<LocalTime, Fixture>();
     }
 
     boolean isPlayerNameUsed(String name) {
@@ -105,6 +106,13 @@ public class DataHolder {
         nameMap.put("James Wass", "Cocky Lamp Post");
         nameMap.put("Jim Wass", "Cocky Lamp Post");
         nameMap.put("Jimmy Wass", "Cocky Lamp Post");
+        nameMap.put("Henry Worrall", "Sir Henry of the Tin");
+        nameMap.put("Henry Worral", "Sir Henry of the Tin");
+        nameMap.put("Henry Woral", "Sir Henry of the Tin");
+        nameMap.put("Henry Worall", "Sir Henry of the Tin");
+        nameMap.put("Henry Worrel", "Sir Henry of the Tin");
+        nameMap.put("Henry Worrell", "Sir Henry of the Tin");
+        nameMap.put("Henry Worell", "Sir Henry of the Tin");
         return nameMap;
     }
 }

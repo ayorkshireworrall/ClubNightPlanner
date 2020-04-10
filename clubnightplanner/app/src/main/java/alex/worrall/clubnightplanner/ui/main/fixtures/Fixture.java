@@ -1,36 +1,38 @@
 package alex.worrall.clubnightplanner.ui.main.fixtures;
 
+import java.time.LocalTime;
 import java.util.List;
 
+import alex.worrall.clubnightplanner.service.Status;
 import alex.worrall.clubnightplanner.ui.main.courts.Court;
 
 public class Fixture {
-    int timeSlot;
+    LocalTime timeSlot;
     List<Court> courts;
-    boolean played;
+    Status playStatus;
 
     public Fixture() {
     }
 
-    public Fixture(int timeSlot, List<Court> courts) {
+    public Fixture(LocalTime timeSlot, List<Court> courts) {
         this.timeSlot = timeSlot;
         this.courts = courts;
-        this.played = false;
+        this.playStatus = Status.LATER;
     }
 
-    public void setPlayed(boolean played) {
-        this.played = played;
+    public void setPlayStatus(Status playStatus) {
+        this.playStatus = playStatus;
     }
 
-    public boolean isPlayed() {
-        return played;
+    public Status getPlayStatus() {
+        return playStatus;
     }
 
     public List<Court> getCourts() {
         return courts;
     }
 
-    public int getTimeSlot() {
+    public LocalTime getTimeSlot() {
         return timeSlot;
     }
 }

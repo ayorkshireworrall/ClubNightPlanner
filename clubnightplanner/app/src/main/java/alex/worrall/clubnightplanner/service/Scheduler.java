@@ -2,11 +2,10 @@ package alex.worrall.clubnightplanner.service;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import alex.worrall.clubnightplanner.ui.main.courts.Court;
 import alex.worrall.clubnightplanner.ui.main.fixtures.Fixture;
@@ -15,7 +14,7 @@ import alex.worrall.clubnightplanner.ui.main.players.Player;
 public class Scheduler {
     private DataHolder dataHolder = DataHolder.getInstance();
 
-    void generateSchedule(Integer timeSlot, List<String> availableCourts) {
+    void generateSchedule(LocalTime timeSlot, List<String> availableCourts) {
         List<Court> courts = new ArrayList<>();
         List<Player> players = getNextPlayers();
         List<Player> priorityPlayers = getPriorityPlayers(players);
@@ -239,10 +238,11 @@ public class Scheduler {
     private List<Fixture> unplayedFixtures() {
         List<Fixture> toBeRescheduled = new ArrayList<>();
         for (Fixture fixture : dataHolder.getFixtures().values()) {
-            if (fixture.isPlayed()) {
+            if (fixture.getPlayStatus().equals(Status.COMPLETED) ||
+                    fixture.getPlayStatus().equals(Status.IN_PROGRESS)) {
                 continue;
             }
-            int timeslot = fixture.getTimeSlot();
+            LocalTime timeslot = fixture.getTimeSlot();
             unschedule(fixture);
             toBeRescheduled.add(fixture);
         }
@@ -291,6 +291,6 @@ public class Scheduler {
         playerB.setOpponentsPlayed(opponentsPlayedB);
     }
     void markScheduleComplete(Fixture fixture) {
-        fixture.setPlayed(true);
+        fixture.setPlayStatus(Status.COMPLETED);
     }
 }

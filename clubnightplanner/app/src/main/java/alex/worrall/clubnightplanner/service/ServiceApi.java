@@ -1,9 +1,9 @@
 package alex.worrall.clubnightplanner.service;
 
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
 
-import alex.worrall.clubnightplanner.ui.main.courts.Court;
 import alex.worrall.clubnightplanner.ui.main.fixtures.Fixture;
 import alex.worrall.clubnightplanner.ui.main.players.Player;
 
@@ -31,8 +31,8 @@ public class ServiceApi {
         dataHolder.addCourt(courtName);
     }
 
-    public void addFixture(int pos, List<String> courts) {
-        scheduler.generateSchedule(pos, courts);
+    public void addFixture(LocalTime timeSlot, List<String> courts) {
+        scheduler.generateSchedule(timeSlot, courts);
     }
 
     public List<Player> getPlayers() {
@@ -43,7 +43,7 @@ public class ServiceApi {
         return dataHolder.getAvailableCourts();
     }
 
-    public Map<Integer, Fixture> getFixtures() {
+    public Map<LocalTime, Fixture> getFixtures() {
         return dataHolder.getFixtures();
     }
 
@@ -65,7 +65,7 @@ public class ServiceApi {
     }
 
     public void markFixtureComplete(Fixture fixture) {
-        fixture.setPlayed(true);
+        scheduler.markScheduleComplete(fixture);
     }
 
     public void removeFixture(Fixture fixture) {
