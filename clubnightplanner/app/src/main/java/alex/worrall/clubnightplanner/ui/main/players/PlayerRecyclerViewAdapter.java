@@ -1,6 +1,7 @@
 package alex.worrall.clubnightplanner.ui.main.players;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,14 +27,16 @@ public class PlayerRecyclerViewAdapter extends RecyclerView.Adapter<PlayerRecycl
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = mInflater.inflate(R.layout.recyclerview_row, parent, false);
+        View view = mInflater.inflate(R.layout.recyclerview_row_player, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Player player = mData.get(position);
-        holder.myTextView.setText(player.getName());
+        Resources res = holder.levelTextView.getContext().getResources();
+        holder.nameTextView.setText(player.getName());
+        holder.levelTextView.setText(res.getString(R.string.level, player.getLevel()));
     }
 
     @Override
@@ -42,11 +45,13 @@ public class PlayerRecyclerViewAdapter extends RecyclerView.Adapter<PlayerRecycl
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        TextView myTextView;
+        TextView nameTextView;
+        TextView levelTextView;
 
         ViewHolder(View itemView) {
             super(itemView);
-            myTextView = itemView.findViewById(R.id.playerName);
+            nameTextView = itemView.findViewById(R.id.playerName);
+            levelTextView = itemView.findViewById(R.id.playerLevel);
             itemView.setOnClickListener(this);
         }
 
