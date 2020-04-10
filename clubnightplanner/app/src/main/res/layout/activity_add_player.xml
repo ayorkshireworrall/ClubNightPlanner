@@ -21,6 +21,13 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <include layout="@layout/content_add_player" />
+    <fragment
+        android:id="@+id/FirstFragment"
+        android:name="alex.worrall.clubnightplanner.ui.main.players.AddPlayerFragment"
+        android:label="@string/first_fragment_label"
+        tools:layout="@layout/fragment_add_player"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent">
+    </fragment>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
