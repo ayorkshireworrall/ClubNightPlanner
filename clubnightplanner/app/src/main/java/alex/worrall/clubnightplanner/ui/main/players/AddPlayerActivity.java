@@ -20,6 +20,7 @@ public class AddPlayerActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_player);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
 }
