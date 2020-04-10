@@ -23,6 +23,8 @@ import java.util.List;
 import alex.worrall.clubnightplanner.R;
 import alex.worrall.clubnightplanner.service.ServiceApi;
 
+import static alex.worrall.clubnightplanner.service.RequestCodes.EDIT_PLAYER_REQUEST;
+
 public class PlayersFragment extends Fragment implements PlayerRecyclerViewAdapter.ItemClickListener {
 
     private PlayersViewModel viewModel;
@@ -64,6 +66,9 @@ public class PlayersFragment extends Fragment implements PlayerRecyclerViewAdapt
     @Override
     public void onItemClick(View view, int position) {
         List<Player> players = service.getPlayers();
-        Toast.makeText(getContext(), "You clicked " + players.get(position).getName(), Toast.LENGTH_SHORT).show();
+        Player player = players.get(position);
+        Intent intent = new Intent(getActivity(), EditPlayerActivity.class);
+        intent.putExtra(getString(R.string.player_uuid_key), player.getUuid());
+        startActivityForResult(intent, EDIT_PLAYER_REQUEST);
     }
 }

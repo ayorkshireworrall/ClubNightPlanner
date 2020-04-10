@@ -18,6 +18,7 @@ public class DataHolder {
 
     private DataHolder() {
         this.players = new ArrayList<>();
+        players.add(new Player("Alex", 2));
         this.availableCourts = new ArrayList<>();
         this.fixtures = new HashMap<>();
         this.dulllNameMapping = doNameMapping();
@@ -84,6 +85,15 @@ public class DataHolder {
             }
         }
         return false;
+    }
+
+    Player getPlayerByUuid(String uuid) {
+        for (Player player : players) {
+            if (player.getUuid().equalsIgnoreCase(uuid)) {
+                return player;
+            }
+        }
+        return null;
     }
 
     private Map<String, String> doNameMapping() {

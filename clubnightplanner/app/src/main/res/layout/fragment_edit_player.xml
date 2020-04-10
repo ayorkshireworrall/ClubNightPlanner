@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.main.players.AddPlayerFragment">
+    tools:context=".ui.main.players.EditPlayerFragment">
 
     <EditText
-        android:id="@+id/editTextNewPlayerName"
+        android:id="@+id/editTextEditPlayerName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="99dp"
@@ -28,7 +28,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/editTextNewPlayerLevel"
+        android:id="@+id/editTextEditPlayerLevel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -37,6 +37,8 @@
         android:maxLength="5"
         android:textSize="24sp"
         android:textColor="@color/textPrimary"
+        android:textIsSelectable="true"
+        android:selectAllOnFocus="true"
         tools:layout_editor_absoluteX="99dp"
         tools:layout_editor_absoluteY="355dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -45,10 +47,10 @@
         app:layout_constraintTop_toTopOf="parent"/>
 
     <Button
-        android:id="@+id/buttonSubmitNewPlayer"
+        android:id="@+id/buttonSubmitEditPlayer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/submit"
+        android:text="@string/edit"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"

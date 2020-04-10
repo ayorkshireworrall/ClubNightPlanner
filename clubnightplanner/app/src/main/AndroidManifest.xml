@@ -10,10 +10,15 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".ui.main.players.EditPlayerActivity"
+            android:label="@string/title_activitiy_edit_player"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
             android:name=".ui.main.players.AddPlayerActivity"
             android:label="@string/title_activity_add_player"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:parentActivityName=".MainActivity"></activity>
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"

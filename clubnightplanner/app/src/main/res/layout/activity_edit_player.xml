@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorGeneralBackground"
-    tools:context=".ui.main.players.AddPlayerActivity">
+    tools:context=".ui.main.players.EditPlayerActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -13,7 +13,7 @@
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbarAddPlayer"
+            android:id="@+id/toolbarEditPlayer"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
@@ -22,10 +22,10 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <fragment
-        android:id="@+id/AddPlayerFragment"
-        android:name="alex.worrall.clubnightplanner.ui.main.players.AddPlayerFragment"
+        android:id="@+id/EditPlayerFragment"
+        android:name="alex.worrall.clubnightplanner.ui.main.players.EditPlayerFragment"
         android:label="@string/first_fragment_label"
-        tools:layout="@layout/fragment_add_player"
+        tools:layout="@layout/fragment_edit_player"
         android:layout_height="match_parent"
         android:layout_width="match_parent">
     </fragment>

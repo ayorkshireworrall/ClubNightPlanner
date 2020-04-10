@@ -35,6 +35,14 @@ public class ServiceApi {
         scheduler.generateSchedule(timeSlot, courts);
     }
 
+    public Player getPlayerByUuid(String uuid) {
+        return dataHolder.getPlayerByUuid(uuid);
+    }
+
+    public void updatePlayer(Player player) {
+        //TODO implement when including database
+    }
+
     public List<Player> getPlayers() {
         return dataHolder.getPlayers();
     }
