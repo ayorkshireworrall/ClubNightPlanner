@@ -45,37 +45,28 @@ public class AddPlayerFragment extends Fragment {
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (nameField.getText().toString().isEmpty()) {
+                String name = nameField.getText().toString();
+                String level = levelField.getText().toString();
+                if (name.isEmpty()) {
                     String message = "Please fill in the player name field";
                     Toast toast = Toast.makeText(context, message, Toast.LENGTH_LONG);
                     toast.show();
-                } else if (levelField.getText().toString().isEmpty()) {
+                } else if (level.isEmpty()) {
                     String message = "Please fill in the player level field";
                     Toast toast = Toast.makeText(context, message, Toast.LENGTH_LONG);
                     toast.show();
-                } else if (checkForExistingName(nameField.getText().toString())) {
-                    String message = "Player name " + nameField.getText().toString() +
+                } else if (service.isPlayerNameUsed(name)) {
+                    String message = "Player name " + name +
                             " already in use, please use another name";
                     Toast toast = Toast.makeText(context, message, Toast.LENGTH_LONG);
                     toast.show();
                 } else {
-                    service.addPlayer(nameField.getText().toString(), Integer.parseInt(levelField.getText().toString()));
+                    service.addPlayer(name, Integer.parseInt(level));
                     String message = "Successfully added " + nameField.getText().toString();
                     Toast toast = Toast.makeText(context, message, Toast.LENGTH_LONG);
                     toast.show();
                     getActivity().finish();
                 }
-            }
-
-            private boolean checkForExistingName(String name) {
-                boolean exists = false;
-                List<Player> players = service.getPlayers();
-                for (Player player : players) {
-                    if (player.getName().equalsIgnoreCase(name)) {
-                        exists = true;
-                    }
-                }
-                return exists;
             }
         });
     }

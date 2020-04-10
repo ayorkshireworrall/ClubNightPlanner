@@ -23,12 +23,12 @@ public class ServiceApi {
         scheduler.addPlayer(name, level);
     }
 
-    public void addCourt(Court court) {
-        dataHolder.addCourt(court);
+    public boolean isPlayerNameUsed(String name) {
+        return dataHolder.isPlayerNameUsed(name);
     }
 
-    public void addCourt(String name, Player playerA, Player playerB) {
-        dataHolder.addCourt(new Court(name, playerA, playerB));
+    public void addCourt(String courtName) {
+        dataHolder.addCourt(courtName);
     }
 
     public void addFixture(int pos, List<String> courts) {
@@ -39,8 +39,8 @@ public class ServiceApi {
         return dataHolder.getPlayers();
     }
 
-    public List<Court> getCourts() {
-        return dataHolder.getCourts();
+    public List<String> getAvailableCourts() {
+        return dataHolder.getAvailableCourts();
     }
 
     public Map<Integer, Fixture> getFixtures() {
@@ -51,8 +51,13 @@ public class ServiceApi {
         dataHolder.clearData();
     }
 
-    public void removeCourt(Court court) {
-        //TODO implications with scheduling
+    public void removeCourt(String courtName) {
+        scheduler.disableCourt(courtName);
+        dataHolder.removeCourt(courtName);
+    }
+
+    public void disableCourt(String courtName) {
+        scheduler.disableCourt(courtName);
     }
 
     public void removePlayer(String playerId) {

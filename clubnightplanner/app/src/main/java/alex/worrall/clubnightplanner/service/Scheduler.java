@@ -7,16 +7,15 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import alex.worrall.clubnightplanner.ui.main.courts.Court;
 import alex.worrall.clubnightplanner.ui.main.fixtures.Fixture;
 import alex.worrall.clubnightplanner.ui.main.players.Player;
 
 public class Scheduler {
-    DataHolder dataHolder = DataHolder.getInstance();
+    private DataHolder dataHolder = DataHolder.getInstance();
 
-    public void generateSchedule(Integer timeSlot, List<String> availableCourts) {
+    void generateSchedule(Integer timeSlot, List<String> availableCourts) {
         List<Court> courts = new ArrayList<>();
         List<Player> players = getNextPlayers();
         List<Player> priorityPlayers = getPriorityPlayers(players);
@@ -157,9 +156,9 @@ public class Scheduler {
 
     //If scheduling hasn't already happened, simply add the player. If it has, modify the
     //existing schedule
-    public void addPlayer(String name, int level) {
+    void addPlayer(String name, int level) {
         if (dataHolder.getFixtures().size() == 0) {
-            dataHolder.addPlayer(new Player(name, level));
+            dataHolder.addPlayer(name, level);
         } else {
             try {
                 Method addNewPlayer = this.getClass().getDeclaredMethod("addNewPlayer",
@@ -172,12 +171,11 @@ public class Scheduler {
     }
 
     private void addNewPlayer(String name, int level) {
-        Player newPlayer = new Player(name, level);
-        dataHolder.addPlayer(newPlayer);
+        Player newPlayer = dataHolder.addPlayer(name, level);
         setNewPlayerPriority(newPlayer);
     }
 
-    public void removePlayer(String playerId) {
+    void removePlayer(String playerId) {
         try {
             Method removeExistingPlayer = this.getClass().getDeclaredMethod("removeExistingPlayer",
                     String.class);
@@ -200,16 +198,7 @@ public class Scheduler {
 
     //Modifies the players' opponents lists. Type of modification depends on the method passed
     private void modifyPlayerList(Method method, Object ...methodArgs) {
-        List<Fixture> toBeRescheduled = new ArrayList<>();
-        //Set player data to be up to date with only completed schedules
-        for (Fixture fixture : dataHolder.getFixtures().values()) {
-            if (fixture.isPlayed()) {
-                continue;
-            }
-            int timeslot = fixture.getTimeSlot();
-            unschedule(fixture);
-            toBeRescheduled.add(fixture);
-        }
+        List<Fixture> toBeRescheduled = unplayedFixtures();
         try {
             method.invoke(this, methodArgs);
         } catch (IllegalAccessException e) {
@@ -225,6 +214,39 @@ public class Scheduler {
             }
             generateSchedule(fixture.getTimeSlot(), courtNames);
         }
+    }
+
+    void disableCourt(String courtName) {
+        List<Fixture> fixturesToReschedule = unplayedFixtures();
+        for (Fixture fixture : fixturesToReschedule) {
+            List<Court> courts = fixture.getCourts();
+            Court toBeRemoved = null;
+            for (Court court : courts) {
+                if (court.getCourtName().equalsIgnoreCase(courtName)) {
+                    toBeRemoved = court;
+                }
+            }
+            courts.remove(toBeRemoved);
+            List<String> courtNames = new ArrayList<>();
+            for (Court court : courts) {
+                courtNames.add(court.getCourtName());
+            }
+            generateSchedule(fixture.getTimeSlot(), courtNames);
+        }
+    }
+
+    //find all fixtures yet to be played and remove their schedule
+    private List<Fixture> unplayedFixtures() {
+        List<Fixture> toBeRescheduled = new ArrayList<>();
+        for (Fixture fixture : dataHolder.getFixtures().values()) {
+            if (fixture.isPlayed()) {
+                continue;
+            }
+            int timeslot = fixture.getTimeSlot();
+            unschedule(fixture);
+            toBeRescheduled.add(fixture);
+        }
+        return toBeRescheduled;
     }
 
     //New player set to have same number of played matches as a priority player (so they
@@ -268,7 +290,7 @@ public class Scheduler {
         opponentsPlayedB.add(playerA);
         playerB.setOpponentsPlayed(opponentsPlayedB);
     }
-    public void markScheduleComplete(Fixture fixture) {
+    void markScheduleComplete(Fixture fixture) {
         fixture.setPlayed(true);
     }
 }

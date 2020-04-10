@@ -1,4 +1,4 @@
-package alex.worrall.clubnightplanner;
+package alex.worrall.clubnightplanner.service;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -10,6 +10,7 @@ import java.util.Map;
 
 import alex.worrall.clubnightplanner.service.DataHolder;
 import alex.worrall.clubnightplanner.service.Scheduler;
+import alex.worrall.clubnightplanner.ui.main.fixtures.Fixture;
 import alex.worrall.clubnightplanner.ui.main.players.Player;
 
 import static junit.framework.TestCase.assertTrue;
@@ -80,6 +81,7 @@ public class SchedulerTest {
         scheduler.markScheduleComplete(dataHolder.getFixtures().get(1));
         scheduler.markScheduleComplete(dataHolder.getFixtures().get(2));
         scheduler.addPlayer("Fred", 16);
+        assertEqualPlayTime();
         printPlayersCurrentMatches();
         assertCloseMatches(2.7);
     }
@@ -103,6 +105,33 @@ public class SchedulerTest {
         //Will remove Henry
         Player playerToRemove = dataHolder.getPlayers().get(0);
         scheduler.removePlayer(playerToRemove.getUuid());
+        assertEqualPlayTime();
+        printPlayersCurrentMatches();
+        assertCloseMatches(2.7);
+    }
+
+    @Test
+    public void testDisableCourt() {
+        List<String> courtNames = new ArrayList<>();
+        courtNames.add("Court1");
+        courtNames.add("Court2");
+        courtNames.add("Court3");
+        courtNames.add("Court4");
+        courtNames.add("Court5");
+        scheduler.generateSchedule(1, courtNames);
+        scheduler.generateSchedule(2, courtNames);
+        courtNames.add("Court6");
+        courtNames.add("Court7");
+        scheduler.generateSchedule(3, courtNames);
+        scheduler.generateSchedule(4, courtNames);
+        scheduler.markScheduleComplete(dataHolder.getFixtures().get(1));
+        scheduler.markScheduleComplete(dataHolder.getFixtures().get(2));
+        scheduler.disableCourt("Court1");
+        Fixture fixture3 = dataHolder.getFixtures().get(3);
+        Fixture fixture4 = dataHolder.getFixtures().get(4);
+        assertTrue(fixture3.getCourts().size() == 6);
+        assertTrue(fixture4.getCourts().size() == 6);
+        assertEqualPlayTime();
         printPlayersCurrentMatches();
         assertCloseMatches(2.7);
     }
