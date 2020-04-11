@@ -11,19 +11,18 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 
-import java.util.List;
-
+import alex.worrall.clubnightplanner.ObservableFragment;
 import alex.worrall.clubnightplanner.R;
 import alex.worrall.clubnightplanner.service.ServiceApi;
 
-public class EditPlayerFragment extends Fragment {
+public class EditPlayerFragment extends ObservableFragment {
 
     ServiceApi service = new ServiceApi();
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        registerObservers();
         super.onViewCreated(view, savedInstanceState);
         final Bundle extras = getActivity().getIntent().getExtras();
         final Context context = getContext();
@@ -44,25 +43,32 @@ public class EditPlayerFragment extends Fragment {
                 } else if (level.isEmpty()) {
                     String message = "Please fill in the player level field";
                     Toast.makeText(context, message, Toast.LENGTH_LONG).show();
-                } else if (service.isPlayerNameUsed(name)) {
-                    //TODO possible to change the player level but not the name...
+                } else if (service.isPlayerNameUsed(name, player.getUuid())) {
                     String message = "Player name " + name +
                             " already in use, please use another name";
                     Toast.makeText(context, message, Toast.LENGTH_LONG).show();
                 } else {
-                    //TODO improve the way that the player is updated
                     player.setName(name);
                     player.setLevel(Integer.parseInt(level));
+                    //TODO improve the way that the player is updated (currently this does nothing
+                    // and relies on the fact we are mutating the actual player object!)
+                    service.updatePlayer(player);
+                    notifyObservers();
                     getActivity().finish();
                 }
             }
         });
     }
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_edit_player, container, false);
+    }
+
+    private void registerObservers() {
+        register(PlayersFragment.getInstance());
     }
 }

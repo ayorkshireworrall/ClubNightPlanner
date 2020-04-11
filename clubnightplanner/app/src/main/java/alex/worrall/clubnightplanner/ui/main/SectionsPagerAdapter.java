@@ -41,7 +41,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     private Fragment getFragment(int position) {
         switch (position) {
             case 0:
-                return new PlayersFragment();
+                return PlayersFragment.getInstance();
             case 1:
                 return new CourtsFragment();
             case 2:

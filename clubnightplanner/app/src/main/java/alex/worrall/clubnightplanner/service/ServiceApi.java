@@ -27,6 +27,10 @@ public class ServiceApi {
         return dataHolder.isPlayerNameUsed(name);
     }
 
+    public boolean isPlayerNameUsed(String name, String uuid) {
+        return dataHolder.isPlayerNameUsed(name, uuid);
+    }
+
     public void addCourt(String courtName) {
         dataHolder.addCourt(courtName);
     }

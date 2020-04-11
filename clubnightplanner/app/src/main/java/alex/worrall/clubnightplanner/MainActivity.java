@@ -26,12 +26,4 @@ public class MainActivity extends AppCompatActivity {
         TabLayout tabs = findViewById(R.id.tabs);
         tabs.setupWithViewPager(viewPager);
     }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == EDIT_PLAYER_REQUEST && resultCode == EDIT_PLAYER_RESULT) {
-            System.out.println("Recorded finish");
-        }
-    }
 }

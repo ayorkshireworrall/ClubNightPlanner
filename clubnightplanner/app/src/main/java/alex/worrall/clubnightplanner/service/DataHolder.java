@@ -78,9 +78,13 @@ public class DataHolder {
     }
 
     boolean isPlayerNameUsed(String name) {
+        return isPlayerNameUsed(name, "");
+    }
+
+    boolean isPlayerNameUsed(String name, String uuid) {
         name = dulllNameMapping.containsKey(name) ? dulllNameMapping.get(name) : name;
         for (Player player : players) {
-            if (player.getName().equalsIgnoreCase(name)) {
+            if (player.getName().equalsIgnoreCase(name) && !player.getUuid().equals(uuid)) {
                 return true;
             }
         }

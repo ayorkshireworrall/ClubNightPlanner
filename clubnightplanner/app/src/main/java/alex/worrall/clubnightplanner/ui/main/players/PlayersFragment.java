@@ -20,18 +20,29 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
 
+import alex.worrall.clubnightplanner.Observer;
 import alex.worrall.clubnightplanner.R;
 import alex.worrall.clubnightplanner.service.ServiceApi;
 
 import static alex.worrall.clubnightplanner.service.RequestCodes.EDIT_PLAYER_REQUEST;
 
-public class PlayersFragment extends Fragment implements PlayerRecyclerViewAdapter.ItemClickListener {
+public class PlayersFragment extends Fragment
+        implements PlayerRecyclerViewAdapter.ItemClickListener, Observer {
 
     private PlayersViewModel viewModel;
     private ServiceApi service;
+    PlayerRecyclerViewAdapter adapter;
+    private static PlayersFragment instance;
 
-    public static PlayersFragment newInstance() {
-        return new PlayersFragment();
+    public static PlayersFragment getInstance() {
+        if (instance == null) {
+            instance = new PlayersFragment();
+        }
+        return instance;
+    }
+
+    private PlayersFragment() {
+
     }
 
     @Override
@@ -43,7 +54,7 @@ public class PlayersFragment extends Fragment implements PlayerRecyclerViewAdapt
         RecyclerView recyclerView = root.findViewById(R.id.players_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         List<Player> viewData = service.getPlayers();
-        PlayerRecyclerViewAdapter adapter = new PlayerRecyclerViewAdapter(getContext(), viewData);
+        adapter = new PlayerRecyclerViewAdapter(getContext(), viewData);
         adapter.setClickListener(this);
         recyclerView.setAdapter(adapter);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -70,5 +81,10 @@ public class PlayersFragment extends Fragment implements PlayerRecyclerViewAdapt
         Intent intent = new Intent(getActivity(), EditPlayerActivity.class);
         intent.putExtra(getString(R.string.player_uuid_key), player.getUuid());
         startActivityForResult(intent, EDIT_PLAYER_REQUEST);
+    }
+
+    @Override
+    public void update() {
+        adapter.notifyDataSetChanged();
     }
 }
