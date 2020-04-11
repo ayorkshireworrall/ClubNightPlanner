@@ -18,7 +18,6 @@ public class DataHolder {
 
     private DataHolder() {
         this.players = new ArrayList<>();
-        players.add(new Player("Alex", 2));
         this.availableCourts = new ArrayList<>();
         this.fixtures = new HashMap<>();
         this.dulllNameMapping = doNameMapping();
@@ -57,6 +56,18 @@ public class DataHolder {
         Player player = new Player(name, level);
         this.players.add(player);
         return player;
+    }
+
+    void updatePlayer(Player updatedPlayer) {
+        for (Player player : players) {
+            if (player.getUuid().equals(updatedPlayer.getUuid())) {
+                String requestedName = updatedPlayer.getName();
+                String rename = dulllNameMapping.containsKey(requestedName) ?
+                        dulllNameMapping.get(requestedName) : requestedName;
+                player.setLevel(updatedPlayer.getLevel());
+                player.setName(rename);
+            }
+        }
     }
 
     void putFixture(LocalTime pos, Fixture fixture) {

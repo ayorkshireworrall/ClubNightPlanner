@@ -44,7 +44,7 @@ public class ServiceApi {
     }
 
     public void updatePlayer(Player player) {
-        //TODO implement when including database
+        dataHolder.updatePlayer(player);
     }
 
     public List<Player> getPlayers() {
