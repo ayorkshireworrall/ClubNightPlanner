@@ -30,7 +30,7 @@ public class PlayersFragment extends Fragment
         implements PlayerRecyclerViewAdapter.ItemClickListener, Observer {
 
     private PlayersViewModel viewModel;
-    private ServiceApi service;
+    private ServiceApi service = ServiceApi.getInstance();
     PlayerRecyclerViewAdapter adapter;
     private static PlayersFragment instance;
 
@@ -48,7 +48,6 @@ public class PlayersFragment extends Fragment
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        service = new ServiceApi();
         View root = inflater.inflate(R.layout.fragment_players, container, false);
         FloatingActionButton fab = root.findViewById(R.id.fab_players);
         RecyclerView recyclerView = root.findViewById(R.id.players_list);

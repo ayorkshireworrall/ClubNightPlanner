@@ -18,7 +18,7 @@ import alex.worrall.clubnightplanner.service.ServiceApi;
 
 public class EditPlayerFragment extends ObservableFragment {
 
-    ServiceApi service = new ServiceApi();
+    private ServiceApi service = ServiceApi.getInstance();
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {

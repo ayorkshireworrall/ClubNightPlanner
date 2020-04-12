@@ -14,6 +14,18 @@ import alex.worrall.clubnightplanner.ui.main.players.Player;
 public class ServiceApi {
     private DataHolder dataHolder = DataHolder.getInstance();
     private Scheduler scheduler = new Scheduler();
+    private static ServiceApi serviceApi = new ServiceApi();
+
+    private ServiceApi() {
+
+    }
+
+    public static ServiceApi getInstance() {
+        if (serviceApi == null) {
+            serviceApi = new ServiceApi();
+        }
+        return serviceApi;
+    }
 
     public void addPlayer(Player player) {
         scheduler.addPlayer(player.getName(), player.getLevel());

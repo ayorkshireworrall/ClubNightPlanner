@@ -17,7 +17,7 @@ import alex.worrall.clubnightplanner.service.ServiceApi;
 
 public class AddPlayerFragment extends Fragment {
 
-    private ServiceApi service = new ServiceApi();
+    private ServiceApi service = ServiceApi.getInstance();
 
     @Override
     public View onCreateView(
