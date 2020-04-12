@@ -1,5 +1,7 @@
 package alex.worrall.clubnightplanner.ui.main.players;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -27,8 +30,9 @@ public class PlayersFragment extends Fragment
         implements PlayerRecyclerViewAdapter.ItemClickListener, Observer {
 
     private PlayersViewModel viewModel;
+    private RecyclerView recyclerView;
     private ServiceApi service = ServiceApi.getInstance();
-    PlayerRecyclerViewAdapter adapter;
+    private PlayerRecyclerViewAdapter adapter;
     private static PlayersFragment instance;
 
     public static PlayersFragment getInstance() {
@@ -47,12 +51,13 @@ public class PlayersFragment extends Fragment
                              @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_players, container, false);
         FloatingActionButton fab = root.findViewById(R.id.fab_players);
-        RecyclerView recyclerView = root.findViewById(R.id.players_list);
+        recyclerView = root.findViewById(R.id.players_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         List<Player> viewData = service.getPlayers();
         adapter = new PlayerRecyclerViewAdapter(getContext(), viewData);
         adapter.setClickListener(this);
         recyclerView.setAdapter(adapter);
+        new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recyclerView);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -88,4 +93,35 @@ public class PlayersFragment extends Fragment
     public void subscribe() {
         EditPlayerFragment.getInstance().register(this);
     }
+
+    ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new ItemTouchHelper.SimpleCallback(0
+            , ItemTouchHelper.RIGHT) {
+        @Override
+        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+            return false;
+        }
+
+        @Override
+        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+            List<Player> data = service.getPlayers();
+            final Player player = data.get(viewHolder.getAdapterPosition());
+            new AlertDialog.Builder(getContext())
+                    .setTitle("Delete Player")
+                    .setMessage("Are you sure you wish to delete " + player.getName())
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            service.removePlayer(player.getUuid());
+                            adapter.notifyDataSetChanged();
+                        }
+                    })
+                    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            adapter.notifyDataSetChanged();
+                        }
+                    }).show();
+        }
+    };
 }
