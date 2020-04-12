@@ -19,10 +19,21 @@ import alex.worrall.clubnightplanner.service.ServiceApi;
 public class EditPlayerFragment extends ObservableFragment {
 
     private ServiceApi service = ServiceApi.getInstance();
+    private static EditPlayerFragment editPlayerFragment;
+
+    public static EditPlayerFragment getInstance() {
+        if (editPlayerFragment == null) {
+            editPlayerFragment = new EditPlayerFragment();
+        }
+        return editPlayerFragment;
+    }
+
+    private EditPlayerFragment() {
+
+    }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        registerObservers();
         super.onViewCreated(view, savedInstanceState);
         final Bundle extras = getActivity().getIntent().getExtras();
         final Context context = getContext();
@@ -66,9 +77,5 @@ public class EditPlayerFragment extends ObservableFragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_edit_player, container, false);
-    }
-
-    private void registerObservers() {
-        register(PlayersFragment.getInstance());
     }
 }

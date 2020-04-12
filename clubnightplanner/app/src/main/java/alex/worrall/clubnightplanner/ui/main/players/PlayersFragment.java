@@ -1,20 +1,17 @@
 package alex.worrall.clubnightplanner.ui.main.players;
 
-import androidx.lifecycle.ViewModelProviders;
-
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -42,7 +39,7 @@ public class PlayersFragment extends Fragment
     }
 
     private PlayersFragment() {
-
+        subscribe();
     }
 
     @Override
@@ -85,5 +82,10 @@ public class PlayersFragment extends Fragment
     @Override
     public void update() {
         adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void subscribe() {
+        EditPlayerFragment.getInstance().register(this);
     }
 }

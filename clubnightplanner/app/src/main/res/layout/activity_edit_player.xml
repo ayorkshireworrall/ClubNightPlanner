@@ -21,13 +21,10 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <fragment
-        android:id="@+id/EditPlayerFragment"
-        android:name="alex.worrall.clubnightplanner.ui.main.players.EditPlayerFragment"
-        android:label="@string/first_fragment_label"
-        tools:layout="@layout/fragment_edit_player"
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/view_pager_edit_player"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_width="match_parent">
-    </fragment>
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
