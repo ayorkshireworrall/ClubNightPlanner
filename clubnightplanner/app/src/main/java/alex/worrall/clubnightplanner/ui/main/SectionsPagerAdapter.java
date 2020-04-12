@@ -43,7 +43,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
             case 0:
                 return PlayersFragment.getInstance();
             case 1:
-                return new CourtsFragment();
+                return CourtsFragment.getInstance();
             case 2:
                 return new FixturesFragment();
             default:

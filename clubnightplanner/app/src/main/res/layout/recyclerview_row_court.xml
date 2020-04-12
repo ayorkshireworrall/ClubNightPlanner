@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="10dp"
+    android:background="@drawable/list_item_border">
+
+    <EditText
+        android:id="@+id/courtName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="24sp"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:textColor="@color/textPrimary"
+        android:background="@android:color/transparent"
+        android:textIsSelectable="true"
+        android:selectAllOnFocus="true"/>
+
+</LinearLayout>
