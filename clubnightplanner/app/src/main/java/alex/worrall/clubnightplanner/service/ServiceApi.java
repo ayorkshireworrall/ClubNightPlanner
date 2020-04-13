@@ -47,7 +47,7 @@ public class ServiceApi {
         dataHolder.addCourt(courtName);
     }
 
-    public void addFixture(LocalTime timeSlot, List<String> courts) {
+    public void addFixture(int timeSlot, List<String> courts) {
         scheduler.generateSchedule(timeSlot, courts);
     }
 
@@ -67,7 +67,7 @@ public class ServiceApi {
         return dataHolder.getAvailableCourts();
     }
 
-    public Map<LocalTime, Fixture> getFixtures() {
+    public Map<Integer, Fixture> getFixtures() {
         return dataHolder.getFixtures();
     }
 

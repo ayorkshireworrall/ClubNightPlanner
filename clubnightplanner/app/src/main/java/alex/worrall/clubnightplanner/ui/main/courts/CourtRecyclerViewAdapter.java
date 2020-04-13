@@ -38,11 +38,8 @@ public class CourtRecyclerViewAdapter extends RecyclerView.Adapter<CourtRecycler
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         String name = mData.get(position);
         if (name != null) {
-            holder.displayCourtName.setText(mData.get(position));
-            holder.editCourtName.setText(mData.get(position));
-        } else {
-            holder.displayCourtName.setText("Court " + position);
-            holder.editCourtName.setText("Court " + position);
+            holder.displayCourtName.setText(name);
+            holder.editCourtName.setText(name);
         }
     }
 

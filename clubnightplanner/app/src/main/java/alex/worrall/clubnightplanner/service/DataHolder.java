@@ -12,7 +12,7 @@ import alex.worrall.clubnightplanner.ui.main.players.Player;
 public class DataHolder {
     private List<Player> players;
     private List<String> availableCourts;
-    private Map<LocalTime, Fixture> fixtures;
+    private Map<Integer, Fixture> fixtures;
     private static final DataHolder DATA_HOLDER = new DataHolder();
     private Map<String, String> dulllNameMapping;
 
@@ -51,11 +51,11 @@ public class DataHolder {
         this.availableCourts = availableCourts;
     }
 
-    Map<LocalTime, Fixture> getFixtures() {
+    Map<Integer, Fixture> getFixtures() {
         return fixtures;
     }
 
-    void setFixtures(Map<LocalTime, Fixture> fixtures) {
+    void setFixtures(Map<Integer, Fixture> fixtures) {
         this.fixtures = fixtures;
     }
 
@@ -78,7 +78,10 @@ public class DataHolder {
         }
     }
 
-    void putFixture(LocalTime pos, Fixture fixture) {
+    void putFixture(Integer pos, Fixture fixture) {
+        if (fixtures.isEmpty()) {
+            fixture.setPlayStatus(Status.NEXT);
+        }
         this.fixtures.put(pos, fixture);
     }
 
@@ -93,7 +96,7 @@ public class DataHolder {
     void clearData() {
         this.players = new ArrayList<>();
         this.availableCourts = new ArrayList<>();
-        this.fixtures = new HashMap<LocalTime, Fixture>();
+        this.fixtures = new HashMap<Integer, Fixture>();
     }
 
     boolean isPlayerNameUsed(String name) {

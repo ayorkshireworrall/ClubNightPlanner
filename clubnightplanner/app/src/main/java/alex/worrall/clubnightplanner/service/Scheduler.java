@@ -6,6 +6,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import alex.worrall.clubnightplanner.ui.main.courts.Court;
 import alex.worrall.clubnightplanner.ui.main.fixtures.Fixture;
@@ -14,7 +15,7 @@ import alex.worrall.clubnightplanner.ui.main.players.Player;
 public class Scheduler {
     private DataHolder dataHolder = DataHolder.getInstance();
 
-    void generateSchedule(LocalTime timeSlot, List<String> availableCourts) {
+    void generateSchedule(int timeSlot, List<String> availableCourts) {
         List<Court> courts = new ArrayList<>();
         List<Player> players = getNextPlayers();
         List<Player> priorityPlayers = getPriorityPlayers(players);
@@ -242,7 +243,7 @@ public class Scheduler {
                     fixture.getPlayStatus().equals(Status.IN_PROGRESS)) {
                 continue;
             }
-            LocalTime timeslot = fixture.getTimeSlot();
+            int timeslot = fixture.getTimeSlot();
             unschedule(fixture);
             toBeRescheduled.add(fixture);
         }
@@ -290,7 +291,19 @@ public class Scheduler {
         opponentsPlayedB.add(playerA);
         playerB.setOpponentsPlayed(opponentsPlayedB);
     }
+
+    //set status as complete and find the next slot and mark it as next
     void markScheduleComplete(Fixture fixture) {
+        //TODO data handling not great - mutates actual objects
         fixture.setPlayStatus(Status.COMPLETED);
+        int timeSlot = fixture.getTimeSlot();
+        int nextSlot = 1439; //11:59pm
+        Map<Integer, Fixture> fixtures = dataHolder.getFixtures();
+        for (int slot : fixtures.keySet()) {
+            if (slot > timeSlot && slot < nextSlot) {
+                nextSlot = slot;
+            }
+        }
+        fixtures.get(nextSlot).setPlayStatus(Status.NEXT);
     }
 }

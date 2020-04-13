@@ -7,14 +7,14 @@ import alex.worrall.clubnightplanner.service.Status;
 import alex.worrall.clubnightplanner.ui.main.courts.Court;
 
 public class Fixture {
-    LocalTime timeSlot;
+    int timeSlot;
     List<Court> courts;
     Status playStatus;
 
     public Fixture() {
     }
 
-    public Fixture(LocalTime timeSlot, List<Court> courts) {
+    public Fixture(int timeSlot, List<Court> courts) {
         this.timeSlot = timeSlot;
         this.courts = courts;
         this.playStatus = Status.LATER;
@@ -32,8 +32,16 @@ public class Fixture {
         return courts;
     }
 
-    public LocalTime getTimeSlot() {
+    public int getTimeSlot() {
         return timeSlot;
+    }
+
+    @Override
+    public String toString() {
+        int mins = this.timeSlot % 60;
+        int hours = (this.timeSlot - mins) / 60;
+        String minutes = mins < 10 ? "0" + mins : "" + mins;
+        return hours + ":" + minutes;
     }
 }
 
