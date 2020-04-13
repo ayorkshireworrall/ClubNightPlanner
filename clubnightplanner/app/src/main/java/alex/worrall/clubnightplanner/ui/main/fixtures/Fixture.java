@@ -7,9 +7,9 @@ import alex.worrall.clubnightplanner.service.Status;
 import alex.worrall.clubnightplanner.ui.main.courts.Court;
 
 public class Fixture {
-    int timeSlot;
-    List<Court> courts;
-    Status playStatus;
+    private int timeSlot;
+    private List<Court> courts;
+    private Status playStatus;
 
     public Fixture() {
     }

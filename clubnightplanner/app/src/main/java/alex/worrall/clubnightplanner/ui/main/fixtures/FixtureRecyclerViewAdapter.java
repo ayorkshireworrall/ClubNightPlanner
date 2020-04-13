@@ -16,6 +16,7 @@ import alex.worrall.clubnightplanner.R;
 public class FixtureRecyclerViewAdapter extends RecyclerView.Adapter<FixtureRecyclerViewAdapter.ViewHolder> {
     private List<Fixture> mData;
     private LayoutInflater mInflater;
+    private ItemClickListener mItemClickListener;
 
     public FixtureRecyclerViewAdapter(Context context, List<Fixture> data) {
         this.mInflater = LayoutInflater.from(context);
@@ -41,7 +42,7 @@ public class FixtureRecyclerViewAdapter extends RecyclerView.Adapter<FixtureRecy
         return mData.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         private TextView timeSlot;
         private TextView status;
 
@@ -49,6 +50,22 @@ public class FixtureRecyclerViewAdapter extends RecyclerView.Adapter<FixtureRecy
             super(itemView);
             timeSlot = itemView.findViewById(R.id.fixtureTime);
             status = itemView.findViewById(R.id.fixtureStatus);
+            itemView.setOnClickListener(this);
         }
+
+        @Override
+        public void onClick(View view) {
+            if (mItemClickListener != null) {
+                mItemClickListener.onItemClick(view, getAdapterPosition());
+            }
+        }
+    }
+
+    public interface ItemClickListener {
+        public void onItemClick(View view, int pos);
+    }
+
+    public void setItemClickListener(ItemClickListener mItemClickListener) {
+        this.mItemClickListener = mItemClickListener;
     }
 }

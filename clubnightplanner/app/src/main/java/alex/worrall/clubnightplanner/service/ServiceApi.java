@@ -95,4 +95,8 @@ public class ServiceApi {
     public void removeFixture(Fixture fixture) {
         scheduler.unschedule(fixture);
     }
+
+    public List<Fixture> getOrderedFixtures() {
+        return dataHolder.getOrderedFixtures();
+    }
 }

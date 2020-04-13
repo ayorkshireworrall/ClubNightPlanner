@@ -25,7 +25,12 @@ import java.util.Map;
 import alex.worrall.clubnightplanner.R;
 import alex.worrall.clubnightplanner.service.ServiceApi;
 
-public class FixturesFragment extends Fragment {
+import static alex.worrall.clubnightplanner.service.Status.COMPLETED;
+import static alex.worrall.clubnightplanner.service.Status.IN_PROGRESS;
+import static alex.worrall.clubnightplanner.service.Status.LATER;
+import static alex.worrall.clubnightplanner.service.Status.NEXT;
+
+public class FixturesFragment extends Fragment implements FixtureRecyclerViewAdapter.ItemClickListener {
 
     private FixturesViewModel mViewModel;
     private RecyclerView recyclerView;
@@ -43,30 +48,11 @@ public class FixturesFragment extends Fragment {
         FloatingActionButton fab = rootView.findViewById(R.id.fab_fixtures);
         recyclerView = rootView.findViewById(R.id.fixtures_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        List<Fixture> data = getFixtures(service.getFixtures());
+        List<Fixture> data = service.getOrderedFixtures();
         adapter = new FixtureRecyclerViewAdapter(getContext(), data);
+        adapter.setItemClickListener(this);
         recyclerView.setAdapter(adapter);
         return rootView;
-    }
-
-    private List<Fixture> getFixtures(Map<Integer, Fixture> fixtures) {
-        List<Fixture> orderedFixtures = new ArrayList<>();
-        int currentLargestInList = 0;
-        for (int i = 0; i < fixtures.size(); i++) {
-            int workingSmallest = 1439; //11:59
-            for (int time : fixtures.keySet()) {
-                if (time <= currentLargestInList) {
-                    //Fixture already added to ordered list
-                    continue;
-                }
-                if (time < workingSmallest) {
-                    workingSmallest = time;
-                }
-            }
-            currentLargestInList = workingSmallest;
-            orderedFixtures.add(fixtures.get(workingSmallest));
-        }
-        return orderedFixtures;
     }
 
     @Override
@@ -76,4 +62,25 @@ public class FixturesFragment extends Fragment {
         // TODO: Use the ViewModel
     }
 
+    @Override
+    public void onItemClick(View view, int pos) {
+        List<Fixture> orderedFixtures = service.getOrderedFixtures();
+        Fixture clickedFixture = orderedFixtures.get(pos);
+        switch (clickedFixture.getPlayStatus()) {
+            case NEXT:
+                System.out.println(NEXT.getMessage());
+                break;
+            case LATER:
+                System.out.println(LATER.getMessage());
+                break;
+            case COMPLETED:
+                System.out.println(COMPLETED.getMessage());
+                break;
+            case IN_PROGRESS:
+                System.out.println(IN_PROGRESS.getMessage());
+                break;
+            default:
+                break;
+        }
+    }
 }

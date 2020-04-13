@@ -122,6 +122,26 @@ public class DataHolder {
         return null;
     }
 
+    List<Fixture> getOrderedFixtures() {
+        List<Fixture> orderedFixtures = new ArrayList<>();
+        int currentLargestInList = 0;
+        for (int i = 0; i < fixtures.size(); i++) {
+            int workingSmallest = 1439; //11:59
+            for (int time : fixtures.keySet()) {
+                if (time <= currentLargestInList) {
+                    //Fixture already added to ordered list
+                    continue;
+                }
+                if (time < workingSmallest) {
+                    workingSmallest = time;
+                }
+            }
+            currentLargestInList = workingSmallest;
+            orderedFixtures.add(fixtures.get(workingSmallest));
+        }
+        return orderedFixtures;
+    }
+
     private Map<String, String> doNameMapping() {
         Map<String, String> nameMap = new HashMap<>();
         nameMap.put("Ivor Green", "Ivor Punctuality Problem");
