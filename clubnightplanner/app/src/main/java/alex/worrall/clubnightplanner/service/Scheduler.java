@@ -296,14 +296,24 @@ public class Scheduler {
     void markScheduleComplete(Fixture fixture) {
         //TODO data handling not great - mutates actual objects
         fixture.setPlayStatus(Status.COMPLETED);
-        int timeSlot = fixture.getTimeSlot();
-        int nextSlot = 1439; //11:59pm
-        Map<Integer, Fixture> fixtures = dataHolder.getFixtures();
-        for (int slot : fixtures.keySet()) {
-            if (slot > timeSlot && slot < nextSlot) {
-                nextSlot = slot;
+        List<Fixture> orderedFixtures = dataHolder.getOrderedFixtures();
+        boolean setInProgress = false;
+        boolean setNext = false;
+        for (Fixture current : orderedFixtures) {
+            if (current == fixture) {
+                setInProgress = true;
+                continue;
+            }
+            if (setInProgress) {
+                setInProgress = false;
+                setNext = true;
+                current.setPlayStatus(Status.IN_PROGRESS);
+                continue;
+            }
+            if (setNext) {
+                current.setPlayStatus(Status.NEXT);
+                break;
             }
         }
-        fixtures.get(nextSlot).setPlayStatus(Status.NEXT);
     }
 }

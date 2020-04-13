@@ -2,11 +2,14 @@ package alex.worrall.clubnightplanner.ui.main.fixtures;
 
 import androidx.lifecycle.ViewModelProviders;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -16,11 +19,7 @@ import android.view.ViewGroup;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import alex.worrall.clubnightplanner.R;
 import alex.worrall.clubnightplanner.service.ServiceApi;
@@ -47,6 +46,7 @@ public class FixturesFragment extends Fragment implements FixtureRecyclerViewAda
         View rootView = inflater.inflate(R.layout.fragment_fixtures, container, false);
         FloatingActionButton fab = rootView.findViewById(R.id.fab_fixtures);
         recyclerView = rootView.findViewById(R.id.fixtures_list);
+        new ItemTouchHelper(simpleCallback).attachToRecyclerView(recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         List<Fixture> data = service.getOrderedFixtures();
         adapter = new FixtureRecyclerViewAdapter(getContext(), data);
@@ -83,4 +83,55 @@ public class FixturesFragment extends Fragment implements FixtureRecyclerViewAda
                 break;
         }
     }
+
+    ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0,
+            ItemTouchHelper.RIGHT) {
+        @Override
+        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+            return false;
+        }
+
+        @Override
+        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+            List<Fixture> fixtures = service.getOrderedFixtures();
+            final Fixture swipedFixture = fixtures.get(viewHolder.getAdapterPosition());
+            switch (swipedFixture.getPlayStatus()) {
+                case NEXT:
+                    System.out.println(NEXT.getMessage());
+                    break;
+                case LATER:
+                    System.out.println(LATER.getMessage());
+                    break;
+                case COMPLETED:
+                    System.out.println(COMPLETED.getMessage());
+                    break;
+                case IN_PROGRESS:
+                    swipeInProgress(swipedFixture);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void swipeInProgress(final Fixture swipedFixture) {
+            new AlertDialog.Builder(getContext())
+                    .setTitle("Mark As Completed")
+                    .setMessage("Are you sure you wish to mark the " + swipedFixture.toString() +
+                            " fixture as completed?")
+                    .setCancelable(false)
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            service.markFixtureComplete(swipedFixture);
+                            adapter.notifyDataSetChanged();
+                        }
+                    })
+                    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            adapter.notifyDataSetChanged();
+                        }
+                    }).show();
+        }
+    };
 }
