@@ -7,7 +7,7 @@
     android:padding="10dp"
     android:background="@drawable/list_item_border">
 
-    <EditText
+    <TextView
         android:id="@+id/courtName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -17,8 +17,21 @@
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
         android:textColor="@color/textPrimary"
+        android:background="@android:color/transparent"/>
+
+    <EditText
+        android:id="@+id/courtNameEditable"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="0sp"
+        android:paddingTop="0dp"
+        android:paddingBottom="0dp"
+        android:paddingLeft="0dp"
+        android:paddingRight="0dp"
+        android:textColor="@color/textPrimary"
         android:background="@android:color/transparent"
-        android:textIsSelectable="true"
-        android:selectAllOnFocus="true"/>
+        android:visibility="invisible"
+        android:selectAllOnFocus="true"
+        android:textIsSelectable="true"/>
 
 </LinearLayout>

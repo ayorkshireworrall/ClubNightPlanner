@@ -106,9 +106,9 @@ public class PlayersFragment extends Fragment
             List<Player> data = service.getPlayers();
             final Player player = data.get(viewHolder.getAdapterPosition());
             new AlertDialog.Builder(getContext())
-                    .setTitle("Delete Player")
-                    .setMessage("Are you sure you wish to delete " + player.getName())
-                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setTitle("Remove Player")
+                    .setMessage("Are you sure you wish to remove " + player.getName())
+                    .setCancelable(false)
                     .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
