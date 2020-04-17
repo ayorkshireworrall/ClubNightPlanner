@@ -25,4 +25,5 @@
     <string name="title_activitiy_edit_player">Edit Player</string>
     <string name="player_uuid_key">player_uuid</string>
     <string name="edit">Edit</string>
+    <string name="addFixture">Add Fixture</string>
 </resources>

@@ -1,21 +1,21 @@
 package alex.worrall.clubnightplanner.ui.main.fixtures;
 
-import androidx.lifecycle.ViewModelProviders;
-
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -45,6 +45,13 @@ public class FixturesFragment extends Fragment implements FixtureRecyclerViewAda
                              @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_fixtures, container, false);
         FloatingActionButton fab = rootView.findViewById(R.id.fab_fixtures);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), AddFixtureActivity.class);
+                startActivity(intent);
+            }
+        });
         recyclerView = rootView.findViewById(R.id.fixtures_list);
         new ItemTouchHelper(simpleCallback).attachToRecyclerView(recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -98,12 +105,18 @@ public class FixturesFragment extends Fragment implements FixtureRecyclerViewAda
             switch (swipedFixture.getPlayStatus()) {
                 case NEXT:
                     System.out.println(NEXT.getMessage());
+                    Toast.makeText(getContext(), "No actions available", Toast.LENGTH_SHORT).show();
+                    adapter.notifyDataSetChanged();
                     break;
                 case LATER:
                     System.out.println(LATER.getMessage());
+                    Toast.makeText(getContext(), "No actions available", Toast.LENGTH_SHORT).show();
+                    adapter.notifyDataSetChanged();
                     break;
                 case COMPLETED:
                     System.out.println(COMPLETED.getMessage());
+                    Toast.makeText(getContext(), "No actions available", Toast.LENGTH_SHORT).show();
+                    adapter.notifyDataSetChanged();
                     break;
                 case IN_PROGRESS:
                     swipeInProgress(swipedFixture);
