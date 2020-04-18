@@ -13,6 +13,10 @@ import alex.worrall.clubnightplanner.ui.main.courts.CourtsFragment;
 import alex.worrall.clubnightplanner.ui.main.fixtures.FixturesFragment;
 import alex.worrall.clubnightplanner.ui.main.players.PlayersFragment;
 
+import static alex.worrall.clubnightplanner.ui.main.TabPositions.COURTS;
+import static alex.worrall.clubnightplanner.ui.main.TabPositions.FIXTURES;
+import static alex.worrall.clubnightplanner.ui.main.TabPositions.PLAYERS;
+
 /**
  * A [FragmentPagerAdapter] that returns a fragment corresponding to
  * one of the sections/tabs/pages.
@@ -40,11 +44,11 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
     private Fragment getFragment(int position) {
         switch (position) {
-            case 0:
+            case PLAYERS:
                 return PlayersFragment.getInstance();
-            case 1:
+            case COURTS:
                 return CourtsFragment.getInstance();
-            case 2:
+            case FIXTURES:
                 return new FixturesFragment();
             default:
                 return null;

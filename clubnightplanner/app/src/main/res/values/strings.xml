@@ -26,4 +26,5 @@
     <string name="player_uuid_key">player_uuid</string>
     <string name="edit">Edit</string>
     <string name="addFixture">Add Fixture</string>
+    <string name="select_courts">Select Courts</string>
 </resources>
