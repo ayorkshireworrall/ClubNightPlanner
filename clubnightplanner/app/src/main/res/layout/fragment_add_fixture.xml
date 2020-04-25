@@ -43,5 +43,29 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:layout_editor_absoluteX="0dp" />
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/select_time"
+        android:textColor="@color/textPrimary"
+        android:paddingTop="30dp"
+        android:paddingBottom="24dp"
+        android:layout_weight="1"
+        android:paddingLeft="8dp"
+        android:textSize="24sp" />
+
+    <TextView
+        android:id="@+id/fixture_time_output"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:text="12:00 PM"
+        android:textColor="@color/textSecondaryLight"
+        android:paddingBottom="24dp"
+        android:layout_weight="1"
+        android:paddingLeft="24dp"
+        android:textSize="40sp"
+        android:gravity="center_horizontal" />
+
 
 </LinearLayout>

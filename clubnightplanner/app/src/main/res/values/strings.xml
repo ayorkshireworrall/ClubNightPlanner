@@ -27,4 +27,5 @@
     <string name="edit">Edit</string>
     <string name="addFixture">Add Fixture</string>
     <string name="select_courts">Select Courts</string>
+    <string name="select_time">Select Time</string>
 </resources>
