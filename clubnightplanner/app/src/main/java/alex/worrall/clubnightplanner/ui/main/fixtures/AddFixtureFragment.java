@@ -60,7 +60,7 @@ public class AddFixtureFragment extends Fragment {
         timeOutput.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new TimePickerDialog(getContext(), timePickerListener, 0, 0, false).show();
+                new TimePickerDialog(getContext(), timePickerListener, hr, min, false).show();
             }
         });
         return rootView;
