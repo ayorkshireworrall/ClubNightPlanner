@@ -18,6 +18,7 @@ public class FixtureCourtSelectorRecyclerViewAdapter extends
         RecyclerView.Adapter<FixtureCourtSelectorRecyclerViewAdapter.ViewHolder>{
     private List<String> mData;
     private LayoutInflater mInflater;
+    private boolean isCheckedAll;
 
     public FixtureCourtSelectorRecyclerViewAdapter(Context context, List<String> mData) {
         this.mData = mData;
@@ -34,6 +35,7 @@ public class FixtureCourtSelectorRecyclerViewAdapter extends
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.courtName.setText(mData.get(position));
+        holder.isSelected.setChecked(this.isCheckedAll);
     }
 
     @Override
@@ -50,5 +52,11 @@ public class FixtureCourtSelectorRecyclerViewAdapter extends
             courtName = itemView.findViewById(R.id.select_court_name);
             isSelected = itemView.findViewById(R.id.select_court_checkbox);
         }
+    }
+
+    public void setCheckedAll(boolean checkedAll) {
+        System.out.println("Select All Clicked");
+        this.isCheckedAll = checkedAll;
+        notifyDataSetChanged();
     }
 }

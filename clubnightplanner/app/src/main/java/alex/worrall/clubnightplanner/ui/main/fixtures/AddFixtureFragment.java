@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 
 import java.util.List;
 
@@ -30,9 +31,16 @@ public class AddFixtureFragment extends Fragment {
         RecyclerView recyclerView = rootView.findViewById(R.id.fixture_court_selector);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         List<String> data = service.getAvailableCourts();
-        FixtureCourtSelectorRecyclerViewAdapter adapter =
+        final FixtureCourtSelectorRecyclerViewAdapter adapter =
                 new FixtureCourtSelectorRecyclerViewAdapter(getContext(), data);
         recyclerView.setAdapter(adapter);
+        final CheckBox selectAll = rootView.findViewById(R.id.select_all_courts);
+        selectAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                adapter.setCheckedAll(selectAll.isChecked());
+            }
+        });
         return rootView;
     }
 }

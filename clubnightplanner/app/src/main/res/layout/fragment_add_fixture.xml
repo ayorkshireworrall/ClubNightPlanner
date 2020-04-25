@@ -7,21 +7,37 @@
     android:orientation="vertical"
     tools:context=".ui.main.players.AddPlayerFragment">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/select_courts"
-        android:textColor="@color/textPrimary"
-        android:background="@drawable/list_item_border"
-        android:paddingTop="30dp"
-        android:paddingBottom="24dp"
-        android:paddingLeft="8dp"
-        android:textSize="24sp"/>
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:background="@drawable/list_item_border">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/select_courts"
+            android:textColor="@color/textPrimary"
+            android:paddingTop="30dp"
+            android:paddingBottom="24dp"
+            android:layout_weight="1"
+            android:paddingLeft="8dp"
+            android:textSize="24sp" />
+
+        <CheckBox
+            android:id="@+id/select_all_courts"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scaleX="1.20"
+            android:scaleY="1.20"
+            android:paddingRight="35dp"
+            android:paddingEnd="35dp" />
+    </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/fixture_court_selector"
         android:layout_width="match_parent"
-        android:layout_height="253dp"
+        android:layout_height="232dp"
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
         app:layout_constraintTop_toTopOf="parent"

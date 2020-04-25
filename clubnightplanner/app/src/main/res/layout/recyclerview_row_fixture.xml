@@ -17,8 +17,7 @@
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
         android:textColor="@color/textPrimary"
-        android:background="@android:color/transparent"
-        android:layout_alignParentLeft="true"/>
+        android:background="@android:color/transparent" />
 
     <TextView
         android:id="@+id/fixtureStatus"
