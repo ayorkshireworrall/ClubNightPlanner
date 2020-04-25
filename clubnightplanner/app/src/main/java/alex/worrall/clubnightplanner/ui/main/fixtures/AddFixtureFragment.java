@@ -14,10 +14,13 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import alex.worrall.clubnightplanner.R;
 import alex.worrall.clubnightplanner.service.ServiceApi;
+import alex.worrall.clubnightplanner.service.TimeUtil;
 
 public class AddFixtureFragment extends Fragment {
     private ServiceApi service = ServiceApi.getInstance();
@@ -25,6 +28,7 @@ public class AddFixtureFragment extends Fragment {
     private int hr;
     private int min;
     private TextView timeOutput;
+    private int sessionLength = 20;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -50,8 +54,9 @@ public class AddFixtureFragment extends Fragment {
                 adapter.setCheckedAll(selectAll.isChecked());
             }
         });
+        setInitialTime();
         timeOutput = rootView.findViewById(R.id.fixture_time_output);
-        timeOutput.setText(timeConverter(hr, min));
+        timeOutput.setText(TimeUtil.timeConverter(hr, min));
         timeOutput.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -66,29 +71,16 @@ public class AddFixtureFragment extends Fragment {
         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
             hr = hourOfDay;
             min = minute;
-            timeOutput.setText(timeConverter(hr, min));
+            timeOutput.setText(TimeUtil.timeConverter(hr, min));
         }
     };
 
-    private String timeConverter(int hr, int min) {
-        String am_pm, minutes;
-        int hours;
-        if (hr > 12) {
-            am_pm = " PM";
-            hours = hr - 12;
-        } else if (hr == 0) {
-            am_pm = " AM";
-            hours = 12;
-        } else {
-            am_pm = " AM";
-            hours = hr;
-        }
-        if (min < 10) {
-            minutes = "0" + min;
-        } else {
-            minutes = "" + min;
-        }
-        return hours + ":" + minutes + am_pm;
+    private void setInitialTime() {
+        Set<Integer> times = service.getFixtures().keySet();
+        int latest = Collections.max(times);
+        int initialTime = latest + sessionLength;
+        min = initialTime % 60;
+        hr = (initialTime - min) / 60;
     }
 
 }

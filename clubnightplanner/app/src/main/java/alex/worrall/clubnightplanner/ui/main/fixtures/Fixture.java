@@ -4,6 +4,7 @@ import java.time.LocalTime;
 import java.util.List;
 
 import alex.worrall.clubnightplanner.service.Status;
+import alex.worrall.clubnightplanner.service.TimeUtil;
 import alex.worrall.clubnightplanner.ui.main.courts.Court;
 
 public class Fixture {
@@ -38,10 +39,7 @@ public class Fixture {
 
     @Override
     public String toString() {
-        int mins = this.timeSlot % 60;
-        int hours = (this.timeSlot - mins) / 60;
-        String minutes = mins < 10 ? "0" + mins : "" + mins;
-        return hours + ":" + minutes;
+        return TimeUtil.timeConverter(this.timeSlot);
     }
 }
 
