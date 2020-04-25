@@ -10,10 +10,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -71,7 +73,6 @@ public class AddFixtureFragment extends Fragment {
                 int timeslot = hr * 60 + min;
                 List<String> courts = new ArrayList<>(selectedCourts);
                 service.addFixture(timeslot, courts);
-                notifyObservers();
                 getActivity().finish();
             }
         });
