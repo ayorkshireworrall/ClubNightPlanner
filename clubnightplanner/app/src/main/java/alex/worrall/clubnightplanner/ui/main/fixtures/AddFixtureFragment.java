@@ -63,6 +63,18 @@ public class AddFixtureFragment extends Fragment {
                 new TimePickerDialog(getContext(), timePickerListener, hr, min, false).show();
             }
         });
+        Button submit = rootView.findViewById(R.id.add_new_fixture_submit);
+        submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Set<String> selectedCourts = adapter.getSelectedCourts();
+                int timeslot = hr * 60 + min;
+                List<String> courts = new ArrayList<>(selectedCourts);
+                service.addFixture(timeslot, courts);
+                notifyObservers();
+                getActivity().finish();
+            }
+        });
         return rootView;
     }
 
