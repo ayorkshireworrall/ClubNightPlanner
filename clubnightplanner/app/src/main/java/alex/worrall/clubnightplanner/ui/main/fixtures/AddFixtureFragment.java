@@ -1,6 +1,7 @@
 package alex.worrall.clubnightplanner.ui.main.fixtures;
 
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -23,6 +24,7 @@ import java.util.Set;
 import alex.worrall.clubnightplanner.R;
 import alex.worrall.clubnightplanner.service.ServiceApi;
 import alex.worrall.clubnightplanner.service.TimeUtil;
+import alex.worrall.clubnightplanner.ui.main.TabPositions;
 
 public class AddFixtureFragment extends Fragment {
     private ServiceApi service = ServiceApi.getInstance();
@@ -73,7 +75,11 @@ public class AddFixtureFragment extends Fragment {
                 int timeslot = hr * 60 + min;
                 List<String> courts = new ArrayList<>(selectedCourts);
                 service.addFixture(timeslot, courts);
-                getActivity().finish();
+//              TODO below is work around, should really use custom observable pattern and finish
+//               activity.....
+                Intent parentActivityIntent = getActivity().getParentActivityIntent();
+                parentActivityIntent.putExtra("TAB_POSITION", TabPositions.FIXTURES);
+                getActivity().navigateUpTo(parentActivityIntent);
             }
         });
         return rootView;
