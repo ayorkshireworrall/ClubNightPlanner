@@ -76,6 +76,11 @@ public class FixtureCourtSelectorRecyclerViewAdapter extends
     public void setCheckedAll(boolean checkedAll) {
         System.out.println("Select All Clicked");
         this.isCheckedAll = checkedAll;
+        if (checkedAll) {
+            this.selectedCourts.addAll(mData);
+        } else {
+            this.selectedCourts = new HashSet<>();
+        }
         notifyDataSetChanged();
     }
 

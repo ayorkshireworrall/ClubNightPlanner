@@ -61,13 +61,18 @@ public class CourtsFragment extends Fragment implements CourtRecyclerViewAdapter
             @Override
             public void onClick(View v) {
                 List<String> courts = service.getAvailableCourts();
-                String lastCourtName = courts.get(courts.size() - 1);
-                String newCourtName = "";
-                if (lastCourtName.matches("^Court \\d*$")) {
-                    int count = Integer.parseInt(lastCourtName.replace("Court " , ""));
-                    newCourtName = "Court " + (count + 1);
+                String newCourtName = null;
+                if (courts.size() > 0) {
+                    String lastCourtName = courts.get(courts.size() - 1);
+                    newCourtName = "";
+                    if (lastCourtName.matches("^Court \\d*$")) {
+                        int count = Integer.parseInt(lastCourtName.replace("Court " , ""));
+                        newCourtName = "Court " + (count + 1);
+                    } else {
+                        newCourtName = "Court " + (courts.size() + 1);
+                    }
                 } else {
-                    newCourtName = "Court " + (courts.size() + 1);
+                    newCourtName = "Court 1";
                 }
                 service.addCourt(newCourtName);
                 adapter.notifyDataSetChanged();

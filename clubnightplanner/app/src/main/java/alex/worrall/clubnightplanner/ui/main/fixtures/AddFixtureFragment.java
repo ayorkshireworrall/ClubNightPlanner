@@ -74,6 +74,7 @@ public class AddFixtureFragment extends Fragment {
                 Set<String> selectedCourts = adapter.getSelectedCourts();
                 int timeslot = hr * 60 + min;
                 List<String> courts = new ArrayList<>(selectedCourts);
+                Collections.sort(courts);
                 service.addFixture(timeslot, courts);
 //              TODO below is work around, should really use custom observable pattern and finish
 //               activity.....
@@ -96,7 +97,7 @@ public class AddFixtureFragment extends Fragment {
 
     private void setInitialTime() {
         Set<Integer> times = service.getFixtures().keySet();
-        int latest = Collections.max(times);
+        int latest = times.isEmpty() ? 1060 : Collections.max(times);
         int initialTime = latest + sessionLength;
         min = initialTime % 60;
         hr = (initialTime - min) / 60;

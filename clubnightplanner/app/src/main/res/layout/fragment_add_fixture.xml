@@ -37,7 +37,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/fixture_court_selector"
         android:layout_width="match_parent"
-        android:layout_height="232dp"
+        android:layout_height="180dp"
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
         app:layout_constraintTop_toTopOf="parent"

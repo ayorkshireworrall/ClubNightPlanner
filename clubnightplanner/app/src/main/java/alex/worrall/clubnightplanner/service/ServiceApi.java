@@ -17,7 +17,6 @@ public class ServiceApi {
     private static ServiceApi serviceApi = new ServiceApi();
 
     private ServiceApi() {
-
     }
 
     public static ServiceApi getInstance() {

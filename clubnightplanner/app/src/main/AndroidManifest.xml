@@ -10,10 +10,15 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".ui.main.fixtures.ViewFixtureActivity"
+            android:label="@string/fixtureDetails"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
             android:name=".ui.main.fixtures.AddFixtureActivity"
             android:label="@string/addFixture"
             android:parentActivityName=".MainActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.main.players.EditPlayerActivity"
             android:label="@string/title_activitiy_edit_player"

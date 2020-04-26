@@ -76,19 +76,28 @@ public class FixturesFragment extends Fragment implements FixtureRecyclerViewAda
         switch (clickedFixture.getPlayStatus()) {
             case NEXT:
                 System.out.println(NEXT.getMessage());
+                startViewFixtureActivity(clickedFixture);
                 break;
             case LATER:
                 System.out.println(LATER.getMessage());
+                startViewFixtureActivity(clickedFixture);
                 break;
             case COMPLETED:
                 System.out.println(COMPLETED.getMessage());
                 break;
             case IN_PROGRESS:
                 System.out.println(IN_PROGRESS.getMessage());
+                startViewFixtureActivity(clickedFixture);
                 break;
             default:
                 break;
         }
+    }
+
+    private void startViewFixtureActivity(Fixture fixture) {
+        Intent intent = new Intent(getActivity(), ViewFixtureActivity.class);
+        intent.putExtra(getString(R.string.fixture_timeslot_key), fixture.getTimeSlot());
+        startActivity(intent);
     }
 
     ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0,

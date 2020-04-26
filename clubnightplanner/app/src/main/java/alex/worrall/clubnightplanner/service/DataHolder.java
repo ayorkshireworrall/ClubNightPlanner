@@ -21,14 +21,6 @@ public class DataHolder {
         this.availableCourts = new ArrayList<>();
         this.fixtures = new HashMap<>();
         this.dulllNameMapping = doNameMapping();
-        availableCourts.add("Court 1");
-        availableCourts.add("Court 2");
-        availableCourts.add("Court 3");
-        players.add(new Player("Alex", 1));
-        players.add(new Player("Matt", 2));
-        players.add(new Player("Chris", 3));
-        players.add(new Player("John", 4));
-        players.add(new Player("Henry", 1));
     }
 
     static DataHolder getInstance() {
@@ -80,7 +72,7 @@ public class DataHolder {
 
     void putFixture(Integer pos, Fixture fixture) {
         if (fixtures.isEmpty()) {
-            fixture.setPlayStatus(Status.NEXT);
+            fixture.setPlayStatus(Status.IN_PROGRESS);
         }
         this.fixtures.put(pos, fixture);
     }
