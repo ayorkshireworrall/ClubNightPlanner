@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#715780</color>
+    <color name="colorPrimaryDark">#582A72</color>
+    <color name="colorAccent">#FAB5F6</color>
+    <color name="colorBorder">#E4E4E4</color>
+    <color name="colorHeavyBackground">#BDBDBD</color>
+    <color name="colorLighterBackground">#F1F0F0</color>
+    <color name="colorGeneralBackground">#E3E3E3</color>
+    <color name="textPrimary">#420563</color>
+<!--    Should only really use this on a light background -->
+    <color name="textSecondaryLight">#8D8D8E</color>
+</resources>
