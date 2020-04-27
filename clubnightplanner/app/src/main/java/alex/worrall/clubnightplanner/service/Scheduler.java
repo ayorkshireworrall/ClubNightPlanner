@@ -20,7 +20,8 @@ public class Scheduler {
         //First create a basic court list with the next players and their best unplayed opponents
         for (int i = 0; i < availableCourts.size(); i++) {
             if (players.size() < 1) {
-                break;
+                courts.add(new Court(availableCourts.get(i), null, null));
+                continue;
             }
             Player playerA = players.get(0);
             Player playerB = getBestMatch(playerA, players);
@@ -41,6 +42,7 @@ public class Scheduler {
             if (playerB == null) {
                 //To prevent a bad swap slightly later
                 priorityPlayers.remove(playerA);
+                courts.add(new Court(availableCourts.get(i), null, null));
                 break;
             }
             Court court = new Court(availableCourts.get(i), playerA, playerB);
@@ -59,6 +61,9 @@ public class Scheduler {
         //Update player models now court schedule has been finalised
         for (Court court : courts) {
             Player playerA = court.getPlayerA();
+            if (playerA == null) {
+                continue;
+            }
             Player playerB = court.getPlayerB();
             addOpponentPlayed(playerA, playerB);
         }
@@ -282,6 +287,9 @@ public class Scheduler {
         List<Court> courts = fixture.getCourts();
         for (Court court : courts) {
             Player playerA = court.getPlayerA();
+            if (playerA == null) {
+                continue;
+            }
             Player playerB = court.getPlayerB();
 
             List<Player> opponentsPlayedA = playerA.getOpponentsPlayed();

@@ -36,9 +36,19 @@ public class FixturesCourtsRecyclerViewAdapter extends
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Court court = mData.get(position);
-        String matchText = court.getCourtName() + ": " + court.getPlayerA().getName() + " V " +
-                        court.getPlayerB().getName();
+        String matchText = getMatchText(court);
         holder.match.setText(matchText);
+    }
+
+    private String getMatchText(Court court) {
+        String matchText;
+        if (court.getPlayerA() == null) {
+            matchText = court.getCourtName() + ": No match in play";
+        } else {
+            matchText = court.getCourtName() + ": " + court.getPlayerA().getName() + " V " +
+                                court.getPlayerB().getName();
+        }
+        return matchText;
     }
 
     @Override
