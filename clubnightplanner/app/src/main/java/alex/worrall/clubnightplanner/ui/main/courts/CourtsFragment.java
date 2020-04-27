@@ -118,6 +118,7 @@ public class CourtsFragment extends Fragment implements CourtRecyclerViewAdapter
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             service.removeCourt(court);
+                            displayEmptyMsgCheck(service.getAvailableCourts());
                             adapter.notifyDataSetChanged();
                         }
                     })
