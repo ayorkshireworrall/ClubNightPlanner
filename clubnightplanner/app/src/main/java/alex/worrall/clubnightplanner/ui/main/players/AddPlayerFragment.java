@@ -1,6 +1,7 @@
 package alex.worrall.clubnightplanner.ui.main.players;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,7 @@ import androidx.fragment.app.Fragment;
 
 import alex.worrall.clubnightplanner.R;
 import alex.worrall.clubnightplanner.service.ServiceApi;
+import alex.worrall.clubnightplanner.ui.main.TabPositions;
 
 public class AddPlayerFragment extends Fragment {
 
@@ -57,7 +59,9 @@ public class AddPlayerFragment extends Fragment {
                     String message = "Successfully added " + nameField.getText().toString();
                     Toast toast = Toast.makeText(context, message, Toast.LENGTH_SHORT);
                     toast.show();
-                    getActivity().finish();
+                    Intent parentActivityIntent = getActivity().getParentActivityIntent();
+                    parentActivityIntent.putExtra("TAB_POSITION", TabPositions.PLAYERS);
+                    getActivity().navigateUpTo(parentActivityIntent);
                 }
             }
         });

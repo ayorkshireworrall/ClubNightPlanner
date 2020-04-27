@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -26,6 +27,7 @@ public class CourtsFragment extends Fragment implements CourtRecyclerViewAdapter
 
     private CourtsViewModel mViewModel;
     private RecyclerView recyclerView;
+    private TextView emptyListMsg;
     private CourtRecyclerViewAdapter adapter;
     private ServiceApi service = ServiceApi.getInstance();
     private static CourtsFragment courtsFragment;
@@ -56,6 +58,8 @@ public class CourtsFragment extends Fragment implements CourtRecyclerViewAdapter
         adapter = new CourtRecyclerViewAdapter(getContext(), viewData);
         adapter.setmClickListener(this);
         recyclerView.setAdapter(adapter);
+        emptyListMsg = rootView.findViewById(R.id.empty_view_courts);
+        displayEmptyMsgCheck(viewData);
         new ItemTouchHelper(itemTouchHelper).attachToRecyclerView(recyclerView);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,6 +79,7 @@ public class CourtsFragment extends Fragment implements CourtRecyclerViewAdapter
                     newCourtName = "Court 1";
                 }
                 service.addCourt(newCourtName);
+                displayEmptyMsgCheck(service.getAvailableCourts());
                 adapter.notifyDataSetChanged();
             }
         });
@@ -124,4 +129,14 @@ public class CourtsFragment extends Fragment implements CourtRecyclerViewAdapter
                     }).show();
         }
     };
+
+    private void displayEmptyMsgCheck(List<?> viewData) {
+        if (viewData.isEmpty()) {
+            recyclerView.setVisibility(View.GONE);
+            emptyListMsg.setVisibility(View.VISIBLE);
+        } else {
+            recyclerView.setVisibility(View.VISIBLE);
+            emptyListMsg.setVisibility(View.GONE);
+        }
+    }
 }

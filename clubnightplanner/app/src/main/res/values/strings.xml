@@ -30,4 +30,7 @@
     <string name="select_time">Select Time</string>
     <string name="fixture_timeslot_key">FIXTURE_TIMESLOT</string>
     <string name="fixtureDetails">Fixture Details</string>
+    <string name="no_active_players">No Active Players</string>
+    <string name="no_scheduled_fixtures">No Scheduled Fixtures</string>
+    <string name="no_listed_courts">No Listed Courts</string>
 </resources>

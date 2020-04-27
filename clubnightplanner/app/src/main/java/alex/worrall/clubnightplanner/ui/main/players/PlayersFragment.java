@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -31,6 +32,7 @@ public class PlayersFragment extends Fragment
 
     private PlayersViewModel viewModel;
     private RecyclerView recyclerView;
+    private TextView emptyListMsg;
     private ServiceApi service = ServiceApi.getInstance();
     private PlayerRecyclerViewAdapter adapter;
     private static PlayersFragment instance;
@@ -53,7 +55,9 @@ public class PlayersFragment extends Fragment
         FloatingActionButton fab = root.findViewById(R.id.fab_players);
         recyclerView = root.findViewById(R.id.players_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        emptyListMsg = root.findViewById(R.id.empty_view_players);
         List<Player> viewData = service.getPlayers();
+        displayEmptyMsgCheck(viewData);
         adapter = new PlayerRecyclerViewAdapter(getContext(), viewData);
         adapter.setClickListener(this);
         recyclerView.setAdapter(adapter);
@@ -97,7 +101,9 @@ public class PlayersFragment extends Fragment
     ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new ItemTouchHelper.SimpleCallback(0
             , ItemTouchHelper.RIGHT) {
         @Override
-        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+        public boolean onMove(@NonNull RecyclerView recyclerView,
+                              @NonNull RecyclerView.ViewHolder viewHolder,
+                              @NonNull RecyclerView.ViewHolder target) {
             return false;
         }
 
@@ -113,6 +119,7 @@ public class PlayersFragment extends Fragment
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             service.removePlayer(player.getUuid());
+                            displayEmptyMsgCheck(service.getPlayers());
                             adapter.notifyDataSetChanged();
                         }
                     })
@@ -124,4 +131,14 @@ public class PlayersFragment extends Fragment
                     }).show();
         }
     };
+
+    private void displayEmptyMsgCheck(List<?> viewData) {
+        if (viewData.isEmpty()) {
+            recyclerView.setVisibility(View.GONE);
+            emptyListMsg.setVisibility(View.VISIBLE);
+        } else {
+            recyclerView.setVisibility(View.VISIBLE);
+            emptyListMsg.setVisibility(View.GONE);
+        }
+    }
 }

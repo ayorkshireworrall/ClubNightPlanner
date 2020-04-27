@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -33,6 +34,7 @@ public class FixturesFragment extends Fragment implements FixtureRecyclerViewAda
 
     private FixturesViewModel mViewModel;
     private RecyclerView recyclerView;
+    private TextView emptyListMsg;
     private FixtureRecyclerViewAdapter adapter;
     private ServiceApi service = ServiceApi.getInstance();
 
@@ -59,6 +61,8 @@ public class FixturesFragment extends Fragment implements FixtureRecyclerViewAda
         adapter = new FixtureRecyclerViewAdapter(getContext(), data);
         adapter.setItemClickListener(this);
         recyclerView.setAdapter(adapter);
+        emptyListMsg = rootView.findViewById(R.id.empty_view_fixtures);
+        displayEmptyMsgCheck(data);
         return rootView;
     }
 
@@ -156,4 +160,14 @@ public class FixturesFragment extends Fragment implements FixtureRecyclerViewAda
                     }).show();
         }
     };
+
+    private void displayEmptyMsgCheck(List<?> viewData) {
+        if (viewData.isEmpty()) {
+            recyclerView.setVisibility(View.GONE);
+            emptyListMsg.setVisibility(View.VISIBLE);
+        } else {
+            recyclerView.setVisibility(View.VISIBLE);
+            emptyListMsg.setVisibility(View.GONE);
+        }
+    }
 }
