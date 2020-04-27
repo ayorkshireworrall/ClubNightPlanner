@@ -2,11 +2,9 @@ package alex.worrall.clubnightplanner.service;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import alex.worrall.clubnightplanner.ui.main.courts.Court;
 import alex.worrall.clubnightplanner.ui.main.fixtures.Fixture;
@@ -20,18 +18,32 @@ public class Scheduler {
         List<Player> players = getNextPlayers();
         List<Player> priorityPlayers = getPriorityPlayers(players);
         //First create a basic court list with the next players and their best unplayed opponents
-        for (String courtName : availableCourts) {
+        for (int i = 0; i < availableCourts.size(); i++) {
             if (players.size() < 1) {
                 break;
             }
             Player playerA = players.get(0);
             Player playerB = getBestMatch(playerA, players);
+            //If last player in the list is nowhere near the skill level of remaining players it
+            // would be better to choose a matching from further down
+            if (i == availableCourts.size() - 1 && players.size() > 2) {
+                for (int j = 0; j < players.size() - 1; j++) {
+                    Player playerC = players.get(j + 1);
+                    Player playerD = getBestMatch(playerC, players);
+                    int diff1 = Math.abs(playerA.getLevel() - playerB.getLevel());
+                    int diff2 = Math.abs(playerC.getLevel() - playerD.getLevel());
+                    if (diff1 > diff2) {
+                        playerA = playerC;
+                        playerB = playerD;
+                    }
+                }
+            }
             if (playerB == null) {
                 //To prevent a bad swap slightly later
                 priorityPlayers.remove(playerA);
                 break;
             }
-            Court court = new Court(courtName, playerA, playerB);
+            Court court = new Court(availableCourts.get(i), playerA, playerB);
             courts.add(court);
             //Remove priority players who now have games and prevent multiple games in same
             //schedule for players
