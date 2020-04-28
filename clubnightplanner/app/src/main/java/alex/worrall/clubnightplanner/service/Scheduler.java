@@ -43,7 +43,7 @@ public class Scheduler {
                 //To prevent a bad swap slightly later
                 priorityPlayers.remove(playerA);
                 courts.add(new Court(availableCourts.get(i), null, null));
-                break;
+                continue;
             }
             Court court = new Court(availableCourts.get(i), playerA, playerB);
             courts.add(court);
@@ -55,7 +55,7 @@ public class Scheduler {
             players.remove(playerB);
         }
         //Don't change court fixtures if player prioritisation is already fair
-        if (!priorityPlayers.isEmpty() || priorityPlayers.equals(players)) {
+        if (!priorityPlayers.isEmpty() && !priorityPlayers.equals(players)) {
             addMissedPriorityPlayers(priorityPlayers, getSwappableCourts(courts));
         }
         //Update player models now court schedule has been finalised
@@ -154,8 +154,10 @@ public class Scheduler {
     private Player getBestMatch(Player player, List<Player> availablePlayers) {
         List<Player> yetToPlay = new ArrayList<Player>(availablePlayers);
         yetToPlay.remove(player);
-        for (Player played : player.getOpponentsPlayed()) {
-            yetToPlay.remove(played);
+        if (player.getOpponentsPlayed().size() < yetToPlay.size()) {
+            for (Player played : player.getOpponentsPlayed()) {
+                yetToPlay.remove(played);
+            }
         }
         if (yetToPlay.size() == 0) {
             return null;
