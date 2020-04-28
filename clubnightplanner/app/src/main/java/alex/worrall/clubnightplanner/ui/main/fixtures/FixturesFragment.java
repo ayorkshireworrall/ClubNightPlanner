@@ -24,6 +24,7 @@ import java.util.List;
 
 import alex.worrall.clubnightplanner.R;
 import alex.worrall.clubnightplanner.service.ServiceApi;
+import alex.worrall.clubnightplanner.ui.main.players.Player;
 
 import static alex.worrall.clubnightplanner.service.Status.COMPLETED;
 import static alex.worrall.clubnightplanner.service.Status.IN_PROGRESS;
@@ -50,17 +51,16 @@ public class FixturesFragment extends Fragment implements FixtureRecyclerViewAda
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), AddFixtureActivity.class);
-                startActivity(intent);
+                handleAddFixtureClick();
             }
         });
         recyclerView = rootView.findViewById(R.id.fixtures_list);
-        new ItemTouchHelper(simpleCallback).attachToRecyclerView(recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         List<Fixture> data = service.getOrderedFixtures();
         adapter = new FixtureRecyclerViewAdapter(getContext(), data);
         adapter.setItemClickListener(this);
         recyclerView.setAdapter(adapter);
+        new ItemTouchHelper(simpleCallback).attachToRecyclerView(recyclerView);
         emptyListMsg = rootView.findViewById(R.id.empty_view_fixtures);
         displayEmptyMsgCheck(data);
         return rootView;
@@ -117,18 +117,15 @@ public class FixturesFragment extends Fragment implements FixtureRecyclerViewAda
             final Fixture swipedFixture = fixtures.get(viewHolder.getAdapterPosition());
             switch (swipedFixture.getPlayStatus()) {
                 case NEXT:
-                    System.out.println(NEXT.getMessage());
-                    Toast.makeText(getContext(), "No actions available", Toast.LENGTH_SHORT).show();
-                    adapter.notifyDataSetChanged();
+                    deleteFixture(swipedFixture);
                     break;
                 case LATER:
-                    System.out.println(LATER.getMessage());
-                    Toast.makeText(getContext(), "No actions available", Toast.LENGTH_SHORT).show();
-                    adapter.notifyDataSetChanged();
+                    deleteFixture(swipedFixture);
                     break;
                 case COMPLETED:
                     System.out.println(COMPLETED.getMessage());
-                    Toast.makeText(getContext(), "No actions available", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Fixture completed, no actions available",
+                            Toast.LENGTH_SHORT).show();
                     adapter.notifyDataSetChanged();
                     break;
                 case IN_PROGRESS:
@@ -159,6 +156,28 @@ public class FixturesFragment extends Fragment implements FixtureRecyclerViewAda
                         }
                     }).show();
         }
+
+        private void deleteFixture(final Fixture swipedFixture) {
+            new AlertDialog.Builder(getContext())
+                    .setTitle("Delete Fixture")
+                    .setMessage("Are you sure you wish to delete the " + swipedFixture.toString() +
+                            " fixture?")
+                    .setCancelable(false)
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            service.removeFixture(swipedFixture);
+                            adapter.setmData(service.getOrderedFixtures());
+                            adapter.notifyDataSetChanged();
+                        }
+                    })
+                    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            adapter.notifyDataSetChanged();
+                        }
+                    }).show();
+        }
     };
 
     private void displayEmptyMsgCheck(List<?> viewData) {
@@ -168,6 +187,30 @@ public class FixturesFragment extends Fragment implements FixtureRecyclerViewAda
         } else {
             recyclerView.setVisibility(View.VISIBLE);
             emptyListMsg.setVisibility(View.GONE);
+        }
+    }
+
+    private void handleAddFixtureClick() {
+        List<Player> players = service.getPlayers();
+        List<String> availableCourts = service.getAvailableCourts();
+
+        if (availableCourts.size() > 0 && players.size() > 1) {
+            Intent intent = new Intent(getActivity(), AddFixtureActivity.class);
+            startActivity(intent);
+        } else{
+            String message = "To add a fixture ";
+            if (availableCourts.size() > 0 && players.size() == 1){
+                message += "add at least 1 more player";
+            } else if (availableCourts.size() > 0) {
+                message += "add at least 2 more players";
+            } else if (players.size() > 1) {
+                message += "add at least 1 more court";
+            } else if (players.size() == 1) {
+                message += "add at least 1 more court and add at least 1 more player";
+            } else {
+                message += "add at least 1 more court and add at least 2 more players";
+            }
+            Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
         }
     }
 }

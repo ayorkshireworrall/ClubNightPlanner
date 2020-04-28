@@ -76,6 +76,9 @@ public class DataHolder {
         }
         this.fixtures.put(pos, fixture);
     }
+    void removeFixture(Fixture fixture) {
+        fixtures.remove(fixture.getTimeSlot());
+    }
 
     void addCourt(String courtName) {
         availableCourts.add(courtName);

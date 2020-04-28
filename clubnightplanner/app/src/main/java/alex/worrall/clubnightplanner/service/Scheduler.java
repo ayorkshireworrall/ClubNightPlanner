@@ -338,4 +338,9 @@ public class Scheduler {
             }
         }
     }
+
+    void removeFixture(Fixture fixture) {
+        dataHolder.removeFixture(fixture);
+        unschedule(fixture);
+    }
 }

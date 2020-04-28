@@ -1,6 +1,7 @@
 package alex.worrall.clubnightplanner.ui.main.fixtures;
 
 import android.content.Context;
+import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import alex.worrall.clubnightplanner.R;
+import alex.worrall.clubnightplanner.service.Status;
 
 public class FixtureRecyclerViewAdapter extends RecyclerView.Adapter<FixtureRecyclerViewAdapter.ViewHolder> {
     private List<Fixture> mData;
@@ -34,6 +36,9 @@ public class FixtureRecyclerViewAdapter extends RecyclerView.Adapter<FixtureRecy
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Fixture fixture = mData.get(position);
         holder.timeSlot.setText(String.valueOf(fixture.toString()));
+        if (fixture.getPlayStatus().equals(Status.COMPLETED)) {
+            holder.timeSlot.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+        }
         holder.status.setText(fixture.getPlayStatus().getMessage());
     }
 
@@ -67,5 +72,9 @@ public class FixtureRecyclerViewAdapter extends RecyclerView.Adapter<FixtureRecy
 
     public void setItemClickListener(ItemClickListener mItemClickListener) {
         this.mItemClickListener = mItemClickListener;
+    }
+
+    public void setmData(List<Fixture> data) {
+        this.mData = data;
     }
 }

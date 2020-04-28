@@ -1,6 +1,5 @@
 package alex.worrall.clubnightplanner.service;
 
-import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
 
@@ -92,7 +91,7 @@ public class ServiceApi {
     }
 
     public void removeFixture(Fixture fixture) {
-        scheduler.unschedule(fixture);
+        scheduler.removeFixture(fixture);
     }
 
     public List<Fixture> getOrderedFixtures() {
