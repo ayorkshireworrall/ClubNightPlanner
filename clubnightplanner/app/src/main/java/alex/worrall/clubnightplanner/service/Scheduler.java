@@ -182,7 +182,7 @@ public class Scheduler {
             try {
                 Method addNewPlayer = this.getClass().getDeclaredMethod("addNewPlayer",
                         String.class, int.class);
-                modifyPlayerList(addNewPlayer, name, level);
+                modifyFixtures(addNewPlayer, name, level);
             } catch (NoSuchMethodException e) {
                 e.printStackTrace();
             }
@@ -194,11 +194,18 @@ public class Scheduler {
         setNewPlayerPriority(newPlayer);
     }
 
+    void updatePlayer(Player player) {
+        dataHolder.updatePlayer(player);
+        if (!dataHolder.getFixtures().isEmpty()) {
+            modifyFixtures(null, null);
+        }
+    }
+
     void removePlayer(String playerId) {
         try {
             Method removeExistingPlayer = this.getClass().getDeclaredMethod("removeExistingPlayer",
                     String.class);
-            modifyPlayerList(removeExistingPlayer, playerId);
+            modifyFixtures(removeExistingPlayer, playerId);
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
         }
@@ -216,14 +223,16 @@ public class Scheduler {
     }
 
     //Modifies the players' opponents lists. Type of modification depends on the method passed
-    private void modifyPlayerList(Method method, Object ...methodArgs) {
+    private void modifyFixtures(Method playerListChange, Object ...methodArgs) {
         List<Fixture> toBeRescheduled = unplayedFixtures();
-        try {
-            method.invoke(this, methodArgs);
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
+        if (playerListChange != null) {
+            try {
+                playerListChange.invoke(this, methodArgs);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+            }
         }
         for (Fixture fixture : toBeRescheduled) {
             List<Court> courts = fixture.getCourts();

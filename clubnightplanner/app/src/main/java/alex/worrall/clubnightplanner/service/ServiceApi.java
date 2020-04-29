@@ -16,7 +16,7 @@ public class ServiceApi {
     private static ServiceApi serviceApi = new ServiceApi();
 
     private ServiceApi() {
-        addDemoData(true, true, true);
+//        addDemoData(true, true, true);
     }
 
     public static ServiceApi getInstance() {
@@ -55,7 +55,7 @@ public class ServiceApi {
     }
 
     public void updatePlayer(Player player) {
-        dataHolder.updatePlayer(player);
+        scheduler.updatePlayer(player);
     }
 
     public List<Player> getPlayers() {

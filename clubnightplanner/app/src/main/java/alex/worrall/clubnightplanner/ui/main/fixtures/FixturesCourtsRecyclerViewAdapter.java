@@ -47,7 +47,7 @@ public class FixturesCourtsRecyclerViewAdapter extends
     }
 
     private String getPlayerString(Player player) {
-        return player.getName() + "(" + player.getLevel() + ")";
+        return player.getName() + " (" + player.getLevel() + ")";
     }
 
     @Override
