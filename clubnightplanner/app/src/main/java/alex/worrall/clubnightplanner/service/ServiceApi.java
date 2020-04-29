@@ -119,7 +119,7 @@ public class ServiceApi {
             addPlayer("Matt Haythornthwaite", 17);
             addPlayer("Amy Owens", 5);
             addPlayer("Paul Munch", 22);
-            addPlayer("Johm Worrall", 18);
+            addPlayer("John Worrall", 18);
         }
         if (courts) {
             addCourt("Court 1");
