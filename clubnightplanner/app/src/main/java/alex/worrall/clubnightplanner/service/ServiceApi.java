@@ -16,6 +16,7 @@ public class ServiceApi {
     private static ServiceApi serviceApi = new ServiceApi();
 
     private ServiceApi() {
+        addDemoData(true, true, true);
     }
 
     public static ServiceApi getInstance() {
@@ -96,5 +97,45 @@ public class ServiceApi {
 
     public List<Fixture> getOrderedFixtures() {
         return dataHolder.getOrderedFixtures();
+    }
+
+    //purely for test purposes
+    private void addDemoData(boolean players, boolean courts, boolean fixtures) {
+        if (players) {
+            addPlayer("Alex Worrall", 5);
+            addPlayer("Amy Sanchez", 4);
+            addPlayer("James Wass", 1);
+            addPlayer("Ivor Green", 5);
+            addPlayer("Ali Hoffman", 3);
+            addPlayer("Heather Taylor", 15);
+            addPlayer("Bob Marshall", 20);
+            addPlayer("Adrian Forest", 17);
+            addPlayer("Mike Sutcliffe", 3);
+            addPlayer("Helen Jones", 10);
+            addPlayer("Edgar Mallard", 8);
+            addPlayer("Phillipa Ingram", 2);
+            addPlayer("Bec Dixon", 7);
+            addPlayer("Tom Withers", 6);
+            addPlayer("Matt Haythornthwaite", 17);
+            addPlayer("Amy Owens", 5);
+            addPlayer("Paul Munch", 22);
+            addPlayer("Johm Worrall", 18);
+        }
+        if (courts) {
+            addCourt("Court 1");
+            addCourt("Court 2");
+            addCourt("Court 3");
+            addCourt("Court 4");
+            addCourt("Court 5");
+            addCourt("Court 6");
+            addCourt("Court 7");
+        }
+
+        if (fixtures) {
+            addFixture(1170, dataHolder.getAvailableCourts());
+            addFixture(1190, dataHolder.getAvailableCourts());
+            addFixture(1210, dataHolder.getAvailableCourts());
+            addFixture(1230, dataHolder.getAvailableCourts());
+        }
     }
 }
