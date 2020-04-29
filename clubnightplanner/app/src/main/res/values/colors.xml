@@ -10,4 +10,5 @@
     <color name="textPrimary">#420563</color>
 <!--    Should only really use this on a light background -->
     <color name="textSecondaryLight">#8D8D8E</color>
+    <color name="white">#ffffff</color>
 </resources>

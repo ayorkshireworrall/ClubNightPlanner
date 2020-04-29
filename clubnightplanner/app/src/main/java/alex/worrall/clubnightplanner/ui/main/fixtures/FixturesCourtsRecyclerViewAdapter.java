@@ -13,6 +13,7 @@ import java.util.List;
 
 import alex.worrall.clubnightplanner.R;
 import alex.worrall.clubnightplanner.ui.main.courts.Court;
+import alex.worrall.clubnightplanner.ui.main.players.Player;
 
 public class FixturesCourtsRecyclerViewAdapter extends
         RecyclerView.Adapter<FixturesCourtsRecyclerViewAdapter.ViewHolder>{
@@ -36,19 +37,17 @@ public class FixturesCourtsRecyclerViewAdapter extends
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Court court = mData.get(position);
-        String matchText = getMatchText(court);
-        holder.match.setText(matchText);
+        holder.courtName.setText(court.getCourtName());
+        if (court.getPlayerA() == null) {
+            holder.v.setText("Empty Court");
+        } else {
+            holder.player1.setText(getPlayerString(court.getPlayerA()));
+            holder.player2.setText(getPlayerString(court.getPlayerB()));
+        }
     }
 
-    private String getMatchText(Court court) {
-        String matchText;
-        if (court.getPlayerA() == null) {
-            matchText = court.getCourtName() + ": No match in play";
-        } else {
-            matchText = court.getCourtName() + ": " + court.getPlayerA().getName() + " V " +
-                                court.getPlayerB().getName();
-        }
-        return matchText;
+    private String getPlayerString(Player player) {
+        return player.getName() + "(" + player.getLevel() + ")";
     }
 
     @Override
@@ -57,11 +56,17 @@ public class FixturesCourtsRecyclerViewAdapter extends
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        private TextView match;
+        private TextView courtName;
+        private TextView player1;
+        private TextView player2;
+        private TextView v;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            match = itemView.findViewById(R.id.fixture_view_match);
+            courtName = itemView.findViewById(R.id.fixture_view_court);
+            player1 = itemView.findViewById(R.id.fixture_view_player1);
+            player2 = itemView.findViewById(R.id.fixture_view_player2);
+            v = itemView.findViewById(R.id.fixture_view_vs);
         }
     }
 }
