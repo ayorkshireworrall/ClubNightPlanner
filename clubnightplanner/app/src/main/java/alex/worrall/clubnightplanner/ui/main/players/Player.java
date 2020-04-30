@@ -1,5 +1,7 @@
 package alex.worrall.clubnightplanner.ui.main.players;
 
+import androidx.annotation.NonNull;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -55,6 +57,12 @@ public class Player {
 
     public void setOpponentsPlayed(List<Player> opponentsPlayed) {
         this.opponentsPlayed = opponentsPlayed;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return name + " (" + level + ")";
     }
 }
 

@@ -3,8 +3,13 @@ package alex.worrall.clubnightplanner.service;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Stack;
 
 import alex.worrall.clubnightplanner.ui.main.courts.Court;
 import alex.worrall.clubnightplanner.ui.main.fixtures.Fixture;
@@ -13,105 +18,104 @@ import alex.worrall.clubnightplanner.ui.main.players.Player;
 public class Scheduler {
     private DataHolder dataHolder = DataHolder.getInstance();
 
-    void generateSchedule(int timeSlot, List<String> availableCourts) {
+    void generateSchedule(int timeslot, List<String> availableCourts) {
+        //Ordered by level makes for better match making because of how matches getBestMatch() works
+        List<Player> players = getRankedPlayers();
+        List<Player> priorityPlayers = getPriorityPlayers();
+        List<Player[]> playerMatchings =
+                getPlayerMatchings(availableCourts, players, priorityPlayers);
         List<Court> courts = new ArrayList<>();
-        List<Player> players = getNextPlayers();
-        List<Player> priorityPlayers = getPriorityPlayers(players);
-        //First create a basic court list with the next players and their best unplayed opponents
         for (int i = 0; i < availableCourts.size(); i++) {
-            if (players.size() < 1) {
-                courts.add(new Court(availableCourts.get(i), null, null));
-                continue;
+            if (playerMatchings.size() >= i) {
+                Player[] match = playerMatchings.get(i);
+                courts.add(new Court(availableCourts.get(i), match[0], match[1]));
+                addOpponentPlayed(match[0], match[1]);
             }
-            Player playerA = players.get(0);
-            Player playerB = getBestMatch(playerA, players);
-            //If last player in the list is nowhere near the skill level of remaining players it
-            // would be better to choose a matching from further down
-            if (i == availableCourts.size() - 1 && players.size() > 2) {
-                for (int j = 0; j < players.size() - 1; j++) {
-                    Player playerC = players.get(j + 1);
-                    Player playerD = getBestMatch(playerC, players);
-                    int diff1 = Math.abs(playerA.getLevel() - playerB.getLevel());
-                    int diff2 = Math.abs(playerC.getLevel() - playerD.getLevel());
-                    if (diff1 > diff2) {
-                        playerA = playerC;
-                        playerB = playerD;
-                    }
-                }
-            }
-            if (playerB == null) {
-                //To prevent a bad swap slightly later
-                priorityPlayers.remove(playerA);
-                courts.add(new Court(availableCourts.get(i), null, null));
-                continue;
-            }
-            Court court = new Court(availableCourts.get(i), playerA, playerB);
-            courts.add(court);
-            //Remove priority players who now have games and prevent multiple games in same
-            //schedule for players
-            priorityPlayers.remove(playerA);
-            priorityPlayers.remove(playerB);
-            players.remove(playerA);
-            players.remove(playerB);
         }
-        //Don't change court fixtures if player prioritisation is already fair
-        if (!priorityPlayers.isEmpty() && !priorityPlayers.equals(players)) {
-            addMissedPriorityPlayers(priorityPlayers, getSwappableCourts(courts));
-        }
-        //Update player models now court schedule has been finalised
-        for (Court court : courts) {
-            Player playerA = court.getPlayerA();
-            if (playerA == null) {
-                continue;
-            }
-            Player playerB = court.getPlayerB();
-            addOpponentPlayed(playerA, playerB);
-        }
-        dataHolder.putFixture(timeSlot, new Fixture(timeSlot, courts));
+        dataHolder.putFixture(timeslot, new Fixture(timeslot, courts));
     }
 
-    //Put missed priority players against their best match on the courts that could be fairly
-    // swapped based on the number of games played
-    private void addMissedPriorityPlayers(List<Player> priorityPlayers, List<Court> swappableCourts) {
-        for (Player priorityPlayer : priorityPlayers) {
-            //If all courts already have priority players on them
-            if (swappableCourts.size() == 0) {
-                break;
-            }
-            Court targetCourt = null;
-            int bestLevelMatch = 2147483647;
-            //Find best court for the priority player to join
-            for (Court court : swappableCourts) {
-                int level = court.getPlayerA().getLevel();
-                if (Math.abs(priorityPlayer.getLevel() - level) < bestLevelMatch) {
-                    targetCourt = court;
+    private List<Player[]> getPlayerMatchings(List<String> availableCourts, List<Player> players,
+                                    List<Player> priorityPlayers) {
+        int nonPriorityCap = 2*availableCourts.size() - priorityPlayers.size();
+        List<Player[]> finalPlayerMatchings = new ArrayList<>();
+        while (finalPlayerMatchings.size() < availableCourts.size() && players.size() > 1) {
+            if (nonPriorityCap > 1) {
+                Player[] matchPair = getPair(players);
+                finalPlayerMatchings.add(matchPair);
+                Player player1 = matchPair[0];
+                Player player2 = matchPair[1];
+                if (!priorityPlayers.contains(player1)) {
+                    nonPriorityCap--;
                 }
+                if (!priorityPlayers.contains(player2)) {
+                    nonPriorityCap--;
+                }
+                players.remove(player1);
+                players.remove(player2);
+                priorityPlayers.remove(player1);
+                priorityPlayers.remove(player2);
+            } else if (nonPriorityCap == 1) {
+                Player[] matchPair = getPair(priorityPlayers, players);
+                finalPlayerMatchings.add(matchPair);
+                Player player1 = matchPair[0];
+                Player player2 = matchPair[1];
+                //Only player2 can be non priority
+                if (!priorityPlayers.contains(player2)) {
+                    nonPriorityCap--;
+                }
+                players.remove(player1);
+                players.remove(player2);
+                priorityPlayers.remove(player1);
+                priorityPlayers.remove(player2);
+            } else {
+                Player[] matchPair = getPair(priorityPlayers);
+                finalPlayerMatchings.add(matchPair);
+                Player player1 = matchPair[0];
+                Player player2 = matchPair[1];
+                //By this point we're no longer using players list
+                priorityPlayers.remove(player1);
+                priorityPlayers.remove(player2);
             }
-            //note that this modifies the actual court object referenced in the list from which
-            //swappableCourts are derived
-            targetCourt.setPlayerB(priorityPlayer);
-            swappableCourts.remove(targetCourt);
         }
+        return finalPlayerMatchings;
     }
 
-    //Check for courts where a non priority player is playing. Can check in this way on the
-    // assumption that all courts should contain at least one priority player whose opponent may
-    // have played one more game than them
-    private List<Court> getSwappableCourts(List<Court> courts) {
-        List<Court> potentialSwapCourts = new ArrayList<>();
-        for (Court court : courts) {
-            Player playerA = court.getPlayerA();
-            Player playerB = court.getPlayerB();
-            if (playerA.getOpponentsPlayed().size() < playerB.getOpponentsPlayed().size()) {
-                potentialSwapCourts.add(court);
+    //Get a best matching pair from a list of players
+    private Player[] getPair(List<Player> players) {
+        for (Player player : players) {
+            Player opponent = getBestMatch(player, players);
+            Player opponentsOpponent = getBestMatch(opponent, players);
+            if (player == opponentsOpponent) {
+                return new Player[]{player, opponent};
             }
         }
-        return potentialSwapCourts;
+        //Don't care, will never happen, explanation at bottom
+        return null;
+    }
+
+    //Get a best matching pair from a list of players where at least one of the pair must be
+    //priority
+    private Player[] getPair(List<Player> priorityPlayers, List<Player> players) {
+        Map<Integer, Player[]> playerPlayerMap = new HashMap<>();
+        for (Player player : priorityPlayers) {
+            Player opponent = getBestMatch(player, players);
+            Player opponentsOpponent = getBestMatch(opponent, players);
+            Player[] matching = new Player[]{player, opponent};
+            if (player == opponentsOpponent) {
+                return matching;
+            }
+            int diff = player.getLevel() - opponent.getLevel();
+            playerPlayerMap.put(diff, matching);
+        }
+        Integer minDiff = Collections.min(playerPlayerMap.keySet());
+        return playerPlayerMap.get(minDiff);
     }
 
     //create a list of the players who have played less games (should always be at most one less
     //game than any other player on the list). Assumes list ordered by least played first
-    private List<Player> getPriorityPlayers(List<Player> players) {
+    private List<Player> getPriorityPlayers() {
+        List<Player> players = getNextPlayers();
         Player firstPlayer = players.get(0);
         Player lastPlayer = players.get(players.size() - 1);
         List<Player> priorityPlayers = new ArrayList<>();
@@ -142,6 +146,24 @@ public class Scheduler {
                 Player playerB = prioritisedPlayers.get(j + 1);
 
                 if (playerA.getOpponentsPlayed().size() > playerB.getOpponentsPlayed().size()) {
+                    prioritisedPlayers.remove(j);
+                    prioritisedPlayers.add(j + 1, playerA);
+                }
+            }
+        }
+        return prioritisedPlayers;
+    }
+
+    //Order active players based on level
+    private List<Player> getRankedPlayers() {
+        List<Player> activePlayers = dataHolder.getPlayers();
+        List<Player> prioritisedPlayers = new ArrayList<Player>(activePlayers);
+        for (int i = 0; i < activePlayers.size(); i++) {
+            for (int j = 0; j < activePlayers.size() - (i+1); j++) {
+                Player playerA = prioritisedPlayers.get(j);
+                Player playerB = prioritisedPlayers.get(j + 1);
+
+                if (playerA.getLevel() > playerB.getLevel()) {
                     prioritisedPlayers.remove(j);
                     prioritisedPlayers.add(j + 1, playerA);
                 }
@@ -353,3 +375,15 @@ public class Scheduler {
         unschedule(fixture);
     }
 }
+
+//Why are we guaranteed a matchmaking pair?
+//Visualise players as nodes and player mappings as directional edges
+//To not select a repeat we would require a loop (ie/ every node has exactly 1 input edge and
+//exactly one output edge)
+//Loops can only occur if nodes have the same value
+//Matchmaking function selects based on list order, so if the top of the input list registers as
+//the best match it won't be replaced by another item
+//Therefore matchmaking for first loop item loop will choose the second loop item as that will
+//appear higher in the list than others of equal value. Similarly, the second loop item will
+//chose the first list item.
+//Hence, even in loops there will be a pair selected
