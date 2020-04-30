@@ -26,10 +26,12 @@ public class Scheduler {
                 getPlayerMatchings(availableCourts, players, priorityPlayers);
         List<Court> courts = new ArrayList<>();
         for (int i = 0; i < availableCourts.size(); i++) {
-            if (playerMatchings.size() >= i) {
+            if (playerMatchings.size() > i) {
                 Player[] match = playerMatchings.get(i);
                 courts.add(new Court(availableCourts.get(i), match[0], match[1]));
                 addOpponentPlayed(match[0], match[1]);
+            } else {
+                courts.add(new Court(availableCourts.get(i), null, null));
             }
         }
         dataHolder.putFixture(timeslot, new Fixture(timeslot, courts));
