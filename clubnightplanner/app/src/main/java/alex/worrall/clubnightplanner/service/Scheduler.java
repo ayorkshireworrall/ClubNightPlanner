@@ -85,15 +85,36 @@ public class Scheduler {
 
     //Get a best matching pair from a list of players
     private Player[] getPair(List<Player> players) {
+        Player[] bestPair = new Player[2];
         for (Player player : players) {
             Player opponent = getBestMatch(player, players);
+            if (players.size() < 8 && players.size() > 2) {
+                List<Player> modifiedList = new ArrayList<>(players);
+                modifiedList.remove(player);
+                modifiedList.remove(opponent);
+                Player[] pair = getPair(modifiedList);
+                if (pair[0].getOpponentsPlayed().contains(pair[1])) {
+                    continue;
+                }
+            }
+            Player[] workingPair = new Player[] {player, opponent};
+            if (bestPair[0] == null || evaluatePair(workingPair) < evaluatePair(bestPair)) {
+                bestPair = workingPair;
+            }
             Player opponentsOpponent = getBestMatch(opponent, players);
             if (player == opponentsOpponent) {
                 return new Player[]{player, opponent};
             }
         }
         //Don't care, will never happen, explanation at bottom
-        return null;
+        return bestPair;
+    }
+
+    private int evaluatePair(Player[] pair) {
+        if (pair.length != 2 || pair[0] == null || pair[1] == null) {
+            return 2147483647;
+        }
+        return Math.abs(pair[0].getScheduleRanking() - pair[1].getScheduleRanking());
     }
 
     //Get a best matching pair from a list of players where at least one of the pair must be
@@ -226,7 +247,8 @@ public class Scheduler {
         }
         if (yetToPlay.size() == 0) {
             //All opponents have been played so no longer rank
-            yetToPlay = availablePlayers;
+            yetToPlay = new ArrayList<Player>(availablePlayers);
+            yetToPlay.remove(player);
         }
         Player bestMatch = yetToPlay.get(0);
         for (int i = 1; i < yetToPlay.size(); i++) {
