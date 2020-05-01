@@ -11,6 +11,7 @@ public class Player {
     private String name;
     private String uuid;
     private List<Player> opponentsPlayed;
+    private int scheduleRanking;
 
     public Player() {
     }
@@ -57,6 +58,14 @@ public class Player {
 
     public void setOpponentsPlayed(List<Player> opponentsPlayed) {
         this.opponentsPlayed = opponentsPlayed;
+    }
+
+    public int getScheduleRanking() {
+        return scheduleRanking;
+    }
+
+    public void setScheduleRanking(int scheduleRanking) {
+        this.scheduleRanking = scheduleRanking;
     }
 
     @NonNull

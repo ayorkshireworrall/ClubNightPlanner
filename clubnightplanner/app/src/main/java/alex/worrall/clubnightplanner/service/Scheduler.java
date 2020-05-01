@@ -19,8 +19,8 @@ public class Scheduler {
     private DataHolder dataHolder = DataHolder.getInstance();
 
     void generateSchedule(int timeslot, List<String> availableCourts) {
-        //Ordered by level makes for better match making because of how matches getBestMatch() works
         List<Player> players = getRankedPlayers();
+        addPlayerRankings(players);
         List<Player> priorityPlayers = getPriorityPlayers();
         List<Player[]> playerMatchings =
                 getPlayerMatchings(availableCourts, players, priorityPlayers);
@@ -107,7 +107,7 @@ public class Scheduler {
             if (player == opponentsOpponent) {
                 return matching;
             }
-            int diff = player.getLevel() - opponent.getLevel();
+            int diff = player.getScheduleRanking() - opponent.getScheduleRanking();
             playerPlayerMap.put(diff, matching);
         }
         Integer minDiff = Collections.min(playerPlayerMap.keySet());
@@ -174,23 +174,65 @@ public class Scheduler {
         return prioritisedPlayers;
     }
 
+    //Method to set a ranking based on the level and altered for the fixture number for better
+    // matching
+    private void addPlayerRankings(List<Player> players) {
+        //TODO figure out how to reset when fixtures removed and readded etc
+        int fixtureNumber = dataHolder.getFixtures().size() + 1;
+        boolean isPowerTwo = isPowerOfTwo(fixtureNumber);
+        boolean addExtra = true;
+        int count = 0;
+        for (int i = 0; i < players.size(); i++) {
+            Player player = players.get(i);
+            if (fixtureNumber == 1) {
+                player.setScheduleRanking(i);
+            }
+            if (isPowerTwo) {
+                int extra = calculateExtra(fixtureNumber);
+                if (addExtra) {
+                    player.setScheduleRanking(player.getScheduleRanking() + extra);
+                }
+                if (++count == extra) {
+                    count = 0;
+                    addExtra = !addExtra;
+                }
+            }
+        }
+    }
+
+    private int calculateExtra(int n) {
+        double log2n = Math.log(n)/Math.log(2);
+        return (int) Math.pow(2, log2n - 1);
+    }
+
+    private boolean isPowerOfTwo(int n) {
+        if (n == 1) {
+            return false;
+        }
+        double log2n = Math.log(n)/Math.log(2);
+        double epsilon = 0.01;
+        if (log2n - epsilon < Math.floor(log2n) && Math.floor(log2n) < log2n + epsilon) {
+            return true;
+        }
+        return false;
+    }
+
     //Out of unplayed opponents, find the closest in skill level to the current player
     private Player getBestMatch(Player player, List<Player> availablePlayers) {
         List<Player> yetToPlay = new ArrayList<Player>(availablePlayers);
         yetToPlay.remove(player);
-        if (player.getOpponentsPlayed().size() < yetToPlay.size()) {
-            for (Player played : player.getOpponentsPlayed()) {
-                yetToPlay.remove(played);
-            }
+        for (Player played : player.getOpponentsPlayed()) {
+            yetToPlay.remove(played);
         }
         if (yetToPlay.size() == 0) {
-            return null;
+            //All opponents have been played so no longer rank
+            yetToPlay = availablePlayers;
         }
         Player bestMatch = yetToPlay.get(0);
         for (int i = 1; i < yetToPlay.size(); i++) {
             Player potential = yetToPlay.get(i);
-            int levelDifference = Math.abs(player.getLevel() - potential.getLevel());
-            if (levelDifference < Math.abs(player.getLevel() - bestMatch.getLevel())) {
+            int levelDifference = Math.abs(player.getScheduleRanking() - potential.getScheduleRanking());
+            if (levelDifference < Math.abs(player.getScheduleRanking() - bestMatch.getScheduleRanking())) {
                 bestMatch = potential;
             }
         }
