@@ -78,21 +78,23 @@ public class FixturesFragment extends Fragment implements FixtureRecyclerViewAda
     public void onItemClick(View view, int pos) {
         List<Fixture> orderedFixtures = service.getOrderedFixtures();
         Fixture clickedFixture = orderedFixtures.get(pos);
-        switch (clickedFixture.getPlayStatus()) {
-            case NEXT:
-                startViewFixtureActivity(clickedFixture);
-                break;
-            case LATER:
-                startViewFixtureActivity(clickedFixture);
-                break;
-            case COMPLETED:
-                break;
-            case IN_PROGRESS:
-                startViewFixtureActivity(clickedFixture);
-                break;
-            default:
-                break;
-        }
+        startViewFixtureActivity(clickedFixture);
+        //Might implement different functionality later
+//        switch (clickedFixture.getPlayStatus()) {
+//            case NEXT:
+//                startViewFixtureActivity(clickedFixture);
+//                break;
+//            case LATER:
+//                startViewFixtureActivity(clickedFixture);
+//                break;
+//            case COMPLETED:
+//                break;
+//            case IN_PROGRESS:
+//                startViewFixtureActivity(clickedFixture);
+//                break;
+//            default:
+//                break;
+//        }
     }
 
     private void startViewFixtureActivity(Fixture fixture) {

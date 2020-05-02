@@ -1,5 +1,6 @@
 package alex.worrall.clubnightplanner.ui.main.fixtures;
 
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +16,7 @@ import java.util.Map;
 
 import alex.worrall.clubnightplanner.R;
 import alex.worrall.clubnightplanner.service.ServiceApi;
+import alex.worrall.clubnightplanner.service.Status;
 import alex.worrall.clubnightplanner.service.TimeUtil;
 import alex.worrall.clubnightplanner.ui.main.courts.Court;
 
@@ -38,6 +40,9 @@ public class ViewFixtureFragment extends Fragment {
         recyclerView.setAdapter(adapter);
         TextView timeTextView = rootView.findViewById(R.id.view_fixture_time);
         timeTextView.setText(timeString);
+        if (fixture.getPlayStatus().equals(Status.COMPLETED)) {
+            timeTextView.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+        }
         return rootView;
     }
 }
