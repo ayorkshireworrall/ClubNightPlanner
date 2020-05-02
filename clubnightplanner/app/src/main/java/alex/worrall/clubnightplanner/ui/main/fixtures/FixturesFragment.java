@@ -79,18 +79,14 @@ public class FixturesFragment extends Fragment implements FixtureRecyclerViewAda
         Fixture clickedFixture = orderedFixtures.get(pos);
         switch (clickedFixture.getPlayStatus()) {
             case NEXT:
-                System.out.println(NEXT.getMessage());
                 startViewFixtureActivity(clickedFixture);
                 break;
             case LATER:
-                System.out.println(LATER.getMessage());
                 startViewFixtureActivity(clickedFixture);
                 break;
             case COMPLETED:
-                System.out.println(COMPLETED.getMessage());
                 break;
             case IN_PROGRESS:
-                System.out.println(IN_PROGRESS.getMessage());
                 startViewFixtureActivity(clickedFixture);
                 break;
             default:
@@ -123,7 +119,6 @@ public class FixturesFragment extends Fragment implements FixtureRecyclerViewAda
                     deleteFixture(swipedFixture);
                     break;
                 case COMPLETED:
-                    System.out.println(COMPLETED.getMessage());
                     Toast.makeText(getContext(), "Fixture completed, no actions available",
                             Toast.LENGTH_SHORT).show();
                     adapter.notifyDataSetChanged();

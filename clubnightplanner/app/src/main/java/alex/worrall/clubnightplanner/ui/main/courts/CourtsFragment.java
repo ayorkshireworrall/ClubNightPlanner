@@ -96,7 +96,6 @@ public class CourtsFragment extends Fragment implements CourtRecyclerViewAdapter
     @Override
     public void onItemClick() {
         //currently do nothing but may change in future
-        System.out.println("Fragment Says Hello");
     }
 
     ItemTouchHelper.SimpleCallback itemTouchHelper = new ItemTouchHelper.SimpleCallback(0,
