@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,6 +24,7 @@ import java.util.Set;
 
 import alex.worrall.clubnightplanner.R;
 import alex.worrall.clubnightplanner.service.ServiceApi;
+import alex.worrall.clubnightplanner.service.Status;
 import alex.worrall.clubnightplanner.service.TimeUtil;
 import alex.worrall.clubnightplanner.ui.main.TabPositions;
 
@@ -40,7 +42,7 @@ public class AddFixtureFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_add_fixture, container, false);
         RecyclerView recyclerView = rootView.findViewById(R.id.fixture_court_selector);
@@ -73,6 +75,14 @@ public class AddFixtureFragment extends Fragment {
             public void onClick(View v) {
                 Set<String> selectedCourts = adapter.getSelectedCourts();
                 int timeslot = hr * 60 + min;
+                Fixture earliestFixture = getEarliestFixture();
+                if (earliestFixture != null && earliestFixture.getTimeSlot() > timeslot) {
+                    String recentlyCompletedTime = TimeUtil.timeConverter(earliestFixture.getTimeSlot());
+                    String message = "Please ensure that the time for this fixture is later than "
+                            + recentlyCompletedTime;
+                    Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
+                    return;
+                }
                 List<String> courts = new ArrayList<>(selectedCourts);
                 Collections.sort(courts);
                 service.addFixture(timeslot, courts);
@@ -81,6 +91,26 @@ public class AddFixtureFragment extends Fragment {
                 Intent parentActivityIntent = getActivity().getParentActivityIntent();
                 parentActivityIntent.putExtra("TAB_POSITION", TabPositions.FIXTURES);
                 getActivity().navigateUpTo(parentActivityIntent);
+            }
+
+            //Get the most recently completed or in progress fixture to determine earliest
+            // available timeslot
+            private Fixture getEarliestFixture() {
+                Fixture inProgress = null;
+                List<Fixture> orderedFixtures = service.getOrderedFixtures();
+                for (Fixture fixture : orderedFixtures) {
+                    if (fixture.getPlayStatus().equals(Status.COMPLETED)) {
+                        inProgress = fixture;
+                    }
+                    if (fixture.getPlayStatus().equals(Status.IN_PROGRESS)) {
+                        inProgress = fixture;
+                        break;
+                    }
+                    if (fixture.getPlayStatus().equals(Status.LATER)) {
+                        break;
+                    }
+                }
+                return inProgress;
             }
         });
         return rootView;

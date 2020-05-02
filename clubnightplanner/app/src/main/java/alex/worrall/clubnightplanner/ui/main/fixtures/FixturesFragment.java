@@ -155,19 +155,30 @@ public class FixturesFragment extends Fragment implements FixtureRecyclerViewAda
                     }).show();
         }
 
-        private void swipeLater(final Fixture swipedFixture, final List<Fixture> fixtures) {
+        private void swipeLater(final Fixture swipedFixture, List<Fixture> fixtures) {
+            if (fixtureIsStartable(swipedFixture, fixtures)) {
+                startFixture(swipedFixture);
+            } else {
+                deleteFixture(swipedFixture);
+            }
+        }
+
+        private boolean fixtureIsStartable(Fixture swipedFixture, List<Fixture> fixtures) {
             Fixture inProgress = null;
+            int completedCount = 0;
             for (Fixture fixture : fixtures) {
-                if (fixture.getPlayStatus() == IN_PROGRESS) {
+                if (fixture.getPlayStatus().equals(IN_PROGRESS)) {
                     inProgress = fixture;
                     break;
                 }
+                if (fixture.getPlayStatus().equals(COMPLETED)) {
+                    completedCount++;
+                }
             }
-            if (inProgress != null || fixtures.get(0) != swipedFixture) {
-                deleteFixture(swipedFixture);
-            } else {
-                startFixture(swipedFixture);
+            if (inProgress != null || fixtures.get(completedCount) != swipedFixture) {
+                return false;
             }
+            return true;
         }
 
         private void startFixture(final Fixture swipedFixture) {
