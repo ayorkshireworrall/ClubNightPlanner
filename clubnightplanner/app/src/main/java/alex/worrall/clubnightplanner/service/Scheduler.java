@@ -20,7 +20,7 @@ public class Scheduler {
 
     void generateSchedule(int timeslot, List<String> availableCourts) {
         List<Player> players = getRankedPlayers();
-        addPlayerRankings(players);
+        ScheduleRankings.addPlayerRankings(players, timeslot, availableCourts);
         List<Player> priorityPlayers = getPriorityPlayers();
         List<Player[]> playerMatchings =
                 getPlayerMatchings(availableCourts, players, priorityPlayers);
@@ -88,7 +88,7 @@ public class Scheduler {
         Player[] bestPair = new Player[2];
         for (Player player : players) {
             Player opponent = getBestMatch(player, players);
-            if (players.size() < 8 && players.size() > 2) {
+            if (players.size() < 8 && players.size() > 3) {
                 List<Player> modifiedList = new ArrayList<>(players);
                 modifiedList.remove(player);
                 modifiedList.remove(opponent);
@@ -106,7 +106,6 @@ public class Scheduler {
                 return new Player[]{player, opponent};
             }
         }
-        //Don't care, will never happen, explanation at bottom
         return bestPair;
     }
 
@@ -193,49 +192,6 @@ public class Scheduler {
             }
         }
         return prioritisedPlayers;
-    }
-
-    //Method to set a ranking based on the level and altered for the fixture number for better
-    // matching
-    private void addPlayerRankings(List<Player> players) {
-        //TODO figure out how to reset when fixtures removed and readded etc
-        int fixtureNumber = dataHolder.getFixtures().size() + 1;
-        boolean isPowerTwo = isPowerOfTwo(fixtureNumber);
-        boolean addExtra = true;
-        int count = 0;
-        for (int i = 0; i < players.size(); i++) {
-            Player player = players.get(i);
-            if (fixtureNumber == 1) {
-                player.setScheduleRanking(i);
-            }
-            if (isPowerTwo) {
-                int extra = calculateExtra(fixtureNumber);
-                if (addExtra) {
-                    player.setScheduleRanking(player.getScheduleRanking() + extra);
-                }
-                if (++count == extra) {
-                    count = 0;
-                    addExtra = !addExtra;
-                }
-            }
-        }
-    }
-
-    private int calculateExtra(int n) {
-        double log2n = Math.log(n)/Math.log(2);
-        return (int) Math.pow(2, log2n - 1);
-    }
-
-    private boolean isPowerOfTwo(int n) {
-        if (n == 1) {
-            return false;
-        }
-        double log2n = Math.log(n)/Math.log(2);
-        double epsilon = 0.01;
-        if (log2n - epsilon < Math.floor(log2n) && Math.floor(log2n) < log2n + epsilon) {
-            return true;
-        }
-        return false;
     }
 
     //Out of unplayed opponents, find the closest in skill level to the current player
@@ -352,7 +308,7 @@ public class Scheduler {
     }
 
     //find all fixtures yet to be played and remove their schedule
-    private List<Fixture> unplayedFixtures() {
+    List<Fixture> unplayedFixtures() {
         List<Fixture> toBeRescheduled = new ArrayList<>();
         for (Fixture fixture : dataHolder.getFixtures().values()) {
             if (fixture.getPlayStatus().equals(Status.COMPLETED) ||
@@ -442,6 +398,8 @@ public class Scheduler {
     }
 }
 
+//NO LONGER RELEVANT AS SELECTED PAIR BROKE THE CONDITION THAT REMATCHES SHOULDN'T HAPPEN UNTIL A
+//GOOD NUMBER OF GAMES HAVE BEEN PLAYED
 //Why are we guaranteed a matchmaking pair?
 //Visualise players as nodes and player mappings as directional edges
 //To not select a repeat we would require a loop (ie/ every node has exactly 1 input edge and
