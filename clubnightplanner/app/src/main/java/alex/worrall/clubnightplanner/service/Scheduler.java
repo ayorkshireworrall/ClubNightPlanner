@@ -392,9 +392,35 @@ public class Scheduler {
         }
     }
 
+    void startFixture(Fixture fixture) {
+        fixture.setPlayStatus(Status.IN_PROGRESS);
+        List<Fixture> orderedFixtures = dataHolder.getOrderedFixtures();
+        boolean setNext = false;
+        for (Fixture current : orderedFixtures) {
+            if (current == fixture) {
+                setNext = true;
+                continue;
+            }
+            if (setNext) {
+                current.setPlayStatus(Status.NEXT);
+                break;
+            }
+        }
+    }
+
     void removeFixture(Fixture fixture) {
         dataHolder.removeFixture(fixture);
         unschedule(fixture);
+        //If we're deleting the current "NEXT" fixture we need to set a new one if possible
+        List<Fixture> orderedFixtures =
+                fixture.getPlayStatus() == Status.NEXT ? dataHolder.getOrderedFixtures() :
+                        Collections.<Fixture>emptyList();
+        for (Fixture current : orderedFixtures) {
+            if (current.getPlayStatus() == Status.LATER) {
+                current.setPlayStatus(Status.NEXT);
+                break;
+            }
+        }
     }
 }
 

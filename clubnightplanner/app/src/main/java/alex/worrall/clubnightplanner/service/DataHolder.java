@@ -71,9 +71,6 @@ public class DataHolder {
     }
 
     void putFixture(Integer pos, Fixture fixture) {
-        if (fixtures.isEmpty()) {
-            fixture.setPlayStatus(Status.IN_PROGRESS);
-        }
         this.fixtures.put(pos, fixture);
     }
     void removeFixture(Fixture fixture) {

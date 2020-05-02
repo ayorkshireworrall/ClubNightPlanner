@@ -91,6 +91,10 @@ public class ServiceApi {
         scheduler.markScheduleComplete(fixture);
     }
 
+    public void startFixture(Fixture fixture) {
+        scheduler.startFixture(fixture);
+    }
+
     public void removeFixture(Fixture fixture) {
         scheduler.removeFixture(fixture);
     }

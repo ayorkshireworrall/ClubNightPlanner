@@ -24,6 +24,7 @@ import java.util.List;
 
 import alex.worrall.clubnightplanner.R;
 import alex.worrall.clubnightplanner.service.ServiceApi;
+import alex.worrall.clubnightplanner.service.Status;
 import alex.worrall.clubnightplanner.ui.main.players.Player;
 
 import static alex.worrall.clubnightplanner.service.Status.COMPLETED;
@@ -109,14 +110,14 @@ public class FixturesFragment extends Fragment implements FixtureRecyclerViewAda
 
         @Override
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-            List<Fixture> fixtures = service.getOrderedFixtures();
+            final List<Fixture> fixtures = service.getOrderedFixtures();
             final Fixture swipedFixture = fixtures.get(viewHolder.getAdapterPosition());
             switch (swipedFixture.getPlayStatus()) {
                 case NEXT:
                     deleteFixture(swipedFixture);
                     break;
                 case LATER:
-                    deleteFixture(swipedFixture);
+                    swipeLater(swipedFixture, fixtures);
                     break;
                 case COMPLETED:
                     Toast.makeText(getContext(), "Fixture completed, no actions available",
@@ -141,6 +142,41 @@ public class FixturesFragment extends Fragment implements FixtureRecyclerViewAda
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             service.markFixtureComplete(swipedFixture);
+                            adapter.notifyDataSetChanged();
+                        }
+                    })
+                    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            adapter.notifyDataSetChanged();
+                        }
+                    }).show();
+        }
+
+        private void swipeLater(final Fixture swipedFixture, final List<Fixture> fixtures) {
+            Fixture inProgress = null;
+            for (Fixture fixture : fixtures) {
+                if (fixture.getPlayStatus() == IN_PROGRESS) {
+                    inProgress = fixture;
+                    break;
+                }
+            }
+            if (inProgress != null || fixtures.get(0) != swipedFixture) {
+                deleteFixture(swipedFixture);
+            } else {
+                startFixture(swipedFixture);
+            }
+        }
+
+        private void startFixture(final Fixture swipedFixture) {
+            new AlertDialog.Builder(getContext())
+                    .setTitle("Start Fixture")
+                    .setMessage("Are you sure you wish to start this fixture?")
+                    .setCancelable(false)
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            service.startFixture(swipedFixture);
                             adapter.notifyDataSetChanged();
                         }
                     })
