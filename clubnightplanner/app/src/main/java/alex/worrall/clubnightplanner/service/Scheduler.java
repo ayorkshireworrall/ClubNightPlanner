@@ -35,6 +35,28 @@ public class Scheduler {
             }
         }
         dataHolder.putFixture(timeslot, new Fixture(timeslot, courts));
+        updatePlayStatus();
+    }
+
+    private void updatePlayStatus() {
+        List<Fixture> orderedFixtures = dataHolder.getOrderedFixtures();
+        boolean setInProgress = false;
+        boolean setNext = false;
+        for (Fixture current : orderedFixtures) {
+            if (current.getPlayStatus().equals(Status.COMPLETED)) {
+                continue;
+            }
+            if (current.getPlayStatus().equals(Status.IN_PROGRESS)) {
+                setNext = true;
+                continue;
+            }
+            if (setNext) {
+                current.setPlayStatus(Status.NEXT);
+                setNext = false;
+                continue;
+            }
+            current.setPlayStatus(Status.LATER);
+        }
     }
 
     private List<Player[]> getPlayerMatchings(List<String> availableCourts, List<Player> players,
