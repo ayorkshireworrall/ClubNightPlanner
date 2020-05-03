@@ -110,9 +110,12 @@ public class Scheduler {
         for (Player player : players) {
             Player opponent = getBestMatch(player, players);
             Player[] workingPair = new Player[] {player, opponent};
+            //Should never return a null pair (breaks a lot of things)
             if (bestPair[0] == null) {
                 bestPair = workingPair;
             }
+            //Check if choosing this working pair would result in a future pair who have already
+            // played each other
             if (players.size() < 8 && players.size() > 3) {
                 List<Player> modifiedList = new ArrayList<>(players);
                 modifiedList.remove(player);
