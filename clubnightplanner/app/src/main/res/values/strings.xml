@@ -33,4 +33,9 @@
     <string name="no_active_players">No Active Players</string>
     <string name="no_scheduled_fixtures">No Scheduled Fixtures</string>
     <string name="no_listed_courts">No Listed Courts</string>
+    <string name="clear_fixtures">Clear Fixtures</string>
+    <string name="search_desc">Search for players</string>
+    <string name="search">Search</string>
+    <string name="clear_courts">Clear Courts</string>
+    <string name="clear_players">Clear Players</string>
 </resources>

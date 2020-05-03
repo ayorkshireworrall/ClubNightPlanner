@@ -38,7 +38,6 @@ public class ScheduleRankings {
      */
     private static void powerTwoRanker(List<Player> players, int timeslot) {
         int fixtureNumber = getFixtureNumber(timeslot);
-        System.out.println("Fixture: " + fixtureNumber);
         for (int n = 1; n < fixtureNumber + 1; n++) {
             boolean isPowerTwo = isPowerOfTwo(n);
             boolean addExtra = true;

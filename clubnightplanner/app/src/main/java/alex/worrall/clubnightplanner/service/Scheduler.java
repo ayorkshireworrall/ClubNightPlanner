@@ -3,13 +3,12 @@ package alex.worrall.clubnightplanner.service;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.Stack;
 
 import alex.worrall.clubnightplanner.ui.main.courts.Court;
 import alex.worrall.clubnightplanner.ui.main.fixtures.Fixture;
@@ -110,6 +109,10 @@ public class Scheduler {
         Player[] bestPair = new Player[2];
         for (Player player : players) {
             Player opponent = getBestMatch(player, players);
+            Player[] workingPair = new Player[] {player, opponent};
+            if (bestPair[0] == null) {
+                bestPair = workingPair;
+            }
             if (players.size() < 8 && players.size() > 3) {
                 List<Player> modifiedList = new ArrayList<>(players);
                 modifiedList.remove(player);
@@ -119,8 +122,7 @@ public class Scheduler {
                     continue;
                 }
             }
-            Player[] workingPair = new Player[] {player, opponent};
-            if (bestPair[0] == null || evaluatePair(workingPair) < evaluatePair(bestPair)) {
+            if (evaluatePair(workingPair) < evaluatePair(bestPair)) {
                 bestPair = workingPair;
             }
             Player opponentsOpponent = getBestMatch(opponent, players);
@@ -160,6 +162,9 @@ public class Scheduler {
     //game than any other player on the list). Assumes list ordered by least played first
     private List<Player> getPriorityPlayers() {
         List<Player> players = getNextPlayers();
+        if (players.isEmpty()) {
+            return Collections.emptyList();
+        }
         Player firstPlayer = players.get(0);
         Player lastPlayer = players.get(players.size() - 1);
         List<Player> priorityPlayers = new ArrayList<>();
@@ -267,6 +272,13 @@ public class Scheduler {
         }
     }
 
+    void clearPlayers() {
+        List<Player> players = new ArrayList<>(dataHolder.getPlayers());
+        for (Player player : players) {
+            removePlayer(player.getUuid());
+        }
+    }
+
     void removePlayer(String playerId) {
         try {
             Method removeExistingPlayer = this.getClass().getDeclaredMethod("removeExistingPlayer",
@@ -290,7 +302,7 @@ public class Scheduler {
 
     //Modifies the players' opponents lists. Type of modification depends on the method passed
     private void modifyFixtures(Method playerListChange, Object ...methodArgs) {
-        List<Fixture> toBeRescheduled = unplayedFixtures();
+        List<Fixture> toBeRescheduled = unscheduleUnplayedFixtures();
         if (playerListChange != null) {
             try {
                 playerListChange.invoke(this, methodArgs);
@@ -310,8 +322,16 @@ public class Scheduler {
         }
     }
 
+    void clearCourts() {
+        List<String> availableCourts = new ArrayList<>(dataHolder.getAvailableCourts());
+        for (String court : availableCourts) {
+            disableCourt(court);
+            dataHolder.removeCourt(court);
+        }
+    }
+
     void disableCourt(String courtName) {
-        List<Fixture> fixturesToReschedule = unplayedFixtures();
+        List<Fixture> fixturesToReschedule = unscheduleUnplayedFixtures();
         for (Fixture fixture : fixturesToReschedule) {
             List<Court> courts = fixture.getCourts();
             Court toBeRemoved = null;
@@ -330,7 +350,7 @@ public class Scheduler {
     }
 
     //find all fixtures yet to be played and remove their schedule
-    List<Fixture> unplayedFixtures() {
+    List<Fixture> unscheduleUnplayedFixtures() {
         List<Fixture> toBeRescheduled = new ArrayList<>();
         for (Fixture fixture : dataHolder.getFixtures().values()) {
             if (fixture.getPlayStatus().equals(Status.COMPLETED) ||
@@ -376,6 +396,14 @@ public class Scheduler {
             List<Player> opponentsPlayedB = playerB.getOpponentsPlayed();
             opponentsPlayedB.remove(playerA);
             playerB.setOpponentsPlayed(opponentsPlayedB);
+        }
+    }
+
+    void clearFixtures() {
+        List<Fixture> fixtures = new ArrayList<Fixture>(dataHolder.getFixtures().values());
+        for (Fixture fixture : fixtures) {
+            unschedule(fixture);
+            dataHolder.removeFixture(fixture);
         }
     }
 

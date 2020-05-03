@@ -35,6 +35,7 @@ public class AddFixtureFragment extends Fragment {
     private int min;
     private TextView timeOutput;
     private int sessionLength = 20;
+    private FixtureCourtSelectorRecyclerViewAdapter adapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -48,8 +49,7 @@ public class AddFixtureFragment extends Fragment {
         RecyclerView recyclerView = rootView.findViewById(R.id.fixture_court_selector);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         List<String> data = service.getAvailableCourts();
-        final FixtureCourtSelectorRecyclerViewAdapter adapter =
-                new FixtureCourtSelectorRecyclerViewAdapter(getContext(), data);
+        adapter = new FixtureCourtSelectorRecyclerViewAdapter(getContext(), data);
         recyclerView.setAdapter(adapter);
         final CheckBox selectAll = rootView.findViewById(R.id.select_all_courts);
         selectAll.setChecked(initialiseAllCourts);
@@ -70,49 +70,7 @@ public class AddFixtureFragment extends Fragment {
             }
         });
         Button submit = rootView.findViewById(R.id.add_new_fixture_submit);
-        submit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Set<String> selectedCourts = adapter.getSelectedCourts();
-                int timeslot = hr * 60 + min;
-                Fixture earliestFixture = getEarliestFixture();
-                if (earliestFixture != null && earliestFixture.getTimeSlot() > timeslot) {
-                    String recentlyCompletedTime = TimeUtil.timeConverter(earliestFixture.getTimeSlot());
-                    String message = "Please ensure that the time for this fixture is later than "
-                            + recentlyCompletedTime;
-                    Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
-                    return;
-                }
-                List<String> courts = new ArrayList<>(selectedCourts);
-                Collections.sort(courts);
-                service.addFixture(timeslot, courts);
-//              TODO below is work around, should really use custom observable pattern and finish
-//               activity.....
-                Intent parentActivityIntent = getActivity().getParentActivityIntent();
-                parentActivityIntent.putExtra("TAB_POSITION", TabPositions.FIXTURES);
-                getActivity().navigateUpTo(parentActivityIntent);
-            }
-
-            //Get the most recently completed or in progress fixture to determine earliest
-            // available timeslot
-            private Fixture getEarliestFixture() {
-                Fixture inProgress = null;
-                List<Fixture> orderedFixtures = service.getOrderedFixtures();
-                for (Fixture fixture : orderedFixtures) {
-                    if (fixture.getPlayStatus().equals(Status.COMPLETED)) {
-                        inProgress = fixture;
-                    }
-                    if (fixture.getPlayStatus().equals(Status.IN_PROGRESS)) {
-                        inProgress = fixture;
-                        break;
-                    }
-                    if (fixture.getPlayStatus().equals(Status.LATER)) {
-                        break;
-                    }
-                }
-                return inProgress;
-            }
-        });
+        submit.setOnClickListener(submitListener);
         return rootView;
     }
 
@@ -127,10 +85,54 @@ public class AddFixtureFragment extends Fragment {
 
     private void setInitialTime() {
         Set<Integer> times = service.getFixtures().keySet();
-        int latest = times.isEmpty() ? 1060 : Collections.max(times);
+        int latest = times.isEmpty() ? 1150 : Collections.max(times);
         int initialTime = latest + sessionLength;
         min = initialTime % 60;
         hr = (initialTime - min) / 60;
     }
+
+    View.OnClickListener submitListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Set<String> selectedCourts = adapter.getSelectedCourts();
+            int timeslot = hr * 60 + min;
+            Fixture earliestFixture = getEarliestFixture();
+            if (earliestFixture != null && earliestFixture.getTimeSlot() > timeslot) {
+                String recentlyCompletedTime = TimeUtil.timeConverter(earliestFixture.getTimeSlot());
+                String message = "Please ensure that the time for this fixture is later than "
+                        + recentlyCompletedTime;
+                Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
+                return;
+            }
+            List<String> courts = new ArrayList<>(selectedCourts);
+            Collections.sort(courts);
+            service.addFixture(timeslot, courts);
+//              TODO below is work around, should really use custom observable pattern and finish
+//               activity.....
+            Intent parentActivityIntent = getActivity().getParentActivityIntent();
+            parentActivityIntent.putExtra("TAB_POSITION", TabPositions.FIXTURES);
+            getActivity().navigateUpTo(parentActivityIntent);
+        }
+
+        //Get the most recently completed or in progress fixture to determine earliest
+        // available timeslot
+        private Fixture getEarliestFixture() {
+            Fixture inProgress = null;
+            List<Fixture> orderedFixtures = service.getOrderedFixtures();
+            for (Fixture fixture : orderedFixtures) {
+                if (fixture.getPlayStatus().equals(Status.COMPLETED)) {
+                    inProgress = fixture;
+                }
+                if (fixture.getPlayStatus().equals(Status.IN_PROGRESS)) {
+                    inProgress = fixture;
+                    break;
+                }
+                if (fixture.getPlayStatus().equals(Status.LATER)) {
+                    break;
+                }
+            }
+            return inProgress;
+        }
+    };
 
 }

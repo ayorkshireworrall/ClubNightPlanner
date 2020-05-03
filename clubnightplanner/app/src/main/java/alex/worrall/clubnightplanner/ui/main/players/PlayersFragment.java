@@ -132,6 +132,12 @@ public class PlayersFragment extends Fragment
         }
     };
 
+    //Use to force update from outside the fragment
+    public void updateData() {
+        displayEmptyMsgCheck(service.getPlayers());
+        adapter.notifyDataSetChanged();
+    }
+
     private void displayEmptyMsgCheck(List<?> viewData) {
         if (viewData.isEmpty()) {
             recyclerView.setVisibility(View.GONE);

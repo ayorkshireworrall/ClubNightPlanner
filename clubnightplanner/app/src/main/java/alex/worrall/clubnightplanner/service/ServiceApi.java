@@ -34,20 +34,16 @@ public class ServiceApi {
         scheduler.addPlayer(name, level);
     }
 
+    public void removePlayer(String playerId) {
+        scheduler.removePlayer(playerId);
+    }
+
     public boolean isPlayerNameUsed(String name) {
         return dataHolder.isPlayerNameUsed(name);
     }
 
     public boolean isPlayerNameUsed(String name, String uuid) {
         return dataHolder.isPlayerNameUsed(name, uuid);
-    }
-
-    public void addCourt(String courtName) {
-        dataHolder.addCourt(courtName);
-    }
-
-    public void addFixture(int timeSlot, List<String> courts) {
-        scheduler.generateSchedule(timeSlot, courts);
     }
 
     public Player getPlayerByUuid(String uuid) {
@@ -62,16 +58,16 @@ public class ServiceApi {
         return dataHolder.getPlayers();
     }
 
+    public void clearPlayers() {
+        scheduler.clearPlayers();
+    }
+
     public List<String> getAvailableCourts() {
         return dataHolder.getAvailableCourts();
     }
 
-    public Map<Integer, Fixture> getFixtures() {
-        return dataHolder.getFixtures();
-    }
-
-    public void clearData() {
-        dataHolder.clearData();
+    public void addCourt(String courtName) {
+        dataHolder.addCourt(courtName);
     }
 
     public void removeCourt(String courtName) {
@@ -83,8 +79,16 @@ public class ServiceApi {
         scheduler.disableCourt(courtName);
     }
 
-    public void removePlayer(String playerId) {
-        scheduler.removePlayer(playerId);
+    public void clearCourts() {
+
+    }
+
+    public void addFixture(int timeSlot, List<String> courts) {
+        scheduler.generateSchedule(timeSlot, courts);
+    }
+
+    public Map<Integer, Fixture> getFixtures() {
+        return dataHolder.getFixtures();
     }
 
     public void markFixtureComplete(Fixture fixture) {
@@ -101,6 +105,14 @@ public class ServiceApi {
 
     public List<Fixture> getOrderedFixtures() {
         return dataHolder.getOrderedFixtures();
+    }
+
+    public void clearFixtures() {
+        scheduler.clearFixtures();
+    }
+
+    public void clearData() {
+        dataHolder.clearData();
     }
 
     //purely for test purposes
