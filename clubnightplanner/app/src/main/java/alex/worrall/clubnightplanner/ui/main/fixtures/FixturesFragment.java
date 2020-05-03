@@ -39,9 +39,20 @@ public class FixturesFragment extends Fragment implements FixtureRecyclerViewAda
     private TextView emptyListMsg;
     private FixtureRecyclerViewAdapter adapter;
     private ServiceApi service = ServiceApi.getInstance();
+    private static FixturesFragment instance;
 
     public static FixturesFragment newInstance() {
         return new FixturesFragment();
+    }
+
+    public static FixturesFragment getInstance() {
+        if (instance == null) {
+            instance = new FixturesFragment();
+        }
+        return instance;
+    }
+
+    private FixturesFragment() {
     }
 
     @Override
@@ -256,5 +267,10 @@ public class FixturesFragment extends Fragment implements FixtureRecyclerViewAda
             }
             Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
         }
+    }
+
+    public void updateData() {
+        adapter.notifyDataSetChanged();
+        displayEmptyMsgCheck(service.getOrderedFixtures());
     }
 }

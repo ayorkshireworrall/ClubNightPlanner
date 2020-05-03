@@ -80,7 +80,7 @@ public class ServiceApi {
     }
 
     public void clearCourts() {
-
+        scheduler.clearCourts();
     }
 
     public void addFixture(int timeSlot, List<String> courts) {

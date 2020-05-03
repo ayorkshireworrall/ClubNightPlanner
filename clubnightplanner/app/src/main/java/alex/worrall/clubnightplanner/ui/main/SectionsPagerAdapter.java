@@ -45,7 +45,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
             case COURTS:
                 return CourtsFragment.getInstance();
             case FIXTURES:
-                return new FixturesFragment();
+                return FixturesFragment.getInstance();
             default:
                 return null;
         }

@@ -16,6 +16,9 @@ import com.google.android.material.tabs.TabLayout;
 import alex.worrall.clubnightplanner.service.ServiceApi;
 import alex.worrall.clubnightplanner.ui.main.SectionsPagerAdapter;
 import alex.worrall.clubnightplanner.ui.main.TabPositions;
+import alex.worrall.clubnightplanner.ui.main.courts.CourtsFragment;
+import alex.worrall.clubnightplanner.ui.main.fixtures.Fixture;
+import alex.worrall.clubnightplanner.ui.main.fixtures.FixturesFragment;
 import alex.worrall.clubnightplanner.ui.main.players.PlayersFragment;
 
 public class MainActivity extends AppCompatActivity {
@@ -66,10 +69,12 @@ public class MainActivity extends AppCompatActivity {
                                 }
                                 if (item.getItemId() == R.id.clear_courts) {
                                     service.clearCourts();
+                                    CourtsFragment.getInstance().updateData();
                                     return true;
                                 }
                                 if (item.getItemId() == R.id.clear_fixtures) {
                                     service.clearFixtures();
+                                    FixturesFragment.getInstance().updateData();
                                     return true;
                                 }
                                 return false;

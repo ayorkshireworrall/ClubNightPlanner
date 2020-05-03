@@ -139,4 +139,9 @@ public class CourtsFragment extends Fragment implements CourtRecyclerViewAdapter
             emptyListMsg.setVisibility(View.GONE);
         }
     }
+
+    public void updateData() {
+        adapter.notifyDataSetChanged();
+        displayEmptyMsgCheck(service.getAvailableCourts());
+    }
 }
