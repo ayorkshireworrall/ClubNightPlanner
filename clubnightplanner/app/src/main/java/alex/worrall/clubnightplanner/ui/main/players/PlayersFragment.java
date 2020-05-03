@@ -119,8 +119,7 @@ public class PlayersFragment extends Fragment
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             service.removePlayer(player.getUuid());
-                            displayEmptyMsgCheck(service.getPlayers());
-                            adapter.notifyDataSetChanged();
+                            updateData();
                         }
                     })
                     .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {

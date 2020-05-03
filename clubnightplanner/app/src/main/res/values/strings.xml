@@ -38,4 +38,5 @@
     <string name="search">Search</string>
     <string name="clear_courts">Clear Courts</string>
     <string name="clear_players">Clear Players</string>
+    <string name="reset_all">Reset All Data</string>
 </resources>

@@ -17,6 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             app:titleTextColor="@color/white"
+            app:popupTheme="@style/AppTheme.PopupOverlay"
             app:title="@string/app_name"
             app:menu="@menu/players_bar_menu"
             />
