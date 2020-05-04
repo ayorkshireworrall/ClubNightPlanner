@@ -25,12 +25,13 @@ import alex.worrall.clubnightplanner.ui.main.players.PlayersFragment;
 
 public class MainActivity extends AppCompatActivity {
     Toolbar toolbar;
-    ServiceApi service = ServiceApi.getInstance();
+    ServiceApi service;
     PlayersFragment playersFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        service = ServiceApi.getInstance(getApplicationContext());
         setContentView(R.layout.activity_main);
         toolbar = (Toolbar) findViewById(R.id.topAppBar);
         SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());

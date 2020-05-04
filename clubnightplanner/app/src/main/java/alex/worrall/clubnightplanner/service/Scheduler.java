@@ -1,5 +1,7 @@
 package alex.worrall.clubnightplanner.service;
 
+import android.content.Context;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -15,11 +17,24 @@ import alex.worrall.clubnightplanner.ui.main.fixtures.Fixture;
 import alex.worrall.clubnightplanner.ui.main.players.Player;
 
 public class Scheduler {
-    private DataHolder dataHolder = DataHolder.getInstance();
+    private DataHolder dataHolder;
+    private static Scheduler instance;
+
+    private Scheduler(DataHolder dataHolder) {
+        this.dataHolder = dataHolder;
+
+    }
+
+    public static Scheduler getInstance(DataHolder dataHolder) {
+        if (instance == null) {
+            instance = new Scheduler(dataHolder);
+        }
+        return instance;
+    }
 
     void generateSchedule(int timeslot, List<String> availableCourts) {
         List<Player> players = getRankedPlayers();
-        ScheduleRankings.addPlayerRankings(players, timeslot, availableCourts);
+        ScheduleRankings.addPlayerRankings(dataHolder, players, timeslot, availableCourts);
         List<Player> priorityPlayers = getPriorityPlayers();
         List<Player[]> playerMatchings =
                 getPlayerMatchings(availableCourts, players, priorityPlayers);

@@ -8,8 +8,7 @@ import alex.worrall.clubnightplanner.ui.main.players.Player;
 //TODO create more models and a way to select the most appropriate based on input values
 public class ScheduleRankings {
 
-    private static final DataHolder DATA_HOLDER = DataHolder.getInstance();
-
+    private static DataHolder dataHolder;
 
     /**
      * Set player rankings which are used in best match making. This method should be adapted to
@@ -19,8 +18,9 @@ public class ScheduleRankings {
      *                fixutre is being played
      * @param availableCourts could be useful to determine space
      */
-    static void addPlayerRankings(List<Player> players, int timeslot,
+    static void addPlayerRankings(DataHolder holder, List<Player> players, int timeslot,
                                   List<String> availableCourts) {
+        dataHolder = holder;
         powerTwoRanker(players, timeslot);
     }
 
@@ -63,7 +63,7 @@ public class ScheduleRankings {
 
     private static int getFixtureNumber(int timeslot) {
         int fixtureNumber = 0;
-        List<Fixture> orderedFixtures = DATA_HOLDER.getOrderedFixtures();
+        List<Fixture> orderedFixtures = dataHolder.getOrderedFixtures();
         for (int i = 0; i < orderedFixtures.size(); i++) {
             Fixture fixture = orderedFixtures.get(i);
             if (fixture.getTimeSlot() == timeslot) {

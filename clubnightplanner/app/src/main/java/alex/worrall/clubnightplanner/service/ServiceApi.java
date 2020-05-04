@@ -1,5 +1,7 @@
 package alex.worrall.clubnightplanner.service;
 
+import android.content.Context;
+
 import java.util.List;
 import java.util.Map;
 
@@ -11,11 +13,15 @@ import alex.worrall.clubnightplanner.ui.main.players.Player;
  * a bit too messy and intertwined. This ought to prevent wrong usages of adds etc.
  */
 public class ServiceApi {
-    private DataHolder dataHolder = DataHolder.getInstance();
-    private Scheduler scheduler = new Scheduler();
+    private DataHolder dataHolder;
+    private Scheduler scheduler;
+    private static Context applicationContext;
+
     private static ServiceApi serviceApi = new ServiceApi();
 
     private ServiceApi() {
+        dataHolder = DataHolder.getInstance(applicationContext);
+        scheduler = Scheduler.getInstance(dataHolder);
 //        addDemoData(true, true, true);
     }
 
@@ -24,6 +30,12 @@ public class ServiceApi {
             serviceApi = new ServiceApi();
         }
         return serviceApi;
+    }
+
+    //special invocation from the main class to set the application context
+    public static  ServiceApi getInstance(Context context) {
+        applicationContext = context;
+        return getInstance();
     }
 
     public void addPlayer(Player player) {
@@ -113,6 +125,10 @@ public class ServiceApi {
 
     public void clearData() {
         dataHolder.clearData();
+    }
+
+    public void setApplicationContext(Context applicationContext) {
+        this.applicationContext = applicationContext;
     }
 
     //purely for test purposes
