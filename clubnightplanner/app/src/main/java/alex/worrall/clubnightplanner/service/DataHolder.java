@@ -1,11 +1,13 @@
 package alex.worrall.clubnightplanner.service;
 
-import java.time.LocalTime;
+import android.content.Context;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import alex.worrall.clubnightplanner.persistence.PlannerDatabase;
 import alex.worrall.clubnightplanner.ui.main.fixtures.Fixture;
 import alex.worrall.clubnightplanner.ui.main.players.Player;
 
@@ -13,18 +15,23 @@ public class DataHolder {
     private List<Player> players;
     private List<String> availableCourts;
     private Map<Integer, Fixture> fixtures;
-    private static final DataHolder DATA_HOLDER = new DataHolder();
+    private static DataHolder instance;
     private Map<String, String> dulllNameMapping;
+    private PlannerDatabase database;
 
-    private DataHolder() {
+    private DataHolder(Context context) {
         this.players = new ArrayList<>();
         this.availableCourts = new ArrayList<>();
         this.fixtures = new HashMap<>();
         this.dulllNameMapping = doNameMapping();
+        database = PlannerDatabase.getInstance(context);
     }
 
-    static DataHolder getInstance() {
-        return DATA_HOLDER;
+    static DataHolder getInstance(Context context) {
+        if (instance == null) {
+            instance = new DataHolder(context);
+        }
+        return instance;
     }
 
     List<Player> getPlayers() {
