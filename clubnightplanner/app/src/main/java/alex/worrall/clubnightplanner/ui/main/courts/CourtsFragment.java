@@ -21,6 +21,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.List;
 
 import alex.worrall.clubnightplanner.R;
+import alex.worrall.clubnightplanner.persistence.models.CourtName;
 import alex.worrall.clubnightplanner.service.ServiceApi;
 
 public class CourtsFragment extends Fragment implements CourtRecyclerViewAdapter.ItemClickListener {
@@ -54,7 +55,7 @@ public class CourtsFragment extends Fragment implements CourtRecyclerViewAdapter
         FloatingActionButton fab = rootView.findViewById(R.id.fab_courts);
         recyclerView = rootView.findViewById(R.id.courts_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        List<String> viewData = service.getAvailableCourts();
+        List<CourtName> viewData = service.getAvailableCourts();
         adapter = new CourtRecyclerViewAdapter(getContext(), viewData);
         adapter.setmClickListener(this);
         recyclerView.setAdapter(adapter);
@@ -64,13 +65,14 @@ public class CourtsFragment extends Fragment implements CourtRecyclerViewAdapter
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                List<String> courts = service.getAvailableCourts();
+                List<CourtName> courts = service.getAvailableCourts();
                 String newCourtName = null;
                 if (courts.size() > 0) {
-                    String lastCourtName = courts.get(courts.size() - 1);
+                    CourtName lastCourtName = courts.get(courts.size() - 1);
                     newCourtName = "";
-                    if (lastCourtName.matches("^Court \\d*$")) {
-                        int count = Integer.parseInt(lastCourtName.replace("Court " , ""));
+                    if (lastCourtName.getName().matches("^Court \\d*$")) {
+                        int count = Integer.parseInt(lastCourtName.getName().replace("Court " ,
+                                ""));
                         newCourtName = "Court " + (count + 1);
                     } else {
                         newCourtName = "Court " + (courts.size() + 1);
@@ -79,7 +81,9 @@ public class CourtsFragment extends Fragment implements CourtRecyclerViewAdapter
                     newCourtName = "Court 1";
                 }
                 service.addCourt(newCourtName);
-                displayEmptyMsgCheck(service.getAvailableCourts());
+                List<CourtName> availableCourts = service.getAvailableCourts();
+                displayEmptyMsgCheck(availableCourts);
+                adapter.setmData(availableCourts);
                 adapter.notifyDataSetChanged();
             }
         });
@@ -107,11 +111,11 @@ public class CourtsFragment extends Fragment implements CourtRecyclerViewAdapter
 
         @Override
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-            List<String> data = service.getAvailableCourts();
-            final String court = data.get(viewHolder.getAdapterPosition());
+            List<CourtName> data = service.getAvailableCourts();
+            final CourtName court = data.get(viewHolder.getAdapterPosition());
             new AlertDialog.Builder(getContext())
                     .setTitle("Remove Court")
-                    .setMessage("Are you sure you wish to remove " + court)
+                    .setMessage("Are you sure you wish to remove " + court.getName())
                     .setCancelable(false)
                     .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                         @Override

@@ -1,8 +1,12 @@
 package alex.worrall.clubnightplanner.service;
 
+import android.content.Context;
+
 import java.util.List;
 import java.util.Map;
 
+import alex.worrall.clubnightplanner.persistence.models.CourtName;
+import alex.worrall.clubnightplanner.service.DataHolder.DatabaseAction;
 import alex.worrall.clubnightplanner.ui.main.fixtures.Fixture;
 import alex.worrall.clubnightplanner.ui.main.players.Player;
 
@@ -11,19 +15,26 @@ import alex.worrall.clubnightplanner.ui.main.players.Player;
  * a bit too messy and intertwined. This ought to prevent wrong usages of adds etc.
  */
 public class ServiceApi {
-    private DataHolder dataHolder = DataHolder.getInstance();
-    private Scheduler scheduler = new Scheduler();
-    private static ServiceApi serviceApi = new ServiceApi();
+    private DataHolder dataHolder;
+    private Scheduler scheduler;
+    private static ServiceApi instance;
+    private static Context context;
 
-    private ServiceApi() {
+    private ServiceApi(Context context) {
+        dataHolder = DataHolder.getInstance(context);
+        scheduler = Scheduler.getInstance(context);
 //        addDemoData(true, true, true);
     }
 
     public static ServiceApi getInstance() {
-        if (serviceApi == null) {
-            serviceApi = new ServiceApi();
+        return instance;
+    }
+
+    public static ServiceApi getInstance(Context context) {
+        if (instance == null) {
+            instance = new ServiceApi(context);
         }
-        return serviceApi;
+        return instance;
     }
 
     public void addPlayer(Player player) {
@@ -62,7 +73,7 @@ public class ServiceApi {
         scheduler.clearPlayers();
     }
 
-    public List<String> getAvailableCourts() {
+    public List<CourtName> getAvailableCourts() {
         return dataHolder.getAvailableCourts();
     }
 
@@ -70,12 +81,13 @@ public class ServiceApi {
         dataHolder.addCourt(courtName);
     }
 
-    public void removeCourt(String courtName) {
+    public void removeCourt(CourtName courtName) {
         scheduler.disableCourt(courtName);
         dataHolder.removeCourt(courtName);
+        dataHolder.modifyCourtList(DatabaseAction.DELETE_ONE, courtName);
     }
 
-    public void disableCourt(String courtName) {
+    public void disableCourt(CourtName courtName) {
         scheduler.disableCourt(courtName);
     }
 
@@ -83,7 +95,7 @@ public class ServiceApi {
         scheduler.clearCourts();
     }
 
-    public void addFixture(int timeSlot, List<String> courts) {
+    public void addFixture(int timeSlot, List<CourtName> courts) {
         scheduler.generateSchedule(timeSlot, courts);
     }
 

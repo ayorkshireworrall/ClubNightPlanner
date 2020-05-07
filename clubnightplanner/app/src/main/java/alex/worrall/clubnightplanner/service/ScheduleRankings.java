@@ -2,13 +2,12 @@ package alex.worrall.clubnightplanner.service;
 
 import java.util.List;
 
+import alex.worrall.clubnightplanner.persistence.models.CourtName;
 import alex.worrall.clubnightplanner.ui.main.fixtures.Fixture;
 import alex.worrall.clubnightplanner.ui.main.players.Player;
 
 //TODO create more models and a way to select the most appropriate based on input values
 public class ScheduleRankings {
-
-    private static final DataHolder DATA_HOLDER = DataHolder.getInstance();
 
 
     /**
@@ -20,8 +19,8 @@ public class ScheduleRankings {
      * @param availableCourts could be useful to determine space
      */
     static void addPlayerRankings(List<Player> players, int timeslot,
-                                  List<String> availableCourts) {
-        powerTwoRanker(players, timeslot);
+                                  List<CourtName> availableCourts, DataHolder dataHolder) {
+        powerTwoRanker(players, timeslot, dataHolder);
     }
 
     /**
@@ -36,8 +35,8 @@ public class ScheduleRankings {
      * @param players
      * @param timeslot
      */
-    private static void powerTwoRanker(List<Player> players, int timeslot) {
-        int fixtureNumber = getFixtureNumber(timeslot);
+    private static void powerTwoRanker(List<Player> players, int timeslot, DataHolder dataHolder) {
+        int fixtureNumber = getFixtureNumber(timeslot, dataHolder);
         for (int n = 1; n < fixtureNumber + 1; n++) {
             boolean isPowerTwo = isPowerOfTwo(n);
             boolean addExtra = true;
@@ -61,9 +60,9 @@ public class ScheduleRankings {
         }
     }
 
-    private static int getFixtureNumber(int timeslot) {
+    private static int getFixtureNumber(int timeslot, DataHolder dataHolder) {
         int fixtureNumber = 0;
-        List<Fixture> orderedFixtures = DATA_HOLDER.getOrderedFixtures();
+        List<Fixture> orderedFixtures = dataHolder.getOrderedFixtures();
         for (int i = 0; i < orderedFixtures.size(); i++) {
             Fixture fixture = orderedFixtures.get(i);
             if (fixture.getTimeSlot() == timeslot) {

@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Set;
 
 import alex.worrall.clubnightplanner.R;
+import alex.worrall.clubnightplanner.persistence.models.CourtName;
 import alex.worrall.clubnightplanner.service.ServiceApi;
 import alex.worrall.clubnightplanner.service.Status;
 import alex.worrall.clubnightplanner.service.TimeUtil;
@@ -48,7 +49,7 @@ public class AddFixtureFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_add_fixture, container, false);
         RecyclerView recyclerView = rootView.findViewById(R.id.fixture_court_selector);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        List<String> data = service.getAvailableCourts();
+        List<CourtName> data = service.getAvailableCourts();
         adapter = new FixtureCourtSelectorRecyclerViewAdapter(getContext(), data);
         recyclerView.setAdapter(adapter);
         final CheckBox selectAll = rootView.findViewById(R.id.select_all_courts);
@@ -94,7 +95,7 @@ public class AddFixtureFragment extends Fragment {
     View.OnClickListener submitListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Set<String> selectedCourts = adapter.getSelectedCourts();
+            Set<CourtName> selectedCourts = adapter.getSelectedCourts();
             int timeslot = hr * 60 + min;
             Fixture earliestFixture = getEarliestFixture();
             if (earliestFixture != null && earliestFixture.getTimeSlot() > timeslot) {
@@ -104,7 +105,7 @@ public class AddFixtureFragment extends Fragment {
                 Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
                 return;
             }
-            List<String> courts = new ArrayList<>(selectedCourts);
+            List<CourtName> courts = new ArrayList<>(selectedCourts);
             Collections.sort(courts);
             service.addFixture(timeslot, courts);
 //              TODO below is work around, should really use custom observable pattern and finish

@@ -25,11 +25,12 @@ import alex.worrall.clubnightplanner.ui.main.players.PlayersFragment;
 
 public class MainActivity extends AppCompatActivity {
     Toolbar toolbar;
-    ServiceApi service = ServiceApi.getInstance();
+    ServiceApi service;
     PlayersFragment playersFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        service = ServiceApi.getInstance(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         toolbar = (Toolbar) findViewById(R.id.topAppBar);

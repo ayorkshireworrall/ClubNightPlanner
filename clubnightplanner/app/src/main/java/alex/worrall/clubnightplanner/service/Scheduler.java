@@ -1,5 +1,7 @@
 package alex.worrall.clubnightplanner.service;
 
+import android.content.Context;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -10,16 +12,31 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import alex.worrall.clubnightplanner.persistence.models.CourtName;
 import alex.worrall.clubnightplanner.ui.main.courts.Court;
 import alex.worrall.clubnightplanner.ui.main.fixtures.Fixture;
 import alex.worrall.clubnightplanner.ui.main.players.Player;
 
-public class Scheduler {
-    private DataHolder dataHolder = DataHolder.getInstance();
+import static alex.worrall.clubnightplanner.service.DataHolder.DatabaseAction.DELETE_ALL;
 
-    void generateSchedule(int timeslot, List<String> availableCourts) {
+public class Scheduler {
+    private static Scheduler instance;
+    private DataHolder dataHolder;
+
+    public static Scheduler getInstance(Context context) {
+        if (instance == null) {
+            instance = new Scheduler(context);
+        }
+        return instance;
+    }
+
+    private Scheduler(Context context) {
+        dataHolder = DataHolder.getInstance(context);
+    }
+
+    void generateSchedule(int timeslot, List<CourtName> availableCourts) {
         List<Player> players = getRankedPlayers();
-        ScheduleRankings.addPlayerRankings(players, timeslot, availableCourts);
+        ScheduleRankings.addPlayerRankings(players, timeslot, availableCourts, dataHolder);
         List<Player> priorityPlayers = getPriorityPlayers();
         List<Player[]> playerMatchings =
                 getPlayerMatchings(availableCourts, players, priorityPlayers);
@@ -58,7 +75,7 @@ public class Scheduler {
         }
     }
 
-    private List<Player[]> getPlayerMatchings(List<String> availableCourts, List<Player> players,
+    private List<Player[]> getPlayerMatchings(List<CourtName> availableCourts, List<Player> players,
                                     List<Player> priorityPlayers) {
         int nonPriorityCap = 2*availableCourts.size() - priorityPlayers.size();
         List<Player[]> finalPlayerMatchings = new ArrayList<>();
@@ -317,7 +334,7 @@ public class Scheduler {
         }
         for (Fixture fixture : toBeRescheduled) {
             List<Court> courts = fixture.getCourts();
-            List<String> courtNames = new ArrayList<>();
+            List<CourtName> courtNames = new ArrayList<>();
             for (Court court : courts) {
                 courtNames.add(court.getCourtName());
             }
@@ -326,25 +343,26 @@ public class Scheduler {
     }
 
     void clearCourts() {
-        List<String> availableCourts = new ArrayList<>(dataHolder.getAvailableCourts());
-        for (String court : availableCourts) {
-            disableCourt(court);
-            dataHolder.removeCourt(court);
+        List<CourtName> availableCourts = new ArrayList<>(dataHolder.getAvailableCourts());
+        for (CourtName courtName : availableCourts) {
+            disableCourt(courtName);
+            dataHolder.removeCourt(courtName);
         }
+        dataHolder.modifyCourtList(DELETE_ALL, null);
     }
 
-    void disableCourt(String courtName) {
+    void disableCourt(CourtName courtName) {
         List<Fixture> fixturesToReschedule = unscheduleUnplayedFixtures();
         for (Fixture fixture : fixturesToReschedule) {
             List<Court> courts = fixture.getCourts();
             Court toBeRemoved = null;
             for (Court court : courts) {
-                if (court.getCourtName().equalsIgnoreCase(courtName)) {
+                if (court.getCourtName().getName().equalsIgnoreCase(courtName.getName())) {
                     toBeRemoved = court;
                 }
             }
             courts.remove(toBeRemoved);
-            List<String> courtNames = new ArrayList<>();
+            List<CourtName> courtNames = new ArrayList<>();
             for (Court court : courts) {
                 courtNames.add(court.getCourtName());
             }

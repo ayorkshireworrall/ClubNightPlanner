@@ -14,14 +14,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import alex.worrall.clubnightplanner.R;
+import alex.worrall.clubnightplanner.persistence.models.CourtName;
 
 public class CourtRecyclerViewAdapter extends RecyclerView.Adapter<CourtRecyclerViewAdapter.ViewHolder> {
-    private List<String> mData;
+    private List<CourtName> mData;
     private LayoutInflater mInflater;
     private ItemClickListener mClickListener;
     private Context mContext;
 
-    public CourtRecyclerViewAdapter(Context context, List<String> viewData) {
+    public CourtRecyclerViewAdapter(Context context, List<CourtName> viewData) {
         this.mInflater = LayoutInflater.from(context);
         this.mData = viewData;
         this.mContext = context;
@@ -36,10 +37,10 @@ public class CourtRecyclerViewAdapter extends RecyclerView.Adapter<CourtRecycler
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        String name = mData.get(position);
-        if (name != null) {
-            holder.displayCourtName.setText(name);
-            holder.editCourtName.setText(name);
+        CourtName courtName = mData.get(position);
+        if (courtName != null) {
+            holder.displayCourtName.setText(courtName.getName());
+            holder.editCourtName.setText(courtName.getName());
         }
     }
 
@@ -99,5 +100,9 @@ public class CourtRecyclerViewAdapter extends RecyclerView.Adapter<CourtRecycler
 
     public void setmClickListener(ItemClickListener listener) {
         this.mClickListener = listener;
+    }
+
+    public void setmData(List<CourtName> mData) {
+        this.mData = mData;
     }
 }

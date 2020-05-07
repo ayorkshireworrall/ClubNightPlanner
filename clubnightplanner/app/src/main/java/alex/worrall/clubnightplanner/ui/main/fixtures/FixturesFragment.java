@@ -23,6 +23,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.List;
 
 import alex.worrall.clubnightplanner.R;
+import alex.worrall.clubnightplanner.persistence.models.CourtName;
 import alex.worrall.clubnightplanner.service.ServiceApi;
 import alex.worrall.clubnightplanner.service.Status;
 import alex.worrall.clubnightplanner.ui.main.players.Player;
@@ -247,7 +248,7 @@ public class FixturesFragment extends Fragment implements FixtureRecyclerViewAda
 
     private void handleAddFixtureClick() {
         List<Player> players = service.getPlayers();
-        List<String> availableCourts = service.getAvailableCourts();
+        List<CourtName> availableCourts = service.getAvailableCourts();
 
         if (availableCourts.size() > 0 && players.size() > 1) {
             Intent intent = new Intent(getActivity(), AddFixtureActivity.class);

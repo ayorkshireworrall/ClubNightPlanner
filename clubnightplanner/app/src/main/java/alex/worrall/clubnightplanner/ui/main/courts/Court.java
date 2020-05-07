@@ -1,26 +1,27 @@
 package alex.worrall.clubnightplanner.ui.main.courts;
 
+import alex.worrall.clubnightplanner.persistence.models.CourtName;
 import alex.worrall.clubnightplanner.ui.main.players.Player;
 
 public class Court {
-    String courtName;
+    CourtName courtName;
     Player playerA;
     Player playerB;
 
     public Court() {
     }
 
-    public Court(String courtName, Player playerA, Player playerB) {
+    public Court(CourtName courtName, Player playerA, Player playerB) {
         this.courtName = courtName;
         this.playerA = playerA;
         this.playerB = playerB;
     }
 
-    public String getCourtName() {
+    public CourtName getCourtName() {
         return courtName;
     }
 
-    public void setCourtName(String courtName) {
+    public void setCourtName(CourtName courtName) {
         this.courtName = courtName;
     }
 
