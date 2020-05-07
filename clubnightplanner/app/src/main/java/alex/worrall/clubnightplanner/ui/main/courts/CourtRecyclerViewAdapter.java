@@ -100,4 +100,8 @@ public class CourtRecyclerViewAdapter extends RecyclerView.Adapter<CourtRecycler
     public void setmClickListener(ItemClickListener listener) {
         this.mClickListener = listener;
     }
+
+    public void setmData(List<String> mData) {
+        this.mData = mData;
+    }
 }

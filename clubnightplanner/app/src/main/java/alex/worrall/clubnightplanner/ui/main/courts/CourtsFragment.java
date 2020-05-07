@@ -79,7 +79,9 @@ public class CourtsFragment extends Fragment implements CourtRecyclerViewAdapter
                     newCourtName = "Court 1";
                 }
                 service.addCourt(newCourtName);
-                displayEmptyMsgCheck(service.getAvailableCourts());
+                List<String> availableCourts = service.getAvailableCourts();
+                displayEmptyMsgCheck(availableCourts);
+                adapter.setmData(availableCourts);
                 adapter.notifyDataSetChanged();
             }
         });

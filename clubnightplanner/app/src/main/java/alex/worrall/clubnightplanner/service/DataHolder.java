@@ -8,12 +8,12 @@ import java.util.List;
 import java.util.Map;
 
 import alex.worrall.clubnightplanner.persistence.PlannerDatabase;
+import alex.worrall.clubnightplanner.persistence.models.CourtName;
 import alex.worrall.clubnightplanner.ui.main.fixtures.Fixture;
 import alex.worrall.clubnightplanner.ui.main.players.Player;
 
 public class DataHolder {
     private List<Player> players;
-    private List<String> availableCourts;
     private Map<Integer, Fixture> fixtures;
     private static DataHolder instance;
     private Map<String, String> dulllNameMapping;
@@ -21,7 +21,6 @@ public class DataHolder {
 
     private DataHolder(Context context) {
         this.players = new ArrayList<>();
-        this.availableCourts = new ArrayList<>();
         this.fixtures = new HashMap<>();
         this.dulllNameMapping = doNameMapping();
         database = PlannerDatabase.getInstance(context);
@@ -43,11 +42,12 @@ public class DataHolder {
     }
 
     List<String> getAvailableCourts() {
+        List<CourtName> courtNameList = database.courtNamesDao().getCourtNameList();
+        List<String> availableCourts = new ArrayList<>();
+        for (CourtName courtName : courtNameList) {
+            availableCourts.add(courtName.getName());
+        }
         return availableCourts;
-    }
-
-    void setAvailableCourts(List<String> availableCourts) {
-        this.availableCourts = availableCourts;
     }
 
     Map<Integer, Fixture> getFixtures() {
@@ -85,16 +85,16 @@ public class DataHolder {
     }
 
     void addCourt(String courtName) {
-        availableCourts.add(courtName);
+        database.courtNamesDao().insertCourtName(new CourtName(courtName));
     }
 
+    //TODO won't work until full switch from in memory to DB
     void removeCourt(String courtName) {
-        availableCourts.remove(courtName);
     }
 
+    //TODO won't work until full switch from in memory to DB
     void clearData() {
         this.players = new ArrayList<>();
-        this.availableCourts = new ArrayList<>();
         this.fixtures = new HashMap<Integer, Fixture>();
     }
 

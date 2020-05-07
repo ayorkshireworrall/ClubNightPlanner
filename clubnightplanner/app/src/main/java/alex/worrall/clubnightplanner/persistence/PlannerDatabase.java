@@ -25,6 +25,7 @@ public abstract class PlannerDatabase extends RoomDatabase {
             instance = Room.databaseBuilder(context.getApplicationContext(),
                     PlannerDatabase.class, DB_NAME)
                     .fallbackToDestructiveMigration()
+                    .allowMainThreadQueries()
                     .build();
         }
         return instance;
