@@ -21,7 +21,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.List;
 
 import alex.worrall.clubnightplanner.R;
-import alex.worrall.clubnightplanner.persistence.models.CourtName;
+import alex.worrall.clubnightplanner.persistence.models.courtname.CourtName;
 import alex.worrall.clubnightplanner.service.ServiceApi;
 
 public class CourtsFragment extends Fragment implements CourtRecyclerViewAdapter.ItemClickListener {

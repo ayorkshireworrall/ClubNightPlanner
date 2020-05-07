@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import alex.worrall.clubnightplanner.R;
-import alex.worrall.clubnightplanner.persistence.models.CourtName;
+import alex.worrall.clubnightplanner.persistence.models.courtname.CourtName;
 
 public class CourtRecyclerViewAdapter extends RecyclerView.Adapter<CourtRecyclerViewAdapter.ViewHolder> {
     private List<CourtName> mData;

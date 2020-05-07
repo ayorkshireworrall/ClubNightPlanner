@@ -6,8 +6,8 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
-import alex.worrall.clubnightplanner.persistence.models.CourtName;
-import alex.worrall.clubnightplanner.persistence.models.CourtNameDao;
+import alex.worrall.clubnightplanner.persistence.models.courtname.CourtName;
+import alex.worrall.clubnightplanner.persistence.models.courtname.CourtNameDao;
 
 @Database(
         exportSchema = false,

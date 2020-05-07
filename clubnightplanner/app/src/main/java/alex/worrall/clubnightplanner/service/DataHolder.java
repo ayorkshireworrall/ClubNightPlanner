@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.Map;
 
 import alex.worrall.clubnightplanner.persistence.PlannerDatabase;
-import alex.worrall.clubnightplanner.persistence.models.CourtName;
-import alex.worrall.clubnightplanner.persistence.models.CourtNameDao;
+import alex.worrall.clubnightplanner.persistence.models.courtname.CourtName;
+import alex.worrall.clubnightplanner.persistence.models.courtname.CourtNameDao;
 import alex.worrall.clubnightplanner.ui.main.fixtures.Fixture;
 import alex.worrall.clubnightplanner.ui.main.players.Player;
 

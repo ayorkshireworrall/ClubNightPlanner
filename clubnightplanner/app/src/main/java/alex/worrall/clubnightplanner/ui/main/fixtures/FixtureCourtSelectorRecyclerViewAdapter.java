@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Set;
 
 import alex.worrall.clubnightplanner.R;
-import alex.worrall.clubnightplanner.persistence.models.CourtName;
+import alex.worrall.clubnightplanner.persistence.models.courtname.CourtName;
 
 public class FixtureCourtSelectorRecyclerViewAdapter extends
         RecyclerView.Adapter<FixtureCourtSelectorRecyclerViewAdapter.ViewHolder>{

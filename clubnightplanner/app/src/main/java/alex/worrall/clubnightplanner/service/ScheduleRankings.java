@@ -2,7 +2,7 @@ package alex.worrall.clubnightplanner.service;
 
 import java.util.List;
 
-import alex.worrall.clubnightplanner.persistence.models.CourtName;
+import alex.worrall.clubnightplanner.persistence.models.courtname.CourtName;
 import alex.worrall.clubnightplanner.ui.main.fixtures.Fixture;
 import alex.worrall.clubnightplanner.ui.main.players.Player;
 

@@ -23,15 +23,12 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.List;
 
 import alex.worrall.clubnightplanner.R;
-import alex.worrall.clubnightplanner.persistence.models.CourtName;
+import alex.worrall.clubnightplanner.persistence.models.courtname.CourtName;
 import alex.worrall.clubnightplanner.service.ServiceApi;
-import alex.worrall.clubnightplanner.service.Status;
 import alex.worrall.clubnightplanner.ui.main.players.Player;
 
 import static alex.worrall.clubnightplanner.service.Status.COMPLETED;
 import static alex.worrall.clubnightplanner.service.Status.IN_PROGRESS;
-import static alex.worrall.clubnightplanner.service.Status.LATER;
-import static alex.worrall.clubnightplanner.service.Status.NEXT;
 
 public class FixturesFragment extends Fragment implements FixtureRecyclerViewAdapter.ItemClickListener {
 

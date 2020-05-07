@@ -1,4 +1,4 @@
-package alex.worrall.clubnightplanner.persistence.models;
+package alex.worrall.clubnightplanner.persistence.models.courtname;
 
 import androidx.room.Dao;
 import androidx.room.Delete;
