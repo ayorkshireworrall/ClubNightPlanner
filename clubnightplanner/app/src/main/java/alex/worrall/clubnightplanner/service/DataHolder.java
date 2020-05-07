@@ -2,6 +2,8 @@ package alex.worrall.clubnightplanner.service;
 
 import android.content.Context;
 
+import androidx.annotation.Nullable;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,11 +11,13 @@ import java.util.Map;
 
 import alex.worrall.clubnightplanner.persistence.PlannerDatabase;
 import alex.worrall.clubnightplanner.persistence.models.CourtName;
+import alex.worrall.clubnightplanner.persistence.models.CourtNameDao;
 import alex.worrall.clubnightplanner.ui.main.fixtures.Fixture;
 import alex.worrall.clubnightplanner.ui.main.players.Player;
 
 public class DataHolder {
     private List<Player> players;
+    private List<CourtName> availableCourts;
     private Map<Integer, Fixture> fixtures;
     private static DataHolder instance;
     private Map<String, String> dulllNameMapping;
@@ -41,11 +45,9 @@ public class DataHolder {
         this.players = players;
     }
 
-    List<String> getAvailableCourts() {
-        List<CourtName> courtNameList = database.courtNamesDao().getCourtNameList();
-        List<String> availableCourts = new ArrayList<>();
-        for (CourtName courtName : courtNameList) {
-            availableCourts.add(courtName.getName());
+    List<CourtName> getAvailableCourts() {
+        if (availableCourts == null) {
+            availableCourts = database.courtNamesDao().getCourtNameList();
         }
         return availableCourts;
     }
@@ -84,17 +86,20 @@ public class DataHolder {
         fixtures.remove(fixture.getTimeSlot());
     }
 
-    void addCourt(String courtName) {
-        database.courtNamesDao().insertCourtName(new CourtName(courtName));
+    void addCourt(String name) {
+        CourtName courtName = new CourtName(name);
+        availableCourts.add(courtName);
+        modifyCourtList(DatabaseAction.INSERT, courtName);
     }
 
-    //TODO won't work until full switch from in memory to DB
-    void removeCourt(String courtName) {
+    void removeCourt(CourtName courtName) {
+        availableCourts.remove(courtName);
     }
 
-    //TODO won't work until full switch from in memory to DB
     void clearData() {
         this.players = new ArrayList<>();
+        this.availableCourts = new ArrayList<>();
+        modifyCourtList(DatabaseAction.DELETE_ALL, null);
         this.fixtures = new HashMap<Integer, Fixture>();
     }
 
@@ -139,6 +144,40 @@ public class DataHolder {
             orderedFixtures.add(fixtures.get(workingSmallest));
         }
         return orderedFixtures;
+    }
+
+
+    //Asynchronously modifies the data saved in the court list
+    void modifyCourtList(final DatabaseAction action, @Nullable final CourtName courtName) {
+        final CourtNameDao dao = database.courtNamesDao();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                switch (action) {
+                    case INSERT:
+                        dao.insertCourtName(courtName);
+                        break;
+                    case DELETE_ONE:
+                        dao.deleteCourtName(courtName);
+                        break;
+                    case DELETE_ALL:
+                        List<CourtName> availableCourts = dao.getCourtNameList();
+                        for (CourtName c : availableCourts) {
+                            if (c.getSessionId() == 0) {
+                                dao.deleteCourtName(c);
+                            }
+                        }
+                        break;
+                }
+
+            }
+        }).start();
+    }
+
+    enum DatabaseAction {
+        INSERT,
+        DELETE_ONE,
+        DELETE_ALL
     }
 
     private Map<String, String> doNameMapping() {

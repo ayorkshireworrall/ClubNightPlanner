@@ -2,6 +2,7 @@ package alex.worrall.clubnightplanner.service;
 
 import java.util.List;
 
+import alex.worrall.clubnightplanner.persistence.models.CourtName;
 import alex.worrall.clubnightplanner.ui.main.fixtures.Fixture;
 import alex.worrall.clubnightplanner.ui.main.players.Player;
 
@@ -18,7 +19,7 @@ public class ScheduleRankings {
      * @param availableCourts could be useful to determine space
      */
     static void addPlayerRankings(List<Player> players, int timeslot,
-                                  List<String> availableCourts, DataHolder dataHolder) {
+                                  List<CourtName> availableCourts, DataHolder dataHolder) {
         powerTwoRanker(players, timeslot, dataHolder);
     }
 

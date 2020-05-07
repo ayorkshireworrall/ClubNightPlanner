@@ -6,7 +6,7 @@ import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "court_names")
-public class CourtName {
+public class CourtName implements Comparable {
     @PrimaryKey(autoGenerate = true)
     private int id;
 
@@ -50,5 +50,14 @@ public class CourtName {
 
     public void setSessionId(int sessionId) {
         this.sessionId = sessionId;
+    }
+
+    public int compareTo(CourtName courtName) {
+        return this.getName().compareTo(courtName.getName());
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        return this.getName().compareTo(((CourtName) o).getName());
     }
 }

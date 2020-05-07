@@ -5,6 +5,8 @@ import android.content.Context;
 import java.util.List;
 import java.util.Map;
 
+import alex.worrall.clubnightplanner.persistence.models.CourtName;
+import alex.worrall.clubnightplanner.service.DataHolder.DatabaseAction;
 import alex.worrall.clubnightplanner.ui.main.fixtures.Fixture;
 import alex.worrall.clubnightplanner.ui.main.players.Player;
 
@@ -71,7 +73,7 @@ public class ServiceApi {
         scheduler.clearPlayers();
     }
 
-    public List<String> getAvailableCourts() {
+    public List<CourtName> getAvailableCourts() {
         return dataHolder.getAvailableCourts();
     }
 
@@ -79,12 +81,13 @@ public class ServiceApi {
         dataHolder.addCourt(courtName);
     }
 
-    public void removeCourt(String courtName) {
+    public void removeCourt(CourtName courtName) {
         scheduler.disableCourt(courtName);
         dataHolder.removeCourt(courtName);
+        dataHolder.modifyCourtList(DatabaseAction.DELETE_ONE, courtName);
     }
 
-    public void disableCourt(String courtName) {
+    public void disableCourt(CourtName courtName) {
         scheduler.disableCourt(courtName);
     }
 
@@ -92,7 +95,7 @@ public class ServiceApi {
         scheduler.clearCourts();
     }
 
-    public void addFixture(int timeSlot, List<String> courts) {
+    public void addFixture(int timeSlot, List<CourtName> courts) {
         scheduler.generateSchedule(timeSlot, courts);
     }
 

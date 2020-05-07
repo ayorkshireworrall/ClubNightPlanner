@@ -12,9 +12,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import alex.worrall.clubnightplanner.persistence.models.CourtName;
 import alex.worrall.clubnightplanner.ui.main.courts.Court;
 import alex.worrall.clubnightplanner.ui.main.fixtures.Fixture;
 import alex.worrall.clubnightplanner.ui.main.players.Player;
+
+import static alex.worrall.clubnightplanner.service.DataHolder.DatabaseAction.DELETE_ALL;
 
 public class Scheduler {
     private static Scheduler instance;
@@ -31,7 +34,7 @@ public class Scheduler {
         dataHolder = DataHolder.getInstance(context);
     }
 
-    void generateSchedule(int timeslot, List<String> availableCourts) {
+    void generateSchedule(int timeslot, List<CourtName> availableCourts) {
         List<Player> players = getRankedPlayers();
         ScheduleRankings.addPlayerRankings(players, timeslot, availableCourts, dataHolder);
         List<Player> priorityPlayers = getPriorityPlayers();
@@ -72,7 +75,7 @@ public class Scheduler {
         }
     }
 
-    private List<Player[]> getPlayerMatchings(List<String> availableCourts, List<Player> players,
+    private List<Player[]> getPlayerMatchings(List<CourtName> availableCourts, List<Player> players,
                                     List<Player> priorityPlayers) {
         int nonPriorityCap = 2*availableCourts.size() - priorityPlayers.size();
         List<Player[]> finalPlayerMatchings = new ArrayList<>();
@@ -331,7 +334,7 @@ public class Scheduler {
         }
         for (Fixture fixture : toBeRescheduled) {
             List<Court> courts = fixture.getCourts();
-            List<String> courtNames = new ArrayList<>();
+            List<CourtName> courtNames = new ArrayList<>();
             for (Court court : courts) {
                 courtNames.add(court.getCourtName());
             }
@@ -340,25 +343,26 @@ public class Scheduler {
     }
 
     void clearCourts() {
-        List<String> availableCourts = new ArrayList<>(dataHolder.getAvailableCourts());
-        for (String court : availableCourts) {
-            disableCourt(court);
-            dataHolder.removeCourt(court);
+        List<CourtName> availableCourts = new ArrayList<>(dataHolder.getAvailableCourts());
+        for (CourtName courtName : availableCourts) {
+            disableCourt(courtName);
+            dataHolder.removeCourt(courtName);
         }
+        dataHolder.modifyCourtList(DELETE_ALL, null);
     }
 
-    void disableCourt(String courtName) {
+    void disableCourt(CourtName courtName) {
         List<Fixture> fixturesToReschedule = unscheduleUnplayedFixtures();
         for (Fixture fixture : fixturesToReschedule) {
             List<Court> courts = fixture.getCourts();
             Court toBeRemoved = null;
             for (Court court : courts) {
-                if (court.getCourtName().equalsIgnoreCase(courtName)) {
+                if (court.getCourtName().getName().equalsIgnoreCase(courtName.getName())) {
                     toBeRemoved = court;
                 }
             }
             courts.remove(toBeRemoved);
-            List<String> courtNames = new ArrayList<>();
+            List<CourtName> courtNames = new ArrayList<>();
             for (Court court : courts) {
                 courtNames.add(court.getCourtName());
             }

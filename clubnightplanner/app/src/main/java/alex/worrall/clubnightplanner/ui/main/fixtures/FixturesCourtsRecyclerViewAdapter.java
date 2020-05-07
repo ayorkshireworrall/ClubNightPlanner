@@ -37,7 +37,7 @@ public class FixturesCourtsRecyclerViewAdapter extends
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Court court = mData.get(position);
-        holder.courtName.setText(court.getCourtName());
+        holder.courtName.setText(court.getCourtName().getName());
         if (court.getPlayerA() == null) {
             holder.v.setText("Empty Court");
         } else {

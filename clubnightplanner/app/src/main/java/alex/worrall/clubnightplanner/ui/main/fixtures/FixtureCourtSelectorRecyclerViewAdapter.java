@@ -15,15 +15,16 @@ import java.util.List;
 import java.util.Set;
 
 import alex.worrall.clubnightplanner.R;
+import alex.worrall.clubnightplanner.persistence.models.CourtName;
 
 public class FixtureCourtSelectorRecyclerViewAdapter extends
         RecyclerView.Adapter<FixtureCourtSelectorRecyclerViewAdapter.ViewHolder>{
-    private List<String> mData;
+    private List<CourtName> mData;
     private LayoutInflater mInflater;
     private boolean isCheckedAll;
-    private Set<String> selectedCourts = new HashSet<>();
+    private Set<CourtName> selectedCourts = new HashSet<>();
 
-    public FixtureCourtSelectorRecyclerViewAdapter(Context context, List<String> mData) {
+    public FixtureCourtSelectorRecyclerViewAdapter(Context context, List<CourtName> mData) {
         this.mData = mData;
         this.mInflater = LayoutInflater.from(context);
     }
@@ -37,8 +38,8 @@ public class FixtureCourtSelectorRecyclerViewAdapter extends
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
-        final String courtName = mData.get(position);
-        holder.courtName.setText(courtName);
+        final CourtName courtName = mData.get(position);
+        holder.courtName.setText(courtName.getName());
         holder.isSelected.setChecked(this.isCheckedAll);
         if (holder.isSelected.isChecked()) {
             selectedCourts.add(courtName);
@@ -84,7 +85,7 @@ public class FixtureCourtSelectorRecyclerViewAdapter extends
         notifyDataSetChanged();
     }
 
-    public Set<String> getSelectedCourts() {
+    public Set<CourtName> getSelectedCourts() {
         return this.selectedCourts;
     }
 }
