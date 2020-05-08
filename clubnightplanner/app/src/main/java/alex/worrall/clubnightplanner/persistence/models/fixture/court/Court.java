@@ -1,4 +1,4 @@
-package alex.worrall.clubnightplanner.ui.main.courts;
+package alex.worrall.clubnightplanner.persistence.models.fixture.court;
 
 import alex.worrall.clubnightplanner.persistence.models.courtname.CourtName;
 import alex.worrall.clubnightplanner.persistence.models.player.Player;
