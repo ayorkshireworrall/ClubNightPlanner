@@ -52,7 +52,9 @@ public class Scheduler {
                 courts.add(new Court(availableCourts.get(i), null, null));
             }
         }
-        dataHolder.putFixture(timeslot, new Fixture(timeslot, courts));
+        Fixture fixture = new Fixture(timeslot, courts);
+        dataHolder.putFixture(timeslot, fixture);
+        dataHolder.modifyFixtureList(INSERT, fixture);
         updatePlayStatus();
     }
 
@@ -437,6 +439,7 @@ public class Scheduler {
         for (Fixture fixture : fixtures) {
             unschedule(fixture);
             dataHolder.removeFixture(fixture);
+            dataHolder.modifyFixtureList(DELETE_ONE, fixture);
         }
     }
 
@@ -456,6 +459,7 @@ public class Scheduler {
     void markScheduleComplete(Fixture fixture) {
         //TODO data handling not great - mutates actual objects
         fixture.setPlayStatus(Status.COMPLETED);
+        dataHolder.modifyFixtureList(UPDATE, fixture);
         List<Fixture> orderedFixtures = dataHolder.getOrderedFixtures();
         boolean setInProgress = false;
         boolean setNext = false;
@@ -468,10 +472,12 @@ public class Scheduler {
                 setInProgress = false;
                 setNext = true;
                 current.setPlayStatus(Status.IN_PROGRESS);
+                dataHolder.modifyFixtureList(UPDATE, current);
                 continue;
             }
             if (setNext) {
                 current.setPlayStatus(Status.NEXT);
+                dataHolder.modifyFixtureList(UPDATE, current);
                 break;
             }
         }
@@ -488,6 +494,7 @@ public class Scheduler {
             }
             if (setNext) {
                 current.setPlayStatus(Status.NEXT);
+                dataHolder.modifyFixtureList(UPDATE, current);
                 break;
             }
         }
@@ -495,6 +502,7 @@ public class Scheduler {
 
     void removeFixture(Fixture fixture) {
         dataHolder.removeFixture(fixture);
+        dataHolder.modifyFixtureList(DELETE_ONE, fixture);
         unschedule(fixture);
         //If we're deleting the current "NEXT" fixture we need to set a new one if possible
         List<Fixture> orderedFixtures =
@@ -503,6 +511,7 @@ public class Scheduler {
         for (Fixture current : orderedFixtures) {
             if (current.getPlayStatus() == Status.LATER) {
                 current.setPlayStatus(Status.NEXT);
+                dataHolder.modifyFixtureList(UPDATE, current);
                 break;
             }
         }

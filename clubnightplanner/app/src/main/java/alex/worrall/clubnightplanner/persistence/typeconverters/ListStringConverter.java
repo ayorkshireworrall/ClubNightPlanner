@@ -1,4 +1,4 @@
-package alex.worrall.clubnightplanner.persistence;
+package alex.worrall.clubnightplanner.persistence.typeconverters;
 
 import androidx.room.TypeConverter;
 

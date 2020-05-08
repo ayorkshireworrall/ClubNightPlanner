@@ -12,6 +12,7 @@ import java.util.Map;
 import alex.worrall.clubnightplanner.persistence.PlannerDatabase;
 import alex.worrall.clubnightplanner.persistence.models.courtname.CourtName;
 import alex.worrall.clubnightplanner.persistence.models.courtname.CourtNameDao;
+import alex.worrall.clubnightplanner.persistence.models.fixture.FixtureDao;
 import alex.worrall.clubnightplanner.persistence.models.player.PlayerDao;
 import alex.worrall.clubnightplanner.persistence.models.fixture.Fixture;
 import alex.worrall.clubnightplanner.persistence.models.player.Player;
@@ -25,7 +26,6 @@ public class DataHolder {
     private PlannerDatabase database;
 
     private DataHolder(Context context) {
-        this.fixtures = new HashMap<>();
         this.dulllNameMapping = doNameMapping();
         database = PlannerDatabase.getInstance(context);
     }
@@ -56,11 +56,15 @@ public class DataHolder {
     }
 
     Map<Integer, Fixture> getFixtures() {
+        if (fixtures == null) {
+            List<Fixture> fixtureList = database.fixtureDao().getFixtureList();
+            Map<Integer, Fixture> fixtureMap = new HashMap<>();
+            for (Fixture fixture : fixtureList) {
+                fixtureMap.put(fixture.getTimeSlot(), fixture);
+            }
+            fixtures = fixtureMap;
+        }
         return fixtures;
-    }
-
-    void setFixtures(Map<Integer, Fixture> fixtures) {
-        this.fixtures = fixtures;
     }
 
     Player addPlayer(String name, int level) {
@@ -101,9 +105,11 @@ public class DataHolder {
 
     void clearData() {
         this.players = new ArrayList<>();
+        modifyPlayerList(DatabaseAction.DELETE_ALL, null);
         this.availableCourts = new ArrayList<>();
         modifyCourtList(DatabaseAction.DELETE_ALL, null);
         this.fixtures = new HashMap<Integer, Fixture>();
+        modifyFixtureList(DatabaseAction.DELETE_ALL, null);
     }
 
     boolean isPlayerNameUsed(String name) {
@@ -132,6 +138,9 @@ public class DataHolder {
     List<Fixture> getOrderedFixtures() {
         List<Fixture> orderedFixtures = new ArrayList<>();
         int currentLargestInList = 0;
+        if (fixtures == null) {
+            getFixtures();
+        }
         for (int i = 0; i < fixtures.size(); i++) {
             int workingSmallest = 1439; //11:59
             for (int time : fixtures.keySet()) {
@@ -198,6 +207,35 @@ public class DataHolder {
                         for (Player p : players) {
                             if (p.getSesiondId() == 0) {
                                 dao.deletePlayer(p);
+                            }
+                        }
+                        break;
+                }
+            }
+        }).start();
+    }
+
+    //Asynchronously modifies the data saved in the fixture list
+    void modifyFixtureList(final DatabaseAction action, @Nullable final Fixture fixture) {
+        final FixtureDao dao = database.fixtureDao();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                switch (action) {
+                    case INSERT:
+                        dao.insertFixture(fixture);
+                        break;
+                    case UPDATE:
+                        dao.updateFixture(fixture);
+                        break;
+                    case DELETE_ONE:
+                        dao.deleteFixture(fixture);
+                        break;
+                    case DELETE_ALL:
+                        List<Fixture> fixtures = dao.getFixtureList();
+                        for (Fixture f : fixtures) {
+                            if (f.getSessionId() == 0) {
+                                dao.deleteFixture(f);
                             }
                         }
                         break;

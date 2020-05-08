@@ -129,6 +129,9 @@ public class ServiceApi {
 
     //purely for test purposes
     private void addDemoData(boolean players, boolean courts, boolean fixtures) {
+        getPlayers();
+        getAvailableCourts();
+        getFixtures();
         if (players) {
             addPlayer("Alex Worrall", 5);
             addPlayer("Amy Sanchez", 4);
