@@ -8,10 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import alex.worrall.clubnightplanner.service.DataHolder;
-import alex.worrall.clubnightplanner.service.Scheduler;
 import alex.worrall.clubnightplanner.ui.main.fixtures.Fixture;
-import alex.worrall.clubnightplanner.ui.main.players.Player;
+import alex.worrall.clubnightplanner.persistence.models.player.Player;
 
 import static junit.framework.TestCase.assertTrue;
 

@@ -1,4 +1,4 @@
-package alex.worrall.clubnightplanner.ui.main.players;
+package alex.worrall.clubnightplanner.persistence.models.player;
 
 import androidx.annotation.NonNull;
 
@@ -10,7 +10,7 @@ public class Player {
     private int level;
     private String name;
     private String uuid;
-    private List<Player> opponentsPlayed;
+    private List<String> opponentsPlayed;
     private int scheduleRanking;
 
     public Player() {
@@ -25,7 +25,7 @@ public class Player {
         this.level = level;
         this.name = name;
         this.uuid = UUID.randomUUID().toString();
-        this.opponentsPlayed = new ArrayList<Player>();
+        this.opponentsPlayed = new ArrayList<String>();
     }
 
     public int getLevel() {
@@ -52,11 +52,11 @@ public class Player {
         this.uuid = uuid;
     }
 
-    public List<Player> getOpponentsPlayed() {
+    public List<String> getOpponentsPlayed() {
         return opponentsPlayed;
     }
 
-    public void setOpponentsPlayed(List<Player> opponentsPlayed) {
+    public void setOpponentsPlayed(List<String> opponentsPlayed) {
         this.opponentsPlayed = opponentsPlayed;
     }
 

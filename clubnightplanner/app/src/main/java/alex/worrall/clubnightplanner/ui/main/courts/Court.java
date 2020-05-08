@@ -1,7 +1,7 @@
 package alex.worrall.clubnightplanner.ui.main.courts;
 
 import alex.worrall.clubnightplanner.persistence.models.courtname.CourtName;
-import alex.worrall.clubnightplanner.ui.main.players.Player;
+import alex.worrall.clubnightplanner.persistence.models.player.Player;
 
 public class Court {
     CourtName courtName;

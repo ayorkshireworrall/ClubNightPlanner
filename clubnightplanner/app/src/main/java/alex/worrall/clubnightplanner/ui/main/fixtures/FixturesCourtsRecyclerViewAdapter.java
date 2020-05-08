@@ -13,7 +13,7 @@ import java.util.List;
 
 import alex.worrall.clubnightplanner.R;
 import alex.worrall.clubnightplanner.ui.main.courts.Court;
-import alex.worrall.clubnightplanner.ui.main.players.Player;
+import alex.worrall.clubnightplanner.persistence.models.player.Player;
 
 public class FixturesCourtsRecyclerViewAdapter extends
         RecyclerView.Adapter<FixturesCourtsRecyclerViewAdapter.ViewHolder>{

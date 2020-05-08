@@ -14,7 +14,7 @@ import java.util.Map;
 import alex.worrall.clubnightplanner.persistence.models.courtname.CourtName;
 import alex.worrall.clubnightplanner.ui.main.courts.Court;
 import alex.worrall.clubnightplanner.ui.main.fixtures.Fixture;
-import alex.worrall.clubnightplanner.ui.main.players.Player;
+import alex.worrall.clubnightplanner.persistence.models.player.Player;
 
 import static alex.worrall.clubnightplanner.service.DataHolder.DatabaseAction.DELETE_ALL;
 
@@ -137,7 +137,7 @@ public class Scheduler {
                 modifiedList.remove(player);
                 modifiedList.remove(opponent);
                 Player[] pair = getPair(modifiedList);
-                if (pair[0].getOpponentsPlayed().contains(pair[1])) {
+                if (pair[0].getOpponentsPlayed().contains(pair[1].getUuid())) {
                     continue;
                 }
             }
@@ -244,8 +244,13 @@ public class Scheduler {
     private Player getBestMatch(Player player, List<Player> availablePlayers) {
         List<Player> yetToPlay = new ArrayList<Player>(availablePlayers);
         yetToPlay.remove(player);
-        for (Player played : player.getOpponentsPlayed()) {
-            yetToPlay.remove(played);
+        for (String playedOpponentId : player.getOpponentsPlayed()) {
+            for (Player toPlay : yetToPlay) {
+                if (toPlay.getUuid().equals(playedOpponentId)) {
+                    yetToPlay.remove(toPlay);
+                    break;
+                }
+            }
         }
         if (yetToPlay.size() == 0) {
             //All opponents have been played so no longer rank
@@ -409,12 +414,12 @@ public class Scheduler {
             }
             Player playerB = court.getPlayerB();
 
-            List<Player> opponentsPlayedA = playerA.getOpponentsPlayed();
-            opponentsPlayedA.remove(playerB);
+            List<String> opponentsPlayedA = playerA.getOpponentsPlayed();
+            opponentsPlayedA.remove(playerB.getUuid());
             playerA.setOpponentsPlayed(opponentsPlayedA);
 
-            List<Player> opponentsPlayedB = playerB.getOpponentsPlayed();
-            opponentsPlayedB.remove(playerA);
+            List<String> opponentsPlayedB = playerB.getOpponentsPlayed();
+            opponentsPlayedB.remove(playerA.getUuid());
             playerB.setOpponentsPlayed(opponentsPlayedB);
         }
     }
@@ -428,12 +433,12 @@ public class Scheduler {
     }
 
     private void addOpponentPlayed(Player playerA, Player playerB) {
-        List<Player> opponentsPlayedA = playerA.getOpponentsPlayed();
-        opponentsPlayedA.add(playerB);
+        List<String> opponentsPlayedA = playerA.getOpponentsPlayed();
+        opponentsPlayedA.add(playerB.getUuid());
         playerA.setOpponentsPlayed(opponentsPlayedA);
 
-        List<Player> opponentsPlayedB = playerB.getOpponentsPlayed();
-        opponentsPlayedB.add(playerA);
+        List<String> opponentsPlayedB = playerB.getOpponentsPlayed();
+        opponentsPlayedB.add(playerA.getUuid());
         playerB.setOpponentsPlayed(opponentsPlayedB);
     }
 

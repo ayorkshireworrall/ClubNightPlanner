@@ -4,7 +4,7 @@ import java.util.List;
 
 import alex.worrall.clubnightplanner.persistence.models.courtname.CourtName;
 import alex.worrall.clubnightplanner.ui.main.fixtures.Fixture;
-import alex.worrall.clubnightplanner.ui.main.players.Player;
+import alex.worrall.clubnightplanner.persistence.models.player.Player;
 
 //TODO create more models and a way to select the most appropriate based on input values
 public class ScheduleRankings {

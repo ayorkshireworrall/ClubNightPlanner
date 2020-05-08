@@ -23,6 +23,7 @@ import java.util.List;
 
 import alex.worrall.clubnightplanner.Observer;
 import alex.worrall.clubnightplanner.R;
+import alex.worrall.clubnightplanner.persistence.models.player.Player;
 import alex.worrall.clubnightplanner.service.ServiceApi;
 
 import static alex.worrall.clubnightplanner.service.RequestCodes.EDIT_PLAYER_REQUEST;

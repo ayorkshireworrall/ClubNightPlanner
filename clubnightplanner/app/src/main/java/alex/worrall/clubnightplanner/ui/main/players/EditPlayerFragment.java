@@ -17,6 +17,7 @@ import androidx.annotation.Nullable;
 
 import alex.worrall.clubnightplanner.ObservableFragment;
 import alex.worrall.clubnightplanner.R;
+import alex.worrall.clubnightplanner.persistence.models.player.Player;
 import alex.worrall.clubnightplanner.service.ServiceApi;
 
 public class EditPlayerFragment extends ObservableFragment {
