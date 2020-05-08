@@ -13,7 +13,7 @@ import alex.worrall.clubnightplanner.persistence.PlannerDatabase;
 import alex.worrall.clubnightplanner.persistence.models.courtname.CourtName;
 import alex.worrall.clubnightplanner.persistence.models.courtname.CourtNameDao;
 import alex.worrall.clubnightplanner.persistence.models.player.PlayerDao;
-import alex.worrall.clubnightplanner.ui.main.fixtures.Fixture;
+import alex.worrall.clubnightplanner.persistence.models.fixture.Fixture;
 import alex.worrall.clubnightplanner.persistence.models.player.Player;
 
 public class DataHolder {
@@ -187,6 +187,9 @@ public class DataHolder {
                     case INSERT:
                         dao.insertPlayer(player);
                         break;
+                    case UPDATE:
+                        dao.updatePlayer(player);
+                        break;
                     case DELETE_ONE:
                         dao.deletePlayer(player);
                         break;
@@ -206,7 +209,8 @@ public class DataHolder {
     enum DatabaseAction {
         INSERT,
         DELETE_ONE,
-        DELETE_ALL
+        DELETE_ALL,
+        UPDATE
     }
 
     private Map<String, String> doNameMapping() {
@@ -236,6 +240,7 @@ public class DataHolder {
         nameMap.put("Henry Worrel", "Sir Henry of the Tin");
         nameMap.put("Henry Worrell", "Sir Henry of the Tin");
         nameMap.put("Henry Worell", "Sir Henry of the Tin");
+        nameMap.put("Ben Bryant", "Bryant's Tower of Power");
         return nameMap;
     }
 }

@@ -24,6 +24,7 @@ import java.util.List;
 
 import alex.worrall.clubnightplanner.R;
 import alex.worrall.clubnightplanner.persistence.models.courtname.CourtName;
+import alex.worrall.clubnightplanner.persistence.models.fixture.Fixture;
 import alex.worrall.clubnightplanner.service.ServiceApi;
 import alex.worrall.clubnightplanner.persistence.models.player.Player;
 
@@ -32,7 +33,6 @@ import static alex.worrall.clubnightplanner.service.Status.IN_PROGRESS;
 
 public class FixturesFragment extends Fragment implements FixtureRecyclerViewAdapter.ItemClickListener {
 
-    private FixturesViewModel mViewModel;
     private RecyclerView recyclerView;
     private TextView emptyListMsg;
     private FixtureRecyclerViewAdapter adapter;
@@ -79,8 +79,6 @@ public class FixturesFragment extends Fragment implements FixtureRecyclerViewAda
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = ViewModelProviders.of(this).get(FixturesViewModel.class);
-        // TODO: Use the ViewModel
     }
 
     @Override

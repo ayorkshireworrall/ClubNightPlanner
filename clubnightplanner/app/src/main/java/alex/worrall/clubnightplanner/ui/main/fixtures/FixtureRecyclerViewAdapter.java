@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import alex.worrall.clubnightplanner.R;
+import alex.worrall.clubnightplanner.persistence.models.fixture.Fixture;
 import alex.worrall.clubnightplanner.service.Status;
 
 public class FixtureRecyclerViewAdapter extends RecyclerView.Adapter<FixtureRecyclerViewAdapter.ViewHolder> {

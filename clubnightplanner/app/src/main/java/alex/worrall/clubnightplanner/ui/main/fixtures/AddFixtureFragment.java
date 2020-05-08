@@ -24,6 +24,7 @@ import java.util.Set;
 
 import alex.worrall.clubnightplanner.R;
 import alex.worrall.clubnightplanner.persistence.models.courtname.CourtName;
+import alex.worrall.clubnightplanner.persistence.models.fixture.Fixture;
 import alex.worrall.clubnightplanner.service.ServiceApi;
 import alex.worrall.clubnightplanner.service.Status;
 import alex.worrall.clubnightplanner.service.TimeUtil;

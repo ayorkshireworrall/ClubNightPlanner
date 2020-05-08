@@ -12,13 +12,14 @@ import java.util.List;
 import java.util.Map;
 
 import alex.worrall.clubnightplanner.persistence.models.courtname.CourtName;
-import alex.worrall.clubnightplanner.ui.main.courts.Court;
-import alex.worrall.clubnightplanner.ui.main.fixtures.Fixture;
+import alex.worrall.clubnightplanner.persistence.models.fixture.court.Court;
+import alex.worrall.clubnightplanner.persistence.models.fixture.Fixture;
 import alex.worrall.clubnightplanner.persistence.models.player.Player;
 
 import static alex.worrall.clubnightplanner.service.DataHolder.DatabaseAction.DELETE_ALL;
 import static alex.worrall.clubnightplanner.service.DataHolder.DatabaseAction.DELETE_ONE;
 import static alex.worrall.clubnightplanner.service.DataHolder.DatabaseAction.INSERT;
+import static alex.worrall.clubnightplanner.service.DataHolder.DatabaseAction.UPDATE;
 
 public class Scheduler {
     private static Scheduler instance;
@@ -422,10 +423,12 @@ public class Scheduler {
             List<String> opponentsPlayedA = playerA.getOpponentsPlayed();
             opponentsPlayedA.remove(playerB.getUuid());
             playerA.setOpponentsPlayed(opponentsPlayedA);
+            dataHolder.modifyPlayerList(UPDATE, playerA);
 
             List<String> opponentsPlayedB = playerB.getOpponentsPlayed();
             opponentsPlayedB.remove(playerA.getUuid());
             playerB.setOpponentsPlayed(opponentsPlayedB);
+            dataHolder.modifyPlayerList(UPDATE, playerB);
         }
     }
 
@@ -441,10 +444,12 @@ public class Scheduler {
         List<String> opponentsPlayedA = playerA.getOpponentsPlayed();
         opponentsPlayedA.add(playerB.getUuid());
         playerA.setOpponentsPlayed(opponentsPlayedA);
+        dataHolder.modifyPlayerList(UPDATE, playerA);
 
         List<String> opponentsPlayedB = playerB.getOpponentsPlayed();
         opponentsPlayedB.add(playerA.getUuid());
         playerB.setOpponentsPlayed(opponentsPlayedB);
+        dataHolder.modifyPlayerList(UPDATE, playerB);
     }
 
     //set status as complete and find the next slot and mark it as next

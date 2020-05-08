@@ -1,11 +1,10 @@
-package alex.worrall.clubnightplanner.ui.main.fixtures;
+package alex.worrall.clubnightplanner.persistence.models.fixture;
 
-import java.time.LocalTime;
 import java.util.List;
 
 import alex.worrall.clubnightplanner.service.Status;
 import alex.worrall.clubnightplanner.service.TimeUtil;
-import alex.worrall.clubnightplanner.ui.main.courts.Court;
+import alex.worrall.clubnightplanner.persistence.models.fixture.court.Court;
 
 public class Fixture {
     private int timeSlot;

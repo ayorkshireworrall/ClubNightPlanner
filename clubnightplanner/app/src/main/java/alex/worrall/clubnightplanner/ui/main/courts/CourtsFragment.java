@@ -26,7 +26,6 @@ import alex.worrall.clubnightplanner.service.ServiceApi;
 
 public class CourtsFragment extends Fragment implements CourtRecyclerViewAdapter.ItemClickListener {
 
-    private CourtsViewModel mViewModel;
     private RecyclerView recyclerView;
     private TextView emptyListMsg;
     private CourtRecyclerViewAdapter adapter;
@@ -93,8 +92,6 @@ public class CourtsFragment extends Fragment implements CourtRecyclerViewAdapter
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = ViewModelProviders.of(this).get(CourtsViewModel.class);
-        // TODO: Use the ViewModel
     }
 
     @Override

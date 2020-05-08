@@ -15,10 +15,11 @@ import java.util.List;
 import java.util.Map;
 
 import alex.worrall.clubnightplanner.R;
+import alex.worrall.clubnightplanner.persistence.models.fixture.Fixture;
 import alex.worrall.clubnightplanner.service.ServiceApi;
 import alex.worrall.clubnightplanner.service.Status;
 import alex.worrall.clubnightplanner.service.TimeUtil;
-import alex.worrall.clubnightplanner.ui.main.courts.Court;
+import alex.worrall.clubnightplanner.persistence.models.fixture.court.Court;
 
 public class ViewFixtureFragment extends Fragment {
     ServiceApi service = ServiceApi.getInstance();

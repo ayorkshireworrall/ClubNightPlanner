@@ -7,7 +7,7 @@ import java.util.Map;
 
 import alex.worrall.clubnightplanner.persistence.models.courtname.CourtName;
 import alex.worrall.clubnightplanner.service.DataHolder.DatabaseAction;
-import alex.worrall.clubnightplanner.ui.main.fixtures.Fixture;
+import alex.worrall.clubnightplanner.persistence.models.fixture.Fixture;
 import alex.worrall.clubnightplanner.persistence.models.player.Player;
 
 /**

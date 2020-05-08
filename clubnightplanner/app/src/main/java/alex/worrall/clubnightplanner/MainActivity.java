@@ -3,14 +3,11 @@ package alex.worrall.clubnightplanner;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
@@ -19,7 +16,6 @@ import alex.worrall.clubnightplanner.service.ServiceApi;
 import alex.worrall.clubnightplanner.ui.main.SectionsPagerAdapter;
 import alex.worrall.clubnightplanner.ui.main.TabPositions;
 import alex.worrall.clubnightplanner.ui.main.courts.CourtsFragment;
-import alex.worrall.clubnightplanner.ui.main.fixtures.Fixture;
 import alex.worrall.clubnightplanner.ui.main.fixtures.FixturesFragment;
 import alex.worrall.clubnightplanner.ui.main.players.PlayersFragment;
 
