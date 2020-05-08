@@ -17,6 +17,8 @@ import alex.worrall.clubnightplanner.ui.main.fixtures.Fixture;
 import alex.worrall.clubnightplanner.persistence.models.player.Player;
 
 import static alex.worrall.clubnightplanner.service.DataHolder.DatabaseAction.DELETE_ALL;
+import static alex.worrall.clubnightplanner.service.DataHolder.DatabaseAction.DELETE_ONE;
+import static alex.worrall.clubnightplanner.service.DataHolder.DatabaseAction.INSERT;
 
 public class Scheduler {
     private static Scheduler instance;
@@ -272,7 +274,8 @@ public class Scheduler {
     //existing schedule
     void addPlayer(String name, int level) {
         if (dataHolder.getFixtures().size() == 0) {
-            dataHolder.addPlayer(name, level);
+            Player newPlayer = dataHolder.addPlayer(name, level);
+            dataHolder.modifyPlayerList(INSERT, newPlayer);
         } else {
             try {
                 Method addNewPlayer = this.getClass().getDeclaredMethod("addNewPlayer",
@@ -287,6 +290,7 @@ public class Scheduler {
     private void addNewPlayer(String name, int level) {
         Player newPlayer = dataHolder.addPlayer(name, level);
         setNewPlayerPriority(newPlayer);
+        dataHolder.modifyPlayerList(INSERT, newPlayer);
     }
 
     void updatePlayer(Player player) {
@@ -318,6 +322,7 @@ public class Scheduler {
         while(playerIterator.hasNext()) {
             Player player = playerIterator.next();
             if (player.getUuid().equals(playerId)) {
+                dataHolder.modifyPlayerList(DELETE_ONE, player);
                 playerIterator.remove();
                 break;
             }

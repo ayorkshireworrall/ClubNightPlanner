@@ -1,20 +1,30 @@
 package alex.worrall.clubnightplanner.persistence.models.player;
 
 import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+@Entity(tableName = "players")
 public class Player {
-    private int level;
-    private String name;
+    @PrimaryKey
+    @NonNull
     private String uuid;
+    @ColumnInfo(name = "level")
+    private int level;
+    @ColumnInfo(name = "name")
+    private String name;
+    @ColumnInfo(name = "opponents_played")
     private List<String> opponentsPlayed;
-    private int scheduleRanking;
+    @ColumnInfo(name = "session_id")
+    private int sesiondId;
 
-    public Player() {
-    }
+    //Not persisted field
+    private int scheduleRanking;
 
     /**
      * Create a player with a name and league level, generate them a uuid and initialise an empty opponent list
@@ -26,6 +36,7 @@ public class Player {
         this.name = name;
         this.uuid = UUID.randomUUID().toString();
         this.opponentsPlayed = new ArrayList<String>();
+        this.sesiondId = 0;
     }
 
     public int getLevel() {
@@ -58,6 +69,14 @@ public class Player {
 
     public void setOpponentsPlayed(List<String> opponentsPlayed) {
         this.opponentsPlayed = opponentsPlayed;
+    }
+
+    public int getSesiondId() {
+        return sesiondId;
+    }
+
+    public void setSesiondId(int sesiondId) {
+        this.sesiondId = sesiondId;
     }
 
     public int getScheduleRanking() {

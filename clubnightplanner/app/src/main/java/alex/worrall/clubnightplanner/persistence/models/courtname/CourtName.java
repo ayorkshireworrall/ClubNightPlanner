@@ -9,10 +9,8 @@ import androidx.room.PrimaryKey;
 public class CourtName implements Comparable {
     @PrimaryKey(autoGenerate = true)
     private int id;
-
     @ColumnInfo(name = "name")
     private String name;
-
     @ColumnInfo(name = "session_id")
     private int sessionId;
 

@@ -12,6 +12,7 @@ import java.util.Map;
 import alex.worrall.clubnightplanner.persistence.PlannerDatabase;
 import alex.worrall.clubnightplanner.persistence.models.courtname.CourtName;
 import alex.worrall.clubnightplanner.persistence.models.courtname.CourtNameDao;
+import alex.worrall.clubnightplanner.persistence.models.player.PlayerDao;
 import alex.worrall.clubnightplanner.ui.main.fixtures.Fixture;
 import alex.worrall.clubnightplanner.persistence.models.player.Player;
 
@@ -24,7 +25,6 @@ public class DataHolder {
     private PlannerDatabase database;
 
     private DataHolder(Context context) {
-        this.players = new ArrayList<>();
         this.fixtures = new HashMap<>();
         this.dulllNameMapping = doNameMapping();
         database = PlannerDatabase.getInstance(context);
@@ -38,6 +38,9 @@ public class DataHolder {
     }
 
     List<Player> getPlayers() {
+        if (players == null) {
+            players = database.playerDao().getPlayerList();
+        }
         return players;
     }
 
@@ -170,6 +173,32 @@ public class DataHolder {
                         break;
                 }
 
+            }
+        }).start();
+    }
+
+    //Asynchronously modifies the data saved in the player list
+    void modifyPlayerList(final DatabaseAction action, @Nullable final Player player) {
+        final PlayerDao dao = database.playerDao();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                switch (action) {
+                    case INSERT:
+                        dao.insertPlayer(player);
+                        break;
+                    case DELETE_ONE:
+                        dao.deletePlayer(player);
+                        break;
+                    case DELETE_ALL:
+                        List<Player> players = dao.getPlayerList();
+                        for (Player p : players) {
+                            if (p.getSesiondId() == 0) {
+                                dao.deletePlayer(p);
+                            }
+                        }
+                        break;
+                }
             }
         }).start();
     }
