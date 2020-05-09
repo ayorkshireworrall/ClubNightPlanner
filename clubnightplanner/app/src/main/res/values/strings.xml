@@ -3,40 +3,4 @@
     <string name="tab_text_1">Players</string>
     <string name="tab_text_2">Courts</string>
     <string name="tab_text_3">Fixtures</string>
-    <string name="fixtures">Fixtures</string>
-    <string name="players">Players</string>
-    <string name="courts">Courts</string>
-    <string name="title_activity_add_player">Add New Player</string>
-    <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">First Fragment</string>
-    <string name="second_fragment_label">Second Fragment</string>
-    <string name="next">Next</string>
-    <string name="previous">Previous</string>
-
-    <string name="hello_first_fragment">Hello first fragment</string>
-    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
-    <string name="name">Name</string>
-    <string name="submit">Submit</string>
-    <string name="exampleLevel">Level (e.g. 10)</string>
-    <string name="level">Level: %1$d</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_activitiy_edit_player">Edit Player</string>
-    <string name="player_uuid_key">player_uuid</string>
-    <string name="edit">Edit</string>
-    <string name="addFixture">Add Fixture</string>
-    <string name="select_courts">Select Courts</string>
-    <string name="select_time">Select Time</string>
-    <string name="fixture_timeslot_key">FIXTURE_TIMESLOT</string>
-    <string name="fixtureDetails">Fixture Details</string>
-    <string name="no_active_players">No Active Players</string>
-    <string name="no_scheduled_fixtures">No Scheduled Fixtures</string>
-    <string name="no_listed_courts">No Listed Courts</string>
-    <string name="clear_fixtures">Clear Fixtures</string>
-    <string name="search_desc">Search for players</string>
-    <string name="search">Search</string>
-    <string name="clear_courts">Clear Courts</string>
-    <string name="clear_players">Clear Players</string>
-    <string name="reset_all">Reset All Data</string>
 </resources>

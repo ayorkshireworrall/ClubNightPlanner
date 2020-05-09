@@ -4,31 +4,11 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/app_icon_round"
+        android:icon="@mipmap/app_icon"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/app_icon_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity
-            android:name=".ui.main.fixtures.ViewFixtureActivity"
-            android:label="@string/fixtureDetails"
-            android:parentActivityName=".MainActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
-        <activity
-            android:name=".ui.main.fixtures.AddFixtureActivity"
-            android:label="@string/addFixture"
-            android:parentActivityName=".MainActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".ui.main.players.EditPlayerActivity"
-            android:label="@string/title_activitiy_edit_player"
-            android:parentActivityName=".MainActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".ui.main.players.AddPlayerActivity"
-            android:label="@string/title_activity_add_player"
-            android:parentActivityName=".MainActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"

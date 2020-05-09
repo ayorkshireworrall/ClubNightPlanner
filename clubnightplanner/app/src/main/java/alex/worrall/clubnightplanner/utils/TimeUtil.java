@@ -1,4 +1,4 @@
-package alex.worrall.clubnightplanner.service;
+package alex.worrall.clubnightplanner.utils;
 
 public class TimeUtil {
     public static String timeConverter(int hr, int min) {

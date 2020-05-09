@@ -1,4 +1,4 @@
-package alex.worrall.clubnightplanner.service;
+package alex.worrall.clubnightplanner.utils;
 
 public enum Status {
     IN_PROGRESS("In Progress"),

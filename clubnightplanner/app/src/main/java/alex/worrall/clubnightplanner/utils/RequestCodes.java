@@ -1,4 +1,4 @@
-package alex.worrall.clubnightplanner.service;
+package alex.worrall.clubnightplanner.utils;
 
 public class RequestCodes {
     public static final int EDIT_PLAYER_REQUEST = 100;
