@@ -12,6 +12,7 @@ import java.util.Map;
 import alex.worrall.clubnightplanner.persistence.PlannerDatabase;
 import alex.worrall.clubnightplanner.persistence.models.courtname.CourtName;
 import alex.worrall.clubnightplanner.persistence.models.courtname.CourtNameDao;
+import alex.worrall.clubnightplanner.persistence.models.courtname.CourtNameRepository;
 import alex.worrall.clubnightplanner.persistence.models.fixture.FixtureDao;
 import alex.worrall.clubnightplanner.persistence.models.player.PlayerDao;
 import alex.worrall.clubnightplanner.persistence.models.fixture.Fixture;
@@ -24,9 +25,11 @@ public class DataHolder {
     private static DataHolder instance;
     private Map<String, String> dulllNameMapping;
     private PlannerDatabase database;
+    private CourtNameRepository courtNameRepository;
 
     private DataHolder(Context context) {
         this.dulllNameMapping = doNameMapping();
+        this.courtNameRepository = new CourtNameRepository(context);
         database = PlannerDatabase.getInstance(context);
     }
 
@@ -50,7 +53,7 @@ public class DataHolder {
 
     List<CourtName> getAvailableCourts() {
         if (availableCourts == null) {
-            availableCourts = database.courtNamesDao().getCourtNameList();
+            availableCourts = courtNameRepository.getCourtNames();
         }
         return availableCourts;
     }
@@ -96,18 +99,24 @@ public class DataHolder {
     void addCourt(String name) {
         CourtName courtName = new CourtName(name);
         availableCourts.add(courtName);
-        modifyCourtList(DatabaseAction.INSERT, courtName);
+        courtNameRepository.insertCourtName(courtName);
     }
 
     void removeCourt(CourtName courtName) {
         availableCourts.remove(courtName);
+        courtNameRepository.deleteCourtName(courtName);
+    }
+
+    void removeSessionCourts(int sessionId) {
+        availableCourts.clear();
+        courtNameRepository.deleteBySessionId(sessionId);
     }
 
     void clearData() {
         this.players = new ArrayList<>();
         modifyPlayerList(DatabaseAction.DELETE_ALL, null);
         this.availableCourts = new ArrayList<>();
-        modifyCourtList(DatabaseAction.DELETE_ALL, null);
+        courtNameRepository.deleteBySessionId(0);
         this.fixtures = new HashMap<Integer, Fixture>();
         modifyFixtureList(DatabaseAction.DELETE_ALL, null);
     }
@@ -158,34 +167,6 @@ public class DataHolder {
         return orderedFixtures;
     }
 
-
-    //Asynchronously modifies the data saved in the court list
-    void modifyCourtList(final DatabaseAction action, @Nullable final CourtName courtName) {
-        final CourtNameDao dao = database.courtNamesDao();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                switch (action) {
-                    case INSERT:
-                        dao.insertCourtName(courtName);
-                        break;
-                    case DELETE_ONE:
-                        dao.deleteCourtName(courtName);
-                        break;
-                    case DELETE_ALL:
-                        List<CourtName> availableCourts = dao.getCourtNameList();
-                        for (CourtName c : availableCourts) {
-                            if (c.getSessionId() == 0) {
-                                dao.deleteCourtName(c);
-                            }
-                        }
-                        break;
-                }
-
-            }
-        }).start();
-    }
-
     //Asynchronously modifies the data saved in the player list
     void modifyPlayerList(final DatabaseAction action, @Nullable final Player player) {
         final PlayerDao dao = database.playerDao();
@@ -216,7 +197,8 @@ public class DataHolder {
     }
 
     //Asynchronously modifies the data saved in the fixture list
-    void modifyFixtureList(final DatabaseAction action, @Nullable final Fixture fixture) {
+    synchronized void modifyFixtureList(final DatabaseAction action, @Nullable final Fixture fixture) {
+        System.out.println("modifyFixtureList " + action.toString() + " " + fixture);
         final FixtureDao dao = database.fixtureDao();
         new Thread(new Runnable() {
             @Override
@@ -224,9 +206,12 @@ public class DataHolder {
                 switch (action) {
                     case INSERT:
                         dao.insertFixture(fixture);
+                        System.out.println("Inserting fixture");
                         break;
                     case UPDATE:
                         dao.updateFixture(fixture);
+                        System.out.println("Updating Fixture " + fixture);
+                        System.out.println("Status: " + fixture.getPlayStatus());
                         break;
                     case DELETE_ONE:
                         dao.deleteFixture(fixture);

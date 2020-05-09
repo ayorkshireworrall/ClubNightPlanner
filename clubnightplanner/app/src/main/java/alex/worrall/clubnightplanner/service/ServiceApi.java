@@ -84,7 +84,6 @@ public class ServiceApi {
     public void removeCourt(CourtName courtName) {
         scheduler.disableCourt(courtName);
         dataHolder.removeCourt(courtName);
-        dataHolder.modifyCourtList(DatabaseAction.DELETE_ONE, courtName);
     }
 
     public void disableCourt(CourtName courtName) {
@@ -104,10 +103,12 @@ public class ServiceApi {
     }
 
     public void markFixtureComplete(Fixture fixture) {
+        System.out.println("markFixtureComplete Called correctly");
         scheduler.markScheduleComplete(fixture);
     }
 
     public void startFixture(Fixture fixture) {
+        System.out.println("startFixture Called correctly");
         scheduler.startFixture(fixture);
     }
 

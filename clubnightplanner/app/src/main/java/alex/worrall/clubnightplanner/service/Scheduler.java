@@ -72,10 +72,12 @@ public class Scheduler {
             }
             if (setNext) {
                 current.setPlayStatus(Status.NEXT);
+                dataHolder.modifyFixtureList(UPDATE, current);
                 setNext = false;
                 continue;
             }
             current.setPlayStatus(Status.LATER);
+            dataHolder.modifyFixtureList(UPDATE, current);
         }
     }
 
@@ -358,9 +360,8 @@ public class Scheduler {
         List<CourtName> availableCourts = new ArrayList<>(dataHolder.getAvailableCourts());
         for (CourtName courtName : availableCourts) {
             disableCourt(courtName);
-            dataHolder.removeCourt(courtName);
         }
-        dataHolder.modifyCourtList(DELETE_ALL, null);
+        dataHolder.removeSessionCourts(0);
     }
 
     void disableCourt(CourtName courtName) {
@@ -485,6 +486,7 @@ public class Scheduler {
 
     void startFixture(Fixture fixture) {
         fixture.setPlayStatus(Status.IN_PROGRESS);
+        dataHolder.modifyFixtureList(UPDATE, fixture);
         List<Fixture> orderedFixtures = dataHolder.getOrderedFixtures();
         boolean setNext = false;
         for (Fixture current : orderedFixtures) {

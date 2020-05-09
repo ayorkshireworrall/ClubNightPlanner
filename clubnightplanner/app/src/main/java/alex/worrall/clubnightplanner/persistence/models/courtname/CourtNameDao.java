@@ -16,6 +16,8 @@ public interface CourtNameDao {
     void insertCourtName(CourtName courtName);
     @Update
     void updateCourtName(CourtName courtName);
-    @Delete
-    void deleteCourtName(CourtName courtName);
+    @Query("DELETE FROM court_names WHERE id = :courtNameId")
+    void deleteCourtName(Integer courtNameId);
+    @Query("DELETE FROM court_names where session_id = :sessionId")
+    void deleteSession(long sessionId);
 }
