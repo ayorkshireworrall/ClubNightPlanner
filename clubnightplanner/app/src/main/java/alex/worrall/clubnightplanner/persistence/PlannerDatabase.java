@@ -19,7 +19,7 @@ import alex.worrall.clubnightplanner.persistence.typeconverters.StatusConverter;
 
 @Database(
         exportSchema = false,
-        version = 4,
+        version = 6,
         entities = {
                 Fixture.class,
                 CourtName.class,

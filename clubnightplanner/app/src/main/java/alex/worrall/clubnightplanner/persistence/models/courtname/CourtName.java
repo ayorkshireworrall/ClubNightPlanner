@@ -1,36 +1,34 @@
 package alex.worrall.clubnightplanner.persistence.models.courtname;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
+import java.util.UUID;
+
 @Entity(tableName = "court_names")
 public class CourtName implements Comparable {
-    @PrimaryKey(autoGenerate = true)
-    private int id;
+    @PrimaryKey
+    @NonNull
+    private String id;
     @ColumnInfo(name = "name")
     private String name;
     @ColumnInfo(name = "session_id")
     private int sessionId;
 
-    public CourtName(int id, String name, int sessionId) {
-        this.id = id;
-        this.name = name;
-        this.sessionId = sessionId;
-    }
-
-    @Ignore
     public CourtName(String name) {
         this.name = name;
         this.sessionId = 0;
+        this.id = UUID.randomUUID().toString();
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

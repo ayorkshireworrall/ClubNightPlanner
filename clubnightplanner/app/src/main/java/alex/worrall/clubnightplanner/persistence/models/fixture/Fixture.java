@@ -1,10 +1,12 @@
 package alex.worrall.clubnightplanner.persistence.models.fixture;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 import java.util.List;
+import java.util.UUID;
 
 import alex.worrall.clubnightplanner.service.Status;
 import alex.worrall.clubnightplanner.service.TimeUtil;
@@ -12,8 +14,9 @@ import alex.worrall.clubnightplanner.persistence.models.fixture.court.Court;
 
 @Entity(tableName = "fixtures")
 public class Fixture {
-    @PrimaryKey(autoGenerate = true)
-    private int id;
+    @PrimaryKey
+    @NonNull
+    private String id;
     @ColumnInfo(name = "time_slot")
     private int timeSlot;
     @ColumnInfo(name = "courts")
@@ -24,6 +27,7 @@ public class Fixture {
     private int sessionId;
 
     public Fixture(int timeSlot, List<Court> courts) {
+        this.id = UUID.randomUUID().toString();
         this.timeSlot = timeSlot;
         this.courts = courts;
         this.playStatus = Status.LATER;
@@ -46,11 +50,11 @@ public class Fixture {
         return timeSlot;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
