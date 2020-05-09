@@ -29,9 +29,9 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int position) {
         switch (position) {
-            case 0: return new PlayersFragment();
-            case 1: return new CourtsFragment();
-            case 2: return new FixturesFragment();
+            case TabPositions.PLAYERS: return new PlayersFragment();
+            case TabPositions.COURTS: return new CourtsFragment();
+            case TabPositions.FIXTURES: return new FixturesFragment();
             default: return null;
         }
     }
