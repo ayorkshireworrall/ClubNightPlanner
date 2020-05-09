@@ -19,7 +19,7 @@ public class CourtRepository {
         this.courts = dao.getAllCourtsBySessionId(0);
     }
 
-    public LiveData<List<CourtName>> getAvailableCourts() {
+    public LiveData<List<CourtName>> getAllCourts() {
         return courts;
     }
 

@@ -3,4 +3,8 @@
     <string name="tab_text_1">Players</string>
     <string name="tab_text_2">Courts</string>
     <string name="tab_text_3">Fixtures</string>
+
+    <string name="court_fragment_message">Hello court fragment</string>
+    <string name="player_fragment_message">Hello player fragment</string>
+    <string name="fixture_fragment_message">Hello fixture fragment</string>
 </resources>
