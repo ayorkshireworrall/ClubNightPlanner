@@ -198,7 +198,6 @@ public class DataHolder {
 
     //Asynchronously modifies the data saved in the fixture list
     synchronized void modifyFixtureList(final DatabaseAction action, @Nullable final Fixture fixture) {
-        System.out.println("modifyFixtureList " + action.toString() + " " + fixture);
         final FixtureDao dao = database.fixtureDao();
         new Thread(new Runnable() {
             @Override
@@ -206,12 +205,9 @@ public class DataHolder {
                 switch (action) {
                     case INSERT:
                         dao.insertFixture(fixture);
-                        System.out.println("Inserting fixture");
                         break;
                     case UPDATE:
                         dao.updateFixture(fixture);
-                        System.out.println("Updating Fixture " + fixture);
-                        System.out.println("Status: " + fixture.getPlayStatus());
                         break;
                     case DELETE_ONE:
                         dao.deleteFixture(fixture);
