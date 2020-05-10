@@ -50,10 +50,60 @@ public class MainActivity extends AppCompatActivity {
                     case TabPositions.COURTS:
                         toolbar.getMenu().clear();
                         toolbar.inflateMenu(R.menu.courts_bar_menu);
+                        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+                            @Override
+                            public boolean onMenuItemClick(MenuItem item) {
+                                if (item.getItemId() == R.id.clear_players) {
+                                    clearPlayersDialog();
+                                    return true;
+                                }
+                                if (item.getItemId() == R.id.clear_courts) {
+                                    clearCourtsDialog();
+                                    return true;
+                                }
+                                if (item.getItemId() == R.id.clear_fixtures) {
+                                    clearFixturesDialog();
+                                    return true;
+                                }
+                                if (item.getItemId() == R.id.clear_all_data1 ||
+                                        item.getItemId() == R.id.clear_all_data2 ||
+                                        item.getItemId() == R.id.clear_all_data3
+                                ) {
+                                    clearAllDataDialog();
+                                    return true;
+                                }
+                                return false;
+                            }
+                        });
                         break;
                     case TabPositions.FIXTURES:
                         toolbar.getMenu().clear();
                         toolbar.inflateMenu(R.menu.fixtures_bar_menu);
+                        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+                            @Override
+                            public boolean onMenuItemClick(MenuItem item) {
+                                if (item.getItemId() == R.id.clear_players) {
+                                    clearPlayersDialog();
+                                    return true;
+                                }
+                                if (item.getItemId() == R.id.clear_courts) {
+                                    clearCourtsDialog();
+                                    return true;
+                                }
+                                if (item.getItemId() == R.id.clear_fixtures) {
+                                    clearFixturesDialog();
+                                    return true;
+                                }
+                                if (item.getItemId() == R.id.clear_all_data1 ||
+                                        item.getItemId() == R.id.clear_all_data2 ||
+                                        item.getItemId() == R.id.clear_all_data3
+                                ) {
+                                    clearAllDataDialog();
+                                    return true;
+                                }
+                                return false;
+                            }
+                        });
                         break;
                     default:
                         toolbar.getMenu().clear();
@@ -189,39 +239,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onPageScrollStateChanged(int state) {
 
-            }
-
-            private void showItems(int position) {
-                View playerSearch = findViewById(R.id.player_search);
-                View clearPlayers = findViewById(R.id.clear_players);
-                View clearCourts = findViewById(R.id.clear_courts);
-                View clearFixtures = findViewById(R.id.clear_fixtures);
-                switch (position) {
-                    case TabPositions.COURTS:
-                        setVisibility(playerSearch, false);
-                        setVisibility(clearPlayers, false);
-                        setVisibility(clearCourts, true);
-                        setVisibility(clearFixtures, false);
-                        break;
-                    case TabPositions.FIXTURES:
-                        setVisibility(playerSearch, false);
-                        setVisibility(clearPlayers, false);
-                        setVisibility(clearCourts, false);
-                        setVisibility(clearFixtures, true);
-                        break;
-                    default:
-                        setVisibility(playerSearch, true);
-                        setVisibility(clearPlayers, true);
-                        setVisibility(clearCourts, false);
-                        setVisibility(clearFixtures, false);
-                }
-            }
-
-            private void setVisibility(View view, boolean isVisible) {
-                if (view == null) {
-                    return;
-                }
-                view.setVisibility(isVisible ? View.VISIBLE : View.INVISIBLE);
             }
         });
     }
