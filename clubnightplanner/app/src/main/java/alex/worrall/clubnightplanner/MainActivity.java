@@ -7,8 +7,11 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -22,6 +25,7 @@ import alex.worrall.clubnightplanner.model.PlannerViewModel;
 import alex.worrall.clubnightplanner.model.court.CourtName;
 import alex.worrall.clubnightplanner.ui.main.SectionsPagerAdapter;
 import alex.worrall.clubnightplanner.ui.main.TabPositions;
+import alex.worrall.clubnightplanner.ui.main.courts.CourtListAdapter;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -35,12 +39,9 @@ public class MainActivity extends AppCompatActivity {
         ViewPager viewPager = findViewById(R.id.view_pager);
         viewPager.setAdapter(sectionsPagerAdapter);
         TabLayout tabs = findViewById(R.id.tabs);
-
-        mViewModel = new ViewModelProvider(this).get(PlannerViewModel.class);
-
-
         tabs.setupWithViewPager(viewPager);
         final FloatingActionButton fab = findViewById(R.id.fab);
+        mViewModel = new ViewModelProvider(this).get(PlannerViewModel.class);
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -64,22 +65,7 @@ public class MainActivity extends AppCompatActivity {
                                         Snackbar.LENGTH_SHORT)
                                         .setAction("Action", null).show();
                                 String newCourtName = null;
-                                List<CourtName> courts = mViewModel.getAllCourts().getValue();
-                                if (courts != null && courts.size() > 0) {
-                                    System.out.println("Something just registerd");
-                                    CourtName lastCourtName = courts.get(courts.size() - 1);
-                                    newCourtName = "";
-                                    if (lastCourtName.getName().matches("^Court \\d*$")) {
-                                        int count = Integer.parseInt(lastCourtName.getName().replace("Court " ,
-                                                ""));
-                                        newCourtName = "Court " + (count + 1);
-                                    } else {
-                                        newCourtName = "Court " + (courts.size() + 1);
-                                    }
-                                } else {
-                                    newCourtName = "Court 1";
-                                }
-                                mViewModel.addCourt(newCourtName);
+                                mViewModel.addCourt();
                             }
                         });
                         break;
@@ -98,40 +84,10 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onPageSelected(int position) {
-                switch (position) {
-                    case TabPositions.PLAYERS:
-                        fab.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                Snackbar.make(v, "Players Clicked",
-                                        Snackbar.LENGTH_LONG)
-                                        .setAction("Action", null).show();
-                            }
-                        });
-                    case TabPositions.COURTS:
-                        fab.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                Snackbar.make(v, "Courts Clicked",
-                                        Snackbar.LENGTH_LONG)
-                                        .setAction("Action", null).show();
-                            }
-                        });
-                    case TabPositions.FIXTURES:
-                        fab.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                Snackbar.make(v, "Fixtures Clicked",
-                                        Snackbar.LENGTH_LONG)
-                                        .setAction("Action", null).show();
-                            }
-                        });
-                }
             }
 
             @Override
             public void onPageScrollStateChanged(int state) {
-
             }
         });
 

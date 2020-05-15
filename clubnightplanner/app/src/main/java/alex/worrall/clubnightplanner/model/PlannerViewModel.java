@@ -39,8 +39,8 @@ public class PlannerViewModel extends AndroidViewModel {
         return mAllCourts;
     }
 
-    public void addCourt(String courtName) {
-        mCourtRepository.insert(new CourtName(courtName));
+    public void addCourt() {
+        mCourtRepository.insert(new CourtName("courtName"));
     }
 
     public LiveData<List<Player>> getActivePlayers() {

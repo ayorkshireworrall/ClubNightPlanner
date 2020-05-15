@@ -3,11 +3,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.main.CourtsFragment">
+    tools:context=".ui.main.courts.CourtsFragment">
 
     <TextView
+        android:id="@+id/empty_view_courts"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/court_fragment_message" />
+        android:background="@color/colorLighterBackground"
+        android:text="@string/no_courts_listed"
+        android:textColor="@color/textSecondaryLight"
+        android:textSize="40sp"
+        android:textAlignment="center"
+        android:gravity="center_vertical"
+        tools:ignore="RtlCompat" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/courts_recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
