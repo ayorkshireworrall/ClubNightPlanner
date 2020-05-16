@@ -26,6 +26,7 @@ import alex.worrall.clubnightplanner.model.court.CourtName;
 import alex.worrall.clubnightplanner.ui.main.SectionsPagerAdapter;
 import alex.worrall.clubnightplanner.ui.main.TabPositions;
 import alex.worrall.clubnightplanner.ui.main.courts.CourtListAdapter;
+import alex.worrall.clubnightplanner.utils.CourtnameUtils;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -65,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
                                         Snackbar.LENGTH_SHORT)
                                         .setAction("Action", null).show();
                                 String newCourtName = null;
-                                mViewModel.addCourt();
+                                addCourt();
                             }
                         });
                         break;
@@ -98,5 +99,11 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+    }
+
+    private void addCourt() {
+        String courtNameText = CourtnameUtils.getCourtNameText(this,
+                mViewModel.getAllCourts());
+        mViewModel.addCourt(courtNameText);
     }
 }
