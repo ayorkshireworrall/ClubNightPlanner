@@ -18,13 +18,10 @@ public class Player {
     private int level;
     @ColumnInfo(name = "name")
     private String name;
-    @ColumnInfo(name = "opponent_ids")
-    private List<String> opponentIds;
 
     public Player(int level, String name) {
         this.level = level;
         this.name = name;
-        this.opponentIds = new ArrayList<>();
         this.id = UUID.randomUUID().toString();
     }
 
@@ -42,20 +39,12 @@ public class Player {
         return name;
     }
 
-    public List<String> getOpponentIds() {
-        return opponentIds;
-    }
-
     public void setLevel(int level) {
         this.level = level;
     }
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public void setOpponentIds(List<String> opponentIds) {
-        this.opponentIds = opponentIds;
     }
 
     @NonNull
