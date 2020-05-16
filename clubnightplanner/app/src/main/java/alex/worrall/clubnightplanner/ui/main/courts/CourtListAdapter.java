@@ -59,7 +59,7 @@ public class CourtListAdapter extends RecyclerView.Adapter<CourtListAdapter.View
 
         private ViewHolder(@NonNull View itemView) {
             super(itemView);
-            courtName =itemView.findViewById(R.id.courtName);
+            courtName = itemView.findViewById(R.id.courtName);
         }
     }
 }

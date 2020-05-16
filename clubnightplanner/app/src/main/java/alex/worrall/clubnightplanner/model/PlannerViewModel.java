@@ -45,16 +45,20 @@ public class PlannerViewModel extends AndroidViewModel {
         mCourtRepository.insert(new CourtName(courtName));
     }
 
-    public void addPlayer(Player player) {
-        mPlayerRepository.addPlayer(player);
-    }
-
     public void deleteCourt(CourtName courtName) {
         mCourtRepository.deleteCourt(courtName);
     }
 
     public LiveData<List<Player>> getActivePlayers() {
         return mAllPlayers;
+    }
+
+    public void addPlayer(Player player) {
+        mPlayerRepository.addPlayer(player);
+    }
+
+    public void deletePlayer(Player player) {
+        mPlayerRepository.deletePlayer(player);
     }
 
     public LiveData<List<Fixture>> getAllFixtures() {
