@@ -18,6 +18,7 @@ import alex.worrall.clubnightplanner.model.player.Player;
 public class PlayerListAdapter extends RecyclerView.Adapter<PlayerListAdapter.ViewHolder> {
     private List<Player> playerList;
     private LayoutInflater inflater;
+    private ItemClickListener itemClickListener;
 
     public PlayerListAdapter(Context context) {
         inflater = LayoutInflater.from(context);
@@ -57,7 +58,15 @@ public class PlayerListAdapter extends RecyclerView.Adapter<PlayerListAdapter.Vi
         notifyDataSetChanged();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public void setItemClickListener(ItemClickListener itemClickListener) {
+        this.itemClickListener = itemClickListener;
+    }
+
+    public interface ItemClickListener {
+        void onItemClick (View view, int position);
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView name;
         private TextView level;
 
@@ -65,6 +74,14 @@ public class PlayerListAdapter extends RecyclerView.Adapter<PlayerListAdapter.Vi
             super(itemView);
             name = itemView.findViewById(R.id.player_name);
             level = itemView.findViewById(R.id.player_level);
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            if (itemClickListener != null) {
+                itemClickListener.onItemClick(v, getAdapterPosition());
+            }
         }
     }
 }

@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -22,7 +23,7 @@ import alex.worrall.clubnightplanner.R;
 import alex.worrall.clubnightplanner.model.PlannerViewModel;
 import alex.worrall.clubnightplanner.model.player.Player;
 
-public class PlayersFragment extends Fragment {
+public class PlayersFragment extends Fragment implements PlayerListAdapter.ItemClickListener {
     PlannerViewModel mViewModel;
     RecyclerView recyclerView;
     PlayerListAdapter adapter;
@@ -38,6 +39,7 @@ public class PlayersFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_players, container, false);
         recyclerView = rootView.findViewById(R.id.players_list);
         adapter = new PlayerListAdapter(getActivity());
+        adapter.setItemClickListener(this);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         new ItemTouchHelper(simpleCallback).attachToRecyclerView(recyclerView);
@@ -92,5 +94,13 @@ public class PlayersFragment extends Fragment {
             recyclerView.setVisibility(View.VISIBLE);
             emptyListMessage.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public void onItemClick(View view, int position) {
+        System.out.println("Clicked");
+        List<Player> playerList = adapter.getPlayerList();
+        Player player = playerList.get(position);
+        Toast.makeText(getActivity(), "Player clicked " + player.getName(), Toast.LENGTH_SHORT).show();
     }
 }
