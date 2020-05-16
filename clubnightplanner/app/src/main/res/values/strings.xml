@@ -8,4 +8,7 @@
     <string name="player_fragment_message">Hello player fragment</string>
     <string name="fixture_fragment_message">Hello fixture fragment</string>
     <string name="no_courts_listed">No Courts Listed</string>
+    <string name="name">Name</string>
+    <string name="submit">Submit</string>
+    <string name="level_hint">League Level (e.g. 10)</string>
 </resources>

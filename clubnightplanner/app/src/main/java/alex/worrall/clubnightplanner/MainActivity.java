@@ -1,11 +1,13 @@
 package alex.worrall.clubnightplanner;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 
+import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -23,12 +25,16 @@ import java.util.List;
 
 import alex.worrall.clubnightplanner.model.PlannerViewModel;
 import alex.worrall.clubnightplanner.model.court.CourtName;
+import alex.worrall.clubnightplanner.model.player.Player;
 import alex.worrall.clubnightplanner.ui.main.SectionsPagerAdapter;
 import alex.worrall.clubnightplanner.ui.main.TabPositions;
 import alex.worrall.clubnightplanner.ui.main.courts.CourtListAdapter;
+import alex.worrall.clubnightplanner.ui.main.players.AddPlayerActivity;
 import alex.worrall.clubnightplanner.utils.CourtnameUtils;
 
 public class MainActivity extends AppCompatActivity {
+
+    public static final int ADD_PLAYER_ACTIVITY_REQUEST_CODE = 1;
 
     private PlannerViewModel mViewModel;
 
@@ -52,9 +58,9 @@ public class MainActivity extends AppCompatActivity {
                         fab.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                Snackbar.make(v, "Players Clicked",
-                                        Snackbar.LENGTH_SHORT)
-                                        .setAction("Action", null).show();
+                                Intent intent = new Intent(MainActivity.this,
+                                        AddPlayerActivity.class);
+                                startActivityForResult(intent, ADD_PLAYER_ACTIVITY_REQUEST_CODE);
                             }
                         });
                         break;
@@ -62,10 +68,6 @@ public class MainActivity extends AppCompatActivity {
                         fab.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                Snackbar.make(v, "Courts Clicked",
-                                        Snackbar.LENGTH_SHORT)
-                                        .setAction("Action", null).show();
-                                String newCourtName = null;
                                 addCourt();
                             }
                         });
@@ -105,5 +107,16 @@ public class MainActivity extends AppCompatActivity {
         String courtNameText = CourtnameUtils.getCourtNameText(this,
                 mViewModel.getAllCourts());
         mViewModel.addCourt(courtNameText);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == ADD_PLAYER_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
+            String playerName = data.getStringExtra(AddPlayerActivity.EXTRA_NAME);
+            int playerLevel = Integer.parseInt(data.getStringExtra(AddPlayerActivity.EXTRA_LEVEL));
+            mViewModel.addPlayer(new Player(playerLevel, playerName));
+        }
     }
 }

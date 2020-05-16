@@ -10,6 +10,7 @@ import androidx.fragment.app.FragmentPagerAdapter;
 
 import alex.worrall.clubnightplanner.R;
 import alex.worrall.clubnightplanner.ui.main.courts.CourtsFragment;
+import alex.worrall.clubnightplanner.ui.main.players.PlayersFragment;
 
 /**
  * A [FragmentPagerAdapter] that returns a fragment corresponding to
