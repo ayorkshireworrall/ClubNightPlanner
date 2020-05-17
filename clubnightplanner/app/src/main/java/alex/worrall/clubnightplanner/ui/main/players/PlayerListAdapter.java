@@ -62,7 +62,7 @@ public class PlayerListAdapter extends RecyclerView.Adapter<PlayerListAdapter.Vi
         this.itemClickListener = itemClickListener;
     }
 
-    public interface ItemClickListener {
+    interface ItemClickListener {
         void onItemClick (View view, int position);
     }
 
@@ -70,7 +70,7 @@ public class PlayerListAdapter extends RecyclerView.Adapter<PlayerListAdapter.Vi
         private TextView name;
         private TextView level;
 
-        public ViewHolder(@NonNull View itemView) {
+        ViewHolder(@NonNull View itemView) {
             super(itemView);
             name = itemView.findViewById(R.id.player_name);
             level = itemView.findViewById(R.id.player_level);

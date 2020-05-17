@@ -1,5 +1,6 @@
 package alex.worrall.clubnightplanner.model.fixture;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -7,6 +8,7 @@ import androidx.room.PrimaryKey;
 import java.util.List;
 
 import alex.worrall.clubnightplanner.utils.Status;
+import alex.worrall.clubnightplanner.utils.TimeUtil;
 
 @Entity(tableName = "fixtures")
 public class Fixture {
@@ -66,5 +68,11 @@ public class Fixture {
 
     public void setSessionId(int sessionId) {
         this.sessionId = sessionId;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return TimeUtil.timeConverter(timeslot);
     }
 }
