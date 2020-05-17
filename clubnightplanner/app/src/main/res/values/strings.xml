@@ -13,4 +13,6 @@
     <string name="level_hint">League Level (e.g. 10)</string>
     <string name="no_active_players">No Active Players</string>
     <string name="level">Level: %1$d</string>
+    <string name="add_player">Add Player</string>
+    <string name="edit_player">Edit Player</string>
 </resources>

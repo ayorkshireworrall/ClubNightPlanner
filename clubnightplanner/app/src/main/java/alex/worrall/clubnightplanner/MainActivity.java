@@ -8,33 +8,26 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 
 import androidx.annotation.Nullable;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.view.Menu;
-import android.view.MenuItem;
+import android.os.Parcelable;
 import android.view.View;
 
-import java.util.List;
-
 import alex.worrall.clubnightplanner.model.PlannerViewModel;
-import alex.worrall.clubnightplanner.model.court.CourtName;
 import alex.worrall.clubnightplanner.model.player.Player;
 import alex.worrall.clubnightplanner.ui.main.SectionsPagerAdapter;
 import alex.worrall.clubnightplanner.ui.main.TabPositions;
-import alex.worrall.clubnightplanner.ui.main.courts.CourtListAdapter;
 import alex.worrall.clubnightplanner.ui.main.players.AddPlayerActivity;
+import alex.worrall.clubnightplanner.ui.main.players.EditPlayerActivity;
 import alex.worrall.clubnightplanner.utils.CourtnameUtils;
 
 public class MainActivity extends AppCompatActivity {
 
     public static final int ADD_PLAYER_ACTIVITY_REQUEST_CODE = 1;
+    public static final int EDIT_PLAYER_ACTIVITY_REQUEST_CODE = 2;
+    public static final String EXTRA_PLAYER = MainActivity.class.getName() + "PLAYER";
 
     private PlannerViewModel mViewModel;
 
@@ -117,6 +110,12 @@ public class MainActivity extends AppCompatActivity {
             String playerName = data.getStringExtra(AddPlayerActivity.EXTRA_NAME);
             int playerLevel = Integer.parseInt(data.getStringExtra(AddPlayerActivity.EXTRA_LEVEL));
             mViewModel.addPlayer(new Player(playerLevel, playerName));
+        }
+
+        if (requestCode == EDIT_PLAYER_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
+            Bundle extras = data.getExtras();
+            Player player = extras.getParcelable(EXTRA_PLAYER);
+            mViewModel.updatePlayer(player);
         }
     }
 }

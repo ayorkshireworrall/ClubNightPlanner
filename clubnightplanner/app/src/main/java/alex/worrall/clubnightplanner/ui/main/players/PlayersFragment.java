@@ -2,12 +2,12 @@ package alex.worrall.clubnightplanner.ui.main.players;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
+import alex.worrall.clubnightplanner.MainActivity;
 import alex.worrall.clubnightplanner.R;
 import alex.worrall.clubnightplanner.model.PlannerViewModel;
 import alex.worrall.clubnightplanner.model.player.Player;
@@ -101,6 +102,9 @@ public class PlayersFragment extends Fragment implements PlayerListAdapter.ItemC
         System.out.println("Clicked");
         List<Player> playerList = adapter.getPlayerList();
         Player player = playerList.get(position);
-        Toast.makeText(getActivity(), "Player clicked " + player.getName(), Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(getActivity(), EditPlayerActivity.class);
+        intent.putExtra(MainActivity.EXTRA_PLAYER, player);
+        getActivity().startActivityForResult(intent,
+                MainActivity.EDIT_PLAYER_ACTIVITY_REQUEST_CODE);
     }
 }

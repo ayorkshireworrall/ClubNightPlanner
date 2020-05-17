@@ -4,7 +4,6 @@ import android.app.Application;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
-import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 
 import java.util.List;
@@ -15,7 +14,6 @@ import alex.worrall.clubnightplanner.model.fixture.Fixture;
 import alex.worrall.clubnightplanner.model.fixture.FixtureRepository;
 import alex.worrall.clubnightplanner.model.player.Player;
 import alex.worrall.clubnightplanner.model.player.PlayerRepository;
-import alex.worrall.clubnightplanner.utils.LiveDataHolder;
 
 public class PlannerViewModel extends AndroidViewModel {
 
@@ -55,6 +53,14 @@ public class PlannerViewModel extends AndroidViewModel {
 
     public void addPlayer(Player player) {
         mPlayerRepository.addPlayer(player);
+    }
+
+    public Player getPlayer(String playerId) {
+        return mPlayerRepository.getPlayerById(playerId);
+    }
+
+    public void updatePlayer(Player player) {
+        mPlayerRepository.updatePlayer(player);
     }
 
     public void deletePlayer(Player player) {

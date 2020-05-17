@@ -9,12 +9,14 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import alex.worrall.clubnightplanner.MainActivity;
 import alex.worrall.clubnightplanner.R;
 import alex.worrall.clubnightplanner.model.player.Player;
 import alex.worrall.clubnightplanner.model.player.PlayerRepository;
 
-public class AddPlayerActivity extends AppCompatActivity {
+public class EditPlayerActivity extends AppCompatActivity {
 
+    public static final String EXTRA_ID = AddPlayerActivity.class.getName() + ".ID";
     public static final String EXTRA_NAME = AddPlayerActivity.class.getName() + ".NAME";
     public static final String EXTRA_LEVEL = AddPlayerActivity.class.getName() + ".LEVEL";
 
@@ -26,10 +28,15 @@ public class AddPlayerActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_edit_player);
         playerRepository = new PlayerRepository(getApplication());
+        final Bundle extras = getIntent().getExtras();
+        final Player player = extras.getParcelable(MainActivity.EXTRA_PLAYER);
         setContentView(R.layout.activity_add_player);
         nameText = findViewById(R.id.player_form_name);
+        nameText.setText(player.getName());
         levelText = findViewById(R.id.player_form_level);
+        levelText.setText(String.valueOf(player.getLevel()));
         Button submitButton = findViewById(R.id.submit_player_form);
 
         submitButton.setOnClickListener(new View.OnClickListener() {
@@ -39,7 +46,7 @@ public class AddPlayerActivity extends AppCompatActivity {
                 if (name.isEmpty()) {
                     Toast.makeText(getApplicationContext(), "Please add a non empty player name",
                             Toast.LENGTH_SHORT).show();
-                } else if (isNameUsed(name)) {
+                } else if (!name.equals(player.getName()) && isNameUsed(name)) {
                     Toast.makeText(getApplicationContext(), "The name " + name +
                                     " is already in use, please choose another name",
                             Toast.LENGTH_SHORT).show();
@@ -48,8 +55,9 @@ public class AddPlayerActivity extends AppCompatActivity {
                             Toast.LENGTH_SHORT).show();
                 } else {
                     Intent replyIntent = new Intent();
-                    replyIntent.putExtra(EXTRA_NAME, name);
-                    replyIntent.putExtra(EXTRA_LEVEL, levelText.getText().toString());
+                    player.setLevel(Integer.parseInt(levelText.getText().toString()));
+                    player.setName(name);
+                    replyIntent.putExtra(MainActivity.EXTRA_PLAYER, player);
                     setResult(RESULT_OK, replyIntent);
                     finish();
                 }

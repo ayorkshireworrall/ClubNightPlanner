@@ -1,7 +1,6 @@
 package alex.worrall.clubnightplanner.model.player;
 
 import android.app.Application;
-import android.content.Context;
 import android.os.AsyncTask;
 
 import androidx.lifecycle.LiveData;
@@ -22,6 +21,14 @@ public class PlayerRepository {
 
     public LiveData<List<Player>> getActivePlayers() {
         return this.activePlayers;
+    }
+
+    public Player getPlayerById(String playerId) {
+        return playerDao.getPlayerById(playerId);
+    }
+
+    public Player getPlayerByName(String name) {
+        return playerDao.getPlayerByName(name);
     }
 
     public void addPlayer(Player player) {

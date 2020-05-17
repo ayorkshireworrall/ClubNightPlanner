@@ -26,4 +26,10 @@ public interface PlayerDao {
 
     @Update
     void updatePlayer(Player player);
+
+    @Query("SELECT * FROM players WHERE id = :playerId")
+    Player getPlayerById(String playerId);
+
+    @Query("SELECT * FROM players WHERE name = :name")
+    Player getPlayerByName(String name);
 }
