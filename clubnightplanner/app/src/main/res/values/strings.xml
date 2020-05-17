@@ -15,4 +15,8 @@
     <string name="level">Level: %1$d</string>
     <string name="add_player">Add Player</string>
     <string name="edit_player">Edit Player</string>
+    <string name="clear_players">Clear Players</string>
+    <string name="clear_courts">Clear Courts</string>
+    <string name="clear_fixtures">Clear Fixtures</string>
+    <string name="clear_all_data">Clear All Data</string>
 </resources>

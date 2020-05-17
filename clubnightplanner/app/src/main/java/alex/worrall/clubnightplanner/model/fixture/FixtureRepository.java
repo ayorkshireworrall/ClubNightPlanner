@@ -31,8 +31,8 @@ public class FixtureRepository {
         new deleteFixtureAsyncTask(fixtureDao).execute(fixture);
     }
 
-    public void deleteSessionFixtures() {
-        new deleteAllFixturesAsyncTask(fixtureDao).execute(0);
+    public void deleteSessionFixtures(int seshId) {
+        new deleteAllFixturesAsyncTask(fixtureDao).execute(seshId);
     }
 
     public void updateFixture(Fixture fixture) {

@@ -47,6 +47,10 @@ public class PlannerViewModel extends AndroidViewModel {
         mCourtRepository.deleteCourt(courtName);
     }
 
+    public void deleteAllSessionCourts(int seshId) {
+        mCourtRepository.deleteSessionCourts(seshId);
+    }
+
     public LiveData<List<Player>> getActivePlayers() {
         return mAllPlayers;
     }
@@ -67,8 +71,16 @@ public class PlannerViewModel extends AndroidViewModel {
         mPlayerRepository.deletePlayer(player);
     }
 
+    public void deleteAllPlayers() {
+        mPlayerRepository.deleteAllPlayers();
+    }
+
     public LiveData<List<Fixture>> getAllFixtures() {
         return mAllFixtures;
+    }
+
+    public void deleteAllSessionFixtures(int seshId) {
+        mFixtureRepository.deleteSessionFixtures(seshId);
     }
 
 
