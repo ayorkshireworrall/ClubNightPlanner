@@ -1,4 +1,4 @@
-package alex.worrall.clubnightplanner.ui.main;
+package alex.worrall.clubnightplanner.ui.main.fixtures;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
