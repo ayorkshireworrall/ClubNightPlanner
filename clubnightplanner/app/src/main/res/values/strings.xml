@@ -10,7 +10,7 @@
     <string name="no_courts_listed">No Courts Listed</string>
     <string name="name">Name</string>
     <string name="submit">Submit</string>
-    <string name="level_hint">League Level (e.g. 10)</string>
+    <string name="level_hint">League (e.g. 10)</string>
     <string name="no_active_players">No Active Players</string>
     <string name="level">Level: %1$d</string>
     <string name="add_player">Add Player</string>
