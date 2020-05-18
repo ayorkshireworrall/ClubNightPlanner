@@ -1,14 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.main.fixtures.FixturesFragment">
 
-    <!-- TODO: Update blank fragment layout -->
     <TextView
+        android:id="@+id/empty_view_fixtures"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/fixture_fragment_message" />
+        android:background="@color/colorLighterBackground"
+        android:text="@string/no_scheduled_fixtures"
+        android:textColor="@color/textSecondaryLight"
+        android:textSize="40sp"
+        android:textAlignment="center"
+        android:gravity="center_vertical"
+        tools:ignore="RtlCompat" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/fixtures_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</FrameLayout>
