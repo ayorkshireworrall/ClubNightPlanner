@@ -12,6 +12,7 @@ import com.google.android.material.tabs.TabLayout;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,7 +23,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import java.util.List;
+
 import alex.worrall.clubnightplanner.model.PlannerViewModel;
+import alex.worrall.clubnightplanner.model.court.CourtName;
 import alex.worrall.clubnightplanner.model.fixture.Fixture;
 import alex.worrall.clubnightplanner.model.player.Player;
 import alex.worrall.clubnightplanner.ui.main.SectionsPagerAdapter;
@@ -43,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String EXTRA_FIXTURE = MainActivity.class.getName() + "FIXTURE";
 
     private PlannerViewModel mViewModel;
+    private boolean hasCourts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +66,12 @@ public class MainActivity extends AppCompatActivity {
         tabs.setupWithViewPager(viewPager);
         final FloatingActionButton fab = findViewById(R.id.fab);
         mViewModel = new ViewModelProvider(this).get(PlannerViewModel.class);
+        mViewModel.getAllCourts().observe(this, new Observer<List<CourtName>>() {
+            @Override
+            public void onChanged(List<CourtName> courtNames) {
+                hasCourts = !courtNames.isEmpty();
+            }
+        });
         MaterialToolbar toolbar = (MaterialToolbar) findViewById(R.id.topAppBar);
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
@@ -149,9 +160,7 @@ public class MainActivity extends AppCompatActivity {
                         fab.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                Intent intent = new Intent(MainActivity.this,
-                                        AddFixtureActivity.class);
-                                startActivityForResult(intent, ADD_FIXTURE_ACTIVITY_REQUEST_CODE);
+                                addFixture();
                             }
                         });
                         break;
@@ -172,6 +181,17 @@ public class MainActivity extends AppCompatActivity {
             public void onPageScrollStateChanged(int state) {
             }
         });
+    }
+
+    private void addFixture() {
+        if (hasCourts) {
+            Intent intent = new Intent(MainActivity.this,
+                    AddFixtureActivity.class);
+            startActivityForResult(intent, ADD_FIXTURE_ACTIVITY_REQUEST_CODE);
+        } else {
+            Toast.makeText(this, "To generate fixtures add at least one court",
+                    Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void addCourt() {
