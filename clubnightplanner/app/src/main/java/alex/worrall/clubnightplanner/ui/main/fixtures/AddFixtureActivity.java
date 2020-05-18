@@ -1,0 +1,159 @@
+package alex.worrall.clubnightplanner.ui.main.fixtures;
+
+import android.app.TimePickerDialog;
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.TextView;
+import android.widget.TimePicker;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+
+import alex.worrall.clubnightplanner.MainActivity;
+import alex.worrall.clubnightplanner.R;
+import alex.worrall.clubnightplanner.model.PlannerViewModel;
+import alex.worrall.clubnightplanner.model.court.CourtName;
+import alex.worrall.clubnightplanner.model.fixture.Fixture;
+import alex.worrall.clubnightplanner.ui.main.TabPositions;
+import alex.worrall.clubnightplanner.utils.LiveDataHolder;
+import alex.worrall.clubnightplanner.utils.TimeUtil;
+
+public class AddFixtureActivity extends AppCompatActivity {
+    PlannerViewModel viewModel;
+    RecyclerView recyclerView;
+    CourtPickerListAdapter adapter;
+    private int min;
+    private int hr;
+    private int sessionLength = 20;
+    private int defaultStartTime = 1150; //7:30pm
+    private TextView timeOutput;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_add_fixture);
+        recyclerView = findViewById(R.id.fixture_court_picker);
+        adapter = new CourtPickerListAdapter(this);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        final CheckBox allSelected = findViewById(R.id.select_all_courts);
+        allSelected.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                adapter.setCheckedAll(allSelected.isChecked());
+            }
+        });
+        viewModel = new ViewModelProvider(this).get(PlannerViewModel.class);
+        viewModel.getAllCourts().observe(this, new Observer<List<CourtName>>() {
+            @Override
+            public void onChanged(List<CourtName> courtNames) {
+                List<String> courts = new ArrayList<>();
+                for (CourtName courtName : courtNames) {
+                    courts.add(courtName.getName());
+                }
+                adapter.setCourts(courts);
+            }
+        });
+
+        setInitialTime();
+        timeOutput = findViewById(R.id.fixture_time_output);
+        timeOutput.setText(TimeUtil.timeConverter(hr, min));
+        timeOutput.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new TimePickerDialog(AddFixtureActivity.this, timePickerListener, hr, min, false)
+                        .show();
+            }
+        });
+
+        Button submit = findViewById(R.id.add_new_fixture_submit);
+        submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                submit();
+            }
+        });
+    }
+
+    private void setInitialTime() {
+        List<Integer> times = getFixtureTimes(getFixtures());
+        int latest = times.isEmpty() ? defaultStartTime : Collections.max(times);
+        int initialTime = latest + sessionLength;
+        min = initialTime % 60;
+        hr = (initialTime - min) / 60;
+    }
+
+    private List<Fixture> getFixtures() {
+        LiveData<List<Fixture>> allFixtures = viewModel.getAllFixtures();
+        LiveDataHolder<List<Fixture>> dataHolder = new LiveDataHolder<>();
+        return dataHolder.getObservedData(this, allFixtures);
+    }
+
+    private List<Integer> getFixtureTimes(@Nullable List<Fixture> fixtures) {
+        List<Integer> times = new ArrayList<>();
+        if (fixtures != null) {
+            for (Fixture fixture : fixtures) {
+                times.add(fixture.getTimeslot());
+            }
+        }
+        return times;
+    }
+
+    private TimePickerDialog.OnTimeSetListener timePickerListener = new TimePickerDialog.OnTimeSetListener() {
+        @Override
+        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+            hr = hourOfDay;
+            min = minute;
+            timeOutput.setText(TimeUtil.timeConverter(hr, min));
+        }
+    };
+
+    private void submit() {
+        Intent replyIntent = new Intent();
+        Set<String> checkedCourts = adapter.getCheckedCourts();
+        int timeSlot = hr * 60 + min;
+        Fixture earliestFixture = getEarliestFixture();
+        if (earliestFixture != null && timeSlot < earliestFixture.getTimeslot()) {
+            String earliest = TimeUtil.timeConverter(earliestFixture.getTimeslot());
+            Toast.makeText(this, "Please ensure that the fixture time is later than " + earliest,
+                    Toast.LENGTH_SHORT).show();
+        }
+        //TODO schedule fixture with timeslot and available courts
+        setResult(RESULT_OK,replyIntent);
+        finish();
+    }
+
+    private Fixture getEarliestFixture() {
+        //TODO check fixtures and get the earliest
+        return null;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                Intent parentIntent = getParentActivityIntent();
+                parentIntent.putExtra(MainActivity.EXTRA_TAB_POSITION, TabPositions.FIXTURES);
+                navigateUpTo(parentIntent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+}

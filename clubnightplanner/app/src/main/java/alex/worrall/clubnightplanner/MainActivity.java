@@ -23,9 +23,11 @@ import android.view.View;
 import android.widget.Toast;
 
 import alex.worrall.clubnightplanner.model.PlannerViewModel;
+import alex.worrall.clubnightplanner.model.fixture.Fixture;
 import alex.worrall.clubnightplanner.model.player.Player;
 import alex.worrall.clubnightplanner.ui.main.SectionsPagerAdapter;
 import alex.worrall.clubnightplanner.ui.main.TabPositions;
+import alex.worrall.clubnightplanner.ui.main.fixtures.AddFixtureActivity;
 import alex.worrall.clubnightplanner.ui.main.players.AddPlayerActivity;
 import alex.worrall.clubnightplanner.ui.main.players.EditPlayerActivity;
 import alex.worrall.clubnightplanner.utils.ClearDataActions;
@@ -35,7 +37,10 @@ public class MainActivity extends AppCompatActivity {
 
     public static final int ADD_PLAYER_ACTIVITY_REQUEST_CODE = 1;
     public static final int EDIT_PLAYER_ACTIVITY_REQUEST_CODE = 2;
+    public static final int ADD_FIXTURE_ACTIVITY_REQUEST_CODE = 3;
     public static final String EXTRA_PLAYER = MainActivity.class.getName() + "PLAYER";
+    public static final String EXTRA_TAB_POSITION = MainActivity.class.getName() + "TAB_POSITION";
+    public static final String EXTRA_FIXTURE = MainActivity.class.getName() + "FIXTURE";
 
     private PlannerViewModel mViewModel;
 
@@ -46,6 +51,12 @@ public class MainActivity extends AppCompatActivity {
         SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
         ViewPager viewPager = findViewById(R.id.view_pager);
         viewPager.setAdapter(sectionsPagerAdapter);
+        Bundle extras = getIntent().getExtras();
+        int tabPosition = 0;
+        if (extras != null) {
+            tabPosition = extras.getInt(EXTRA_TAB_POSITION);
+        }
+        viewPager.setCurrentItem(tabPosition);
         final TabLayout tabs = findViewById(R.id.tabs);
         tabs.setupWithViewPager(viewPager);
         final FloatingActionButton fab = findViewById(R.id.fab);
@@ -138,9 +149,9 @@ public class MainActivity extends AppCompatActivity {
                         fab.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                Snackbar.make(v, "Fixtures Clicked",
-                                        Snackbar.LENGTH_SHORT)
-                                        .setAction("Action", null).show();
+                                Intent intent = new Intent(MainActivity.this,
+                                        AddFixtureActivity.class);
+                                startActivityForResult(intent, ADD_FIXTURE_ACTIVITY_REQUEST_CODE);
                             }
                         });
                         break;
@@ -183,6 +194,10 @@ public class MainActivity extends AppCompatActivity {
             Bundle extras = data.getExtras();
             Player player = extras.getParcelable(EXTRA_PLAYER);
             mViewModel.updatePlayer(player);
+        }
+
+        if (requestCode == ADD_FIXTURE_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
+            //fixture scheduling work will be done in the add fixture activity
         }
     }
 }

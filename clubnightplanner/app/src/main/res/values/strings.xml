@@ -20,4 +20,7 @@
     <string name="clear_fixtures">Clear Fixtures</string>
     <string name="clear_all_data">Clear All Data</string>
     <string name="no_scheduled_fixtures">No Scheduled Fixtures</string>
+    <string name="select_time">Select Time</string>
+    <string name="select_courts">Select Courts</string>
+    <string name="add_fixture">Add Fixture</string>
 </resources>

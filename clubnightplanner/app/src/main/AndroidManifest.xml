@@ -11,6 +11,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".ui.main.fixtures.AddFixtureActivity"
+            android:label="@string/add_fixture"
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity"/>
+        <activity
             android:name=".ui.main.players.EditPlayerActivity"
             android:label="@string/edit_player"
             android:parentActivityName=".MainActivity"
