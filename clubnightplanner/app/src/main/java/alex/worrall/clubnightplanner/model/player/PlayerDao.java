@@ -24,6 +24,9 @@ public interface PlayerDao {
     @Query("SELECT * FROM players")
     LiveData<List<Player>> getPlayers();
 
+    @Query("SELECT * FROM players ORDER BY level ASC")
+    List<Player> getOrderedPlayers();
+
     @Update
     void updatePlayer(Player player);
 

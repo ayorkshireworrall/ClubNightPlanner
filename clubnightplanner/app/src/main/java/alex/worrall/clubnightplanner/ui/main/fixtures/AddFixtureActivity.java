@@ -32,6 +32,7 @@ import alex.worrall.clubnightplanner.model.court.CourtName;
 import alex.worrall.clubnightplanner.model.fixture.Fixture;
 import alex.worrall.clubnightplanner.ui.main.TabPositions;
 import alex.worrall.clubnightplanner.utils.LiveDataHolder;
+import alex.worrall.clubnightplanner.utils.SchedulerV2;
 import alex.worrall.clubnightplanner.utils.TimeUtil;
 
 public class AddFixtureActivity extends AppCompatActivity {
@@ -128,20 +129,16 @@ public class AddFixtureActivity extends AppCompatActivity {
         Intent replyIntent = new Intent();
         Set<String> checkedCourts = adapter.getCheckedCourts();
         int timeSlot = hr * 60 + min;
-        Fixture earliestFixture = getEarliestFixture();
+        Fixture earliestFixture = viewModel.getMostRecentFixture();
         if (earliestFixture != null && timeSlot < earliestFixture.getTimeslot()) {
             String earliest = TimeUtil.timeConverter(earliestFixture.getTimeslot());
             Toast.makeText(this, "Please ensure that the fixture time is later than " + earliest,
                     Toast.LENGTH_SHORT).show();
         }
         //TODO schedule fixture with timeslot and available courts
+        new SchedulerV2(this).generateSchedule(timeSlot, new ArrayList<>(checkedCourts));
         setResult(RESULT_OK,replyIntent);
         finish();
-    }
-
-    private Fixture getEarliestFixture() {
-        //TODO check fixtures and get the earliest
-        return null;
     }
 
     @Override

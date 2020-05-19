@@ -12,15 +12,21 @@ import alex.worrall.clubnightplanner.model.PlannerDatabase;
 public class PlayerRepository {
     private PlayerDao playerDao;
     private LiveData<List<Player>> activePlayers;
+    private List<Player> orderedPlayers;
 
     public PlayerRepository(Application application) {
         PlannerDatabase database = PlannerDatabase.getDatabase(application);
         playerDao = database.playerDao();
         activePlayers = playerDao.getPlayers();
+        orderedPlayers = playerDao.getOrderedPlayers();
     }
 
     public LiveData<List<Player>> getActivePlayers() {
         return this.activePlayers;
+    }
+
+    public List<Player> getOrderedPlayers() {
+        return this.orderedPlayers;
     }
 
     public Player getPlayerById(String playerId) {

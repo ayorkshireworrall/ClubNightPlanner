@@ -22,6 +22,7 @@ public class Player implements Parcelable {
     private int level;
     @ColumnInfo(name = "name")
     private String name;
+    private int scheduleRanking;
 
     public Player(int level, String name) {
         this.level = level;
@@ -51,6 +52,14 @@ public class Player implements Parcelable {
         this.name = name;
     }
 
+    public int getScheduleRanking() {
+        return scheduleRanking;
+    }
+
+    public void setScheduleRanking(int scheduleRanking) {
+        this.scheduleRanking = scheduleRanking;
+    }
+
     @NonNull
     public String getId() {
         return id;
@@ -77,6 +86,7 @@ public class Player implements Parcelable {
         this.id = in.readString();
         this.name = in.readString();
         this.level = in.readInt();
+        this.scheduleRanking = in.readInt();
     }
 
     @Override
@@ -89,5 +99,6 @@ public class Player implements Parcelable {
         dest.writeString(this.id);
         dest.writeString(this.name);
         dest.writeLong(this.level);
+        dest.writeInt(this.scheduleRanking);
     }
 }

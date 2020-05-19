@@ -8,6 +8,9 @@ import java.util.List;
 
 @Dao
 public interface HistoryDao {
+    @Query("SELECT * FROM player_history")
+    List<History> getAllHistories();
+
     @Query("SELECT * FROM player_history WHERE player_id = :playerId")
     List<History> getPlayerHistory(String playerId);
 

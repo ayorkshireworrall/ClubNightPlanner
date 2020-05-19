@@ -26,4 +26,8 @@ public interface FixtureDao {
 
     @Update
     void updateFixture(Fixture fixture);
+
+    @Query("SELECT * FROM fixtures WHERE play_status = 'Completed' OR play_status = 'In Progress'" +
+            " ORDER BY timeslot DESC LIMIT 1")
+    Fixture getMostRecentFixture();
 }

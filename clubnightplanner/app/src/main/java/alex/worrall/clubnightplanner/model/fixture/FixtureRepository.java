@@ -38,6 +38,9 @@ public class FixtureRepository {
     public void updateFixture(Fixture fixture) {
         new updateFixtureAsyncTask(fixtureDao).execute(fixture);
     }
+    public Fixture getMostRecentFixture() {
+        return fixtureDao.getMostRecentFixture();
+    }
 
     private static class insertFixtureAsyncTask extends AsyncTask<Fixture, Void, Void> {
 

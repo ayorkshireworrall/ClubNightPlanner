@@ -20,7 +20,7 @@ import alex.worrall.clubnightplanner.model.typeconverters.ListStringConverter;
 import alex.worrall.clubnightplanner.model.typeconverters.StatusConverter;
 
 @Database(
-        version = 2,
+        version = 3,
         exportSchema = false,
         entities = {
             CourtName.class,

@@ -17,6 +17,10 @@ public class HistoryRepository {
         this.dao = database.historyDao();
     }
 
+    public List<History> getAllHistories() {
+        return dao.getAllHistories();
+    }
+
     public List<History> getPlayerHistory(String playerId) {
         return dao.getPlayerHistory(playerId);
     }

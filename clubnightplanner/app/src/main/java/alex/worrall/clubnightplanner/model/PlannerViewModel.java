@@ -79,6 +79,10 @@ public class PlannerViewModel extends AndroidViewModel {
         return mAllFixtures;
     }
 
+    public Fixture getMostRecentFixture() {
+        return mFixtureRepository.getMostRecentFixture();
+    }
+
     public void deleteAllSessionFixtures(int seshId) {
         mFixtureRepository.deleteSessionFixtures(seshId);
     }

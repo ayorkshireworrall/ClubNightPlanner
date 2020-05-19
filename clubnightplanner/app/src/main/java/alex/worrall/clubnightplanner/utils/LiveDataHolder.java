@@ -17,14 +17,6 @@ public class LiveDataHolder<T extends Collection> {
     public LiveDataHolder() {
     }
 
-    private T getData() {
-        return data;
-    }
-
-    private void setData(T data) {
-        this.data = data;
-    }
-
     /**
      * Extracts current data from LiveData object
      * @param lifecycleOwner usually the activity
@@ -32,13 +24,12 @@ public class LiveDataHolder<T extends Collection> {
      * @return data
      */
     public T getObservedData(LifecycleOwner lifecycleOwner, LiveData<T> liveData) {
-        final LiveDataHolder<T> dataHolder = new LiveDataHolder<>();
         liveData.observe(lifecycleOwner, new Observer<T>() {
             @Override
             public void onChanged(T data) {
-                dataHolder.setData(data);
+                LiveDataHolder.this.data = data;
             }
         });
-        return dataHolder.getData();
+        return data;
     }
 }
