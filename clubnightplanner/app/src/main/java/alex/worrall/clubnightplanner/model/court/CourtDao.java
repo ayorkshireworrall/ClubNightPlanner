@@ -21,5 +21,8 @@ public interface CourtDao {
     void deleteCourt(CourtName courtName);
 
     @Query("SELECT * FROM court_names WHERE session_id = :sessionId ORDER BY name ASC")
-    LiveData<List<CourtName>> getAllCourtsBySessionId(int sessionId);
+    LiveData<List<CourtName>> getAllCourtsLiveBySessionId(int sessionId);
+
+    @Query("SELECT * FROM court_names WHERE session_id = :sessionId ORDER BY name ASC")
+    List<CourtName> getAllCourtsBySessionId(int sessionId);
 }

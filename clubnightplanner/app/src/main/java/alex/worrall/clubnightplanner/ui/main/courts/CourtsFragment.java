@@ -42,7 +42,7 @@ public class CourtsFragment extends Fragment {
         courtRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         new ItemTouchHelper(simpleCallback).attachToRecyclerView(courtRecyclerView);
         emptyListMessage = rootView.findViewById(R.id.empty_view_courts);
-        mViewModel.getAllCourts().observe(getActivity(), new Observer<List<CourtName>>() {
+        mViewModel.getAllCourtsLive().observe(getActivity(), new Observer<List<CourtName>>() {
             @Override
             public void onChanged(List<CourtName> courtNames) {
                 adapter.setmCourtNames(courtNames);

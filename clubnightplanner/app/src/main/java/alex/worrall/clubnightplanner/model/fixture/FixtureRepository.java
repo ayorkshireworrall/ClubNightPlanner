@@ -16,11 +16,15 @@ public class FixtureRepository {
     public FixtureRepository(Application application) {
         PlannerDatabase database = PlannerDatabase.getDatabase(application);
         fixtureDao = database.fixtureDao();
-        fixtures = fixtureDao.getAllFixtures(0);
+        fixtures = fixtureDao.getAllFixturesLive(0);
     }
 
-    public LiveData<List<Fixture>> getFixtures() {
+    public LiveData<List<Fixture>> getFixturesLive() {
         return fixtures;
+    }
+
+    public List<Fixture> getFixtures() {
+        return fixtureDao.getAllFixtures(0);
     }
 
     public void addFixture(Fixture fixture) {

@@ -6,7 +6,6 @@ import androidx.lifecycle.LiveData;
 import java.util.List;
 
 import alex.worrall.clubnightplanner.model.fixture.Fixture;
-import alex.worrall.clubnightplanner.model.fixture.FixtureDao;
 import alex.worrall.clubnightplanner.model.fixture.FixtureRepository;
 import alex.worrall.clubnightplanner.model.player.Player;
 
@@ -73,9 +72,7 @@ public class ScheduleRankings {
 
     private int getFixtureNumber(int timeslot) {
         int fixtureNumber = 0;
-        LiveDataHolder<List<Fixture>> dataHolder = new LiveDataHolder<>();
-        LiveData<List<Fixture>> liveData = fixtureRepository.getFixtures();
-        List<Fixture> orderedFixtures = dataHolder.getObservedData(lifecycleOwner, liveData);
+        List<Fixture> orderedFixtures = fixtureRepository.getFixtures();
         for (int i = 0; i < orderedFixtures.size(); i++) {
             Fixture fixture = orderedFixtures.get(i);
             if (fixture.getTimeslot() == timeslot) {

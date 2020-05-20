@@ -42,7 +42,7 @@ public class FixturesFragment extends Fragment implements FixturesListAdapter.It
         new ItemTouchHelper(simpleCallback).attachToRecyclerView(recyclerView);
         emptyListMessage = rootView.findViewById(R.id.empty_view_fixtures);
         mViewModel = new ViewModelProvider(getActivity()).get(PlannerViewModel.class);
-        mViewModel.getAllFixtures().observe(getActivity(), new Observer<List<Fixture>>() {
+        mViewModel.getAllFixturesLive().observe(getActivity(), new Observer<List<Fixture>>() {
             @Override
             public void onChanged(List<Fixture> fixtures) {
                 adapter.setFixtures(fixtures);

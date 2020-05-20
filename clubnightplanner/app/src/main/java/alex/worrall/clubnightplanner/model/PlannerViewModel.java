@@ -30,13 +30,17 @@ public class PlannerViewModel extends AndroidViewModel {
         mCourtRepository = new CourtRepository(application);
         mPlayerRepository = new PlayerRepository(application);
         mFixtureRepository = new FixtureRepository(application);
-        mAllCourts = mCourtRepository.getAllCourts();
+        mAllCourts = mCourtRepository.getAllCourtsLive();
         mAllPlayers = mPlayerRepository.getActivePlayers();
-        mAllFixtures = mFixtureRepository.getFixtures();
+        mAllFixtures = mFixtureRepository.getFixturesLive();
     }
 
-    public LiveData<List<CourtName>> getAllCourts() {
+    public LiveData<List<CourtName>> getAllCourtsLive() {
         return mAllCourts;
+    }
+
+    public List<CourtName> getAllCourts() {
+        return mCourtRepository.getAllCourts();
     }
 
     public void addCourt(String courtName) {
@@ -75,8 +79,12 @@ public class PlannerViewModel extends AndroidViewModel {
         mPlayerRepository.deleteAllPlayers();
     }
 
-    public LiveData<List<Fixture>> getAllFixtures() {
+    public LiveData<List<Fixture>> getAllFixturesLive() {
         return mAllFixtures;
+    }
+
+    public List<Fixture> getAllFixtures() {
+        return mFixtureRepository.getFixtures();
     }
 
     public Fixture getMostRecentFixture() {

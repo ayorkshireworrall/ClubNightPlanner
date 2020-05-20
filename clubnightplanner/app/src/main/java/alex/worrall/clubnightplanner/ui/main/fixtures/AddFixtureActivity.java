@@ -14,7 +14,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -31,7 +30,6 @@ import alex.worrall.clubnightplanner.model.PlannerViewModel;
 import alex.worrall.clubnightplanner.model.court.CourtName;
 import alex.worrall.clubnightplanner.model.fixture.Fixture;
 import alex.worrall.clubnightplanner.ui.main.TabPositions;
-import alex.worrall.clubnightplanner.utils.LiveDataHolder;
 import alex.worrall.clubnightplanner.utils.SchedulerV2;
 import alex.worrall.clubnightplanner.utils.TimeUtil;
 
@@ -61,7 +59,7 @@ public class AddFixtureActivity extends AppCompatActivity {
             }
         });
         viewModel = new ViewModelProvider(this).get(PlannerViewModel.class);
-        viewModel.getAllCourts().observe(this, new Observer<List<CourtName>>() {
+        viewModel.getAllCourtsLive().observe(this, new Observer<List<CourtName>>() {
             @Override
             public void onChanged(List<CourtName> courtNames) {
                 List<String> courts = new ArrayList<>();
@@ -93,17 +91,11 @@ public class AddFixtureActivity extends AppCompatActivity {
     }
 
     private void setInitialTime() {
-        List<Integer> times = getFixtureTimes(getFixtures());
+        List<Integer> times = getFixtureTimes(viewModel.getAllFixtures());
         int latest = times.isEmpty() ? defaultStartTime : Collections.max(times);
         int initialTime = latest + sessionLength;
         min = initialTime % 60;
         hr = (initialTime - min) / 60;
-    }
-
-    private List<Fixture> getFixtures() {
-        LiveData<List<Fixture>> allFixtures = viewModel.getAllFixtures();
-        LiveDataHolder<List<Fixture>> dataHolder = new LiveDataHolder<>();
-        return dataHolder.getObservedData(this, allFixtures);
     }
 
     private List<Integer> getFixtureTimes(@Nullable List<Fixture> fixtures) {

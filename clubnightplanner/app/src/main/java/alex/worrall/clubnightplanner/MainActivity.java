@@ -7,7 +7,6 @@ import android.os.Bundle;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 
 import androidx.annotation.Nullable;
@@ -17,7 +16,6 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.os.Parcelable;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,13 +25,11 @@ import java.util.List;
 
 import alex.worrall.clubnightplanner.model.PlannerViewModel;
 import alex.worrall.clubnightplanner.model.court.CourtName;
-import alex.worrall.clubnightplanner.model.fixture.Fixture;
 import alex.worrall.clubnightplanner.model.player.Player;
 import alex.worrall.clubnightplanner.ui.main.SectionsPagerAdapter;
 import alex.worrall.clubnightplanner.ui.main.TabPositions;
 import alex.worrall.clubnightplanner.ui.main.fixtures.AddFixtureActivity;
 import alex.worrall.clubnightplanner.ui.main.players.AddPlayerActivity;
-import alex.worrall.clubnightplanner.ui.main.players.EditPlayerActivity;
 import alex.worrall.clubnightplanner.utils.ClearDataActions;
 import alex.worrall.clubnightplanner.utils.CourtnameUtils;
 
@@ -66,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
         tabs.setupWithViewPager(viewPager);
         final FloatingActionButton fab = findViewById(R.id.fab);
         mViewModel = new ViewModelProvider(this).get(PlannerViewModel.class);
-        mViewModel.getAllCourts().observe(this, new Observer<List<CourtName>>() {
+        mViewModel.getAllCourtsLive().observe(this, new Observer<List<CourtName>>() {
             @Override
             public void onChanged(List<CourtName> courtNames) {
                 hasCourts = !courtNames.isEmpty();

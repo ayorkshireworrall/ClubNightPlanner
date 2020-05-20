@@ -12,13 +12,11 @@ public class CourtnameUtils {
     /**
      * Gets court name based on the currently saved list of names
      * @param lifecycleOwner most likely the activity
-     * @param data court name list
+     * @param courtNames court name list
      * @return
      */
     public static String getCourtNameText(LifecycleOwner lifecycleOwner,
-                                       LiveData<List<CourtName>> data) {
-        final LiveDataHolder<List<CourtName>> dataHolder = new LiveDataHolder<>();
-        List<CourtName> courtNames = dataHolder.getObservedData(lifecycleOwner, data);
+                                       List<CourtName> courtNames) {
         String courtNameText;
         if (courtNames != null && !courtNames.isEmpty()) {
             CourtName lastCourtName = courtNames.get(courtNames.size() - 1);

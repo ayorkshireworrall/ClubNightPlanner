@@ -16,7 +16,10 @@ public interface FixtureDao {
     void insert(Fixture fixture);
 
     @Query("SELECT * FROM fixtures where session_id = :sessionId ORDER BY timeslot ASC")
-    LiveData<List<Fixture>> getAllFixtures(int sessionId);
+    LiveData<List<Fixture>> getAllFixturesLive(int sessionId);
+
+    @Query("SELECT * FROM fixtures where session_id = :sessionId ORDER BY timeslot ASC")
+    List<Fixture> getAllFixtures(int sessionId);
 
     @Delete
     void deleteFixture(Fixture fixture);

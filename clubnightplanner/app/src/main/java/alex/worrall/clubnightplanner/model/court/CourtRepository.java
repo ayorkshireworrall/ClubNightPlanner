@@ -16,11 +16,15 @@ public class CourtRepository {
     public CourtRepository(Application application) {
         PlannerDatabase database = PlannerDatabase.getDatabase(application);
         this.dao =database.courtDao();
-        this.courts = dao.getAllCourtsBySessionId(0);
+        this.courts = dao.getAllCourtsLiveBySessionId(0);
     }
 
-    public LiveData<List<CourtName>> getAllCourts() {
+    public LiveData<List<CourtName>> getAllCourtsLive() {
         return courts;
+    }
+
+    public List<CourtName> getAllCourts() {
+        return dao.getAllCourtsBySessionId(0);
     }
 
     public void insert(CourtName courtName) {
