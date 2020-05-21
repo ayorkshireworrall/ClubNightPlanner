@@ -33,4 +33,7 @@ public interface FixtureDao {
     @Query("SELECT * FROM fixtures WHERE play_status = 'Completed' OR play_status = 'In Progress'" +
             " ORDER BY timeslot DESC LIMIT 1")
     Fixture getMostRecentFixture();
+
+    @Query("SELECT * FROM fixtures WHERE id = :id")
+    Fixture getFixtureById(int id);
 }

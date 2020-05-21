@@ -224,6 +224,7 @@ public class SchedulerV2 {
     }
 
     private void populatePlayerHistoryMap() {
+        playerHistoryMap = new HashMap<>();
         List<Player> players = playerRepository.getOrderedPlayers();
         List<History> histories = historyRepository.getAllHistories();
         //TODO test below for performance (multiple calls to DB instead of double loop)
@@ -242,6 +243,7 @@ public class SchedulerV2 {
     }
 
     private void populatePlayerIdMap(List<Player> players) {
+        playerIdMap = new HashMap<>();
         for (Player player : players) {
             playerIdMap.put(player.getId(), player);
         }

@@ -27,6 +27,10 @@ public class FixtureRepository {
         return fixtureDao.getAllFixtures(0);
     }
 
+    public Fixture getFixtureById(int id) {
+        return fixtureDao.getFixtureById(id);
+    }
+
     public void addFixture(Fixture fixture) {
         new insertFixtureAsyncTask(fixtureDao).execute(fixture);
     }

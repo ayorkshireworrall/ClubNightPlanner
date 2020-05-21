@@ -38,9 +38,10 @@ public class MainActivity extends AppCompatActivity {
     public static final int ADD_PLAYER_ACTIVITY_REQUEST_CODE = 1;
     public static final int EDIT_PLAYER_ACTIVITY_REQUEST_CODE = 2;
     public static final int ADD_FIXTURE_ACTIVITY_REQUEST_CODE = 3;
+    public static final int VIEW_MATCHES_ACTIVITY_REQUEST_CODE = 4;
     public static final String EXTRA_PLAYER = MainActivity.class.getName() + "PLAYER";
     public static final String EXTRA_TAB_POSITION = MainActivity.class.getName() + "TAB_POSITION";
-    public static final String EXTRA_FIXTURE = MainActivity.class.getName() + "FIXTURE";
+    public static final String EXTRA_FIXTURE_ID = MainActivity.class.getName() + "FIXTURE_ID";
 
     private PlannerViewModel mViewModel;
     private boolean hasCourts;

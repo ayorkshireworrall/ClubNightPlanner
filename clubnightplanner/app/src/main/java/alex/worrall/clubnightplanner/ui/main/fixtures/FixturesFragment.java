@@ -1,5 +1,6 @@
 package alex.worrall.clubnightplanner.ui.main.fixtures;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
+import alex.worrall.clubnightplanner.MainActivity;
 import alex.worrall.clubnightplanner.R;
 import alex.worrall.clubnightplanner.model.PlannerViewModel;
 import alex.worrall.clubnightplanner.model.fixture.Fixture;
@@ -69,6 +71,10 @@ public class FixturesFragment extends Fragment implements FixturesListAdapter.It
     @Override
     public void onItemClicked(View view, int position) {
         Fixture fixture = adapter.getFixtures().get(position);
+        Intent intent = new Intent(getActivity(), ViewMatchesActivity.class);
+        intent.putExtra(MainActivity.EXTRA_FIXTURE_ID, fixture.getId());
+        getActivity().startActivityForResult(intent,
+                MainActivity.VIEW_MATCHES_ACTIVITY_REQUEST_CODE);
     }
 
     private void displayEmptyMessage(List<?> data) {

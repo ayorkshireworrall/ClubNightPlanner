@@ -99,7 +99,6 @@ public class PlayersFragment extends Fragment implements PlayerListAdapter.ItemC
 
     @Override
     public void onItemClick(View view, int position) {
-        System.out.println("Clicked");
         Player player = adapter.getPlayerList().get(position);
         Intent intent = new Intent(getActivity(), EditPlayerActivity.class);
         intent.putExtra(MainActivity.EXTRA_PLAYER, player);

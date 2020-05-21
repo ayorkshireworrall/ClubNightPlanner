@@ -42,6 +42,7 @@ public class AddFixtureActivity extends AppCompatActivity {
     private int sessionLength = 20;
     private int defaultStartTime = 1150; //7:30pm
     private TextView timeOutput;
+    private boolean allCheckedDefault = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,13 +52,6 @@ public class AddFixtureActivity extends AppCompatActivity {
         adapter = new CourtPickerListAdapter(this);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        final CheckBox allSelected = findViewById(R.id.select_all_courts);
-        allSelected.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                adapter.setCheckedAll(allSelected.isChecked());
-            }
-        });
         viewModel = new ViewModelProvider(this).get(PlannerViewModel.class);
         viewModel.getAllCourtsLive().observe(this, new Observer<List<CourtName>>() {
             @Override
@@ -67,8 +61,17 @@ public class AddFixtureActivity extends AppCompatActivity {
                     courts.add(courtName.getName());
                 }
                 adapter.setCourts(courts);
+                adapter.setCheckedAll(allCheckedDefault);
             }
         });
+        final CheckBox allSelected = findViewById(R.id.select_all_courts);
+        allSelected.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                adapter.setCheckedAll(allSelected.isChecked());
+            }
+        });
+        allSelected.setChecked(allCheckedDefault);
 
         setInitialTime();
         timeOutput = findViewById(R.id.fixture_time_output);
