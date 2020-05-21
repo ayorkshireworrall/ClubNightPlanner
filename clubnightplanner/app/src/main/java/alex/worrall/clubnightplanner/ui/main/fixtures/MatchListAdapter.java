@@ -9,6 +9,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.Collections;
 import java.util.List;
 
 import alex.worrall.clubnightplanner.R;
@@ -20,6 +21,7 @@ public class MatchListAdapter extends RecyclerView.Adapter<MatchListAdapter.View
 
     public MatchListAdapter(Context context, List<Court> courts) {
         inflater = LayoutInflater.from(context);
+        Collections.sort(courts);
         this.courts = courts;
     }
 
@@ -36,10 +38,10 @@ public class MatchListAdapter extends RecyclerView.Adapter<MatchListAdapter.View
         if (court.getPlayerA() == null) {
             holder.v.setText("Empty Court");
         } else {
-            holder.player1.setText(court.getPlayerA().getName());
-            holder.player2.setText(court.getPlayerB().getName());
-            holder.court.setText(court.getCourtName());
+            holder.player1.setText(court.getPlayerA().toString());
+            holder.player2.setText(court.getPlayerB().toString());
         }
+        holder.court.setText(court.getCourtName());
     }
 
     @Override

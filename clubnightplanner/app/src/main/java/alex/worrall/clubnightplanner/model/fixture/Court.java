@@ -2,7 +2,7 @@ package alex.worrall.clubnightplanner.model.fixture;
 
 import alex.worrall.clubnightplanner.model.player.Player;
 
-public class Court {
+public class Court implements Comparable<Court> {
     private String courtName;
     private Player playerA;
     private Player playerB;
@@ -35,5 +35,10 @@ public class Court {
 
     public void setPlayerB(Player playerB) {
         this.playerB = playerB;
+    }
+
+    @Override
+    public int compareTo(Court o) {
+        return courtName.compareTo(o.getCourtName());
     }
 }
