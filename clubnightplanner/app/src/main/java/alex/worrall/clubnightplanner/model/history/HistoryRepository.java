@@ -29,6 +29,10 @@ public class HistoryRepository {
         new deleteHistoryAsyncTask(dao).execute(playerId, opponentId);
     }
 
+    public void deleteAllHistory() {
+        new deleteAllHistoryAsyncTask(dao).execute();
+    }
+
     public void insertHistory(History history) {
         new insertHistoryAsyncTask(dao).execute(history);
     }
@@ -57,6 +61,20 @@ public class HistoryRepository {
         @Override
         protected Void doInBackground(History... histories) {
             dao.insertHistory(histories[0]);
+            return null;
+        }
+    }
+
+    private static class deleteAllHistoryAsyncTask extends AsyncTask<Void, Void, Void> {
+        HistoryDao dao;
+
+        public deleteAllHistoryAsyncTask(HistoryDao dao) {
+            this.dao = dao;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            dao.deleteAllHistory();
             return null;
         }
     }

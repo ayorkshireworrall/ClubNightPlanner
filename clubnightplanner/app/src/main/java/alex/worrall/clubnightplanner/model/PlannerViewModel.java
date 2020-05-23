@@ -12,6 +12,7 @@ import alex.worrall.clubnightplanner.model.court.CourtName;
 import alex.worrall.clubnightplanner.model.court.CourtRepository;
 import alex.worrall.clubnightplanner.model.fixture.Fixture;
 import alex.worrall.clubnightplanner.model.fixture.FixtureRepository;
+import alex.worrall.clubnightplanner.model.history.HistoryRepository;
 import alex.worrall.clubnightplanner.model.player.Player;
 import alex.worrall.clubnightplanner.model.player.PlayerRepository;
 
@@ -20,6 +21,7 @@ public class PlannerViewModel extends AndroidViewModel {
     private CourtRepository mCourtRepository;
     private PlayerRepository mPlayerRepository;
     private FixtureRepository mFixtureRepository;
+    private HistoryRepository mHistoryRepository;
 
     private LiveData<List<CourtName>> mAllCourts;
     private LiveData<List<Player>> mAllPlayers;
@@ -30,6 +32,7 @@ public class PlannerViewModel extends AndroidViewModel {
         mCourtRepository = new CourtRepository(application);
         mPlayerRepository = new PlayerRepository(application);
         mFixtureRepository = new FixtureRepository(application);
+        mHistoryRepository = new HistoryRepository(application);
         mAllCourts = mCourtRepository.getAllCourtsLive();
         mAllPlayers = mPlayerRepository.getActivePlayers();
         mAllFixtures = mFixtureRepository.getFixturesLive();
@@ -93,6 +96,7 @@ public class PlannerViewModel extends AndroidViewModel {
 
     public void deleteAllSessionFixtures(int seshId) {
         mFixtureRepository.deleteSessionFixtures(seshId);
+        mHistoryRepository.deleteAllHistory();
     }
 
 

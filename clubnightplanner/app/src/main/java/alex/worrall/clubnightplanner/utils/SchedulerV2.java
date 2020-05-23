@@ -34,15 +34,16 @@ public class SchedulerV2 {
         fixtureRepository = new FixtureRepository(activity.getApplication());
         courtRepository = new CourtRepository(activity.getApplication());
         historyRepository = new HistoryRepository(activity.getApplication());
-        populatePlayerHistoryMap();
     }
 
     public void generateSchedule(int timeslot, List<String> availableCourts) {
+        populatePlayerHistoryMap();
         List<Player> players = playerRepository.getOrderedPlayers();
         List<Court> courts = null;
         if (players.size() > 1) {
             populatePlayerIdMap(players);
             ScheduleRankings scheduleRankings = new ScheduleRankings(fixtureRepository, activity);
+            scheduleRankings.addPlayerRankings(players, timeslot, availableCourts);
             List<Player> priorityPlayers = getPriorityPlayers(players);
             List<Player[]> playerMatchings = getPlayerMatchings(availableCourts, players, priorityPlayers);
             courts = new ArrayList<>();
@@ -189,7 +190,8 @@ public class SchedulerV2 {
     }
 
     private List<Player> getPriorityPlayers(List<Player> players) {
-        List<Player> priorityPlayers = getNextPlayers(players);
+        List<Player> orderedPlayers = getNextPlayers(players);
+        List<Player> priorityPlayers = new ArrayList<>(orderedPlayers);
         Player firstPlayer = priorityPlayers.get(0);
         Player lastPlayer = priorityPlayers.get(players.size() - 1);
         List<History> firstPlayerHistory = playerHistoryMap.get(firstPlayer);
@@ -197,7 +199,7 @@ public class SchedulerV2 {
         int count = 1;
         while (firstPlayerHistory.size() != lastPlayerHistory.size()) {
             priorityPlayers.remove(lastPlayer);
-            lastPlayer = players.get(players.size() - count++);
+            lastPlayer = orderedPlayers.get(orderedPlayers.size() - ++count);
             lastPlayerHistory = playerHistoryMap.get(lastPlayer);
         }
         return priorityPlayers;
@@ -234,7 +236,7 @@ public class SchedulerV2 {
         for (Player player : players) {
             List<History> playerHistory = new ArrayList<>();
             for (History history : histories) {
-                if (history.getPlayerId() == player.getId()) {
+                if (history.getPlayerId().equals(player.getId())) {
                     playerHistory.add(history);
                 }
             }
