@@ -1,5 +1,7 @@
 package alex.worrall.clubnightplanner.ui.main.fixtures;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -8,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -21,6 +24,7 @@ import alex.worrall.clubnightplanner.MainActivity;
 import alex.worrall.clubnightplanner.R;
 import alex.worrall.clubnightplanner.model.PlannerViewModel;
 import alex.worrall.clubnightplanner.model.fixture.Fixture;
+import alex.worrall.clubnightplanner.utils.SchedulerV2;
 
 public class FixturesFragment extends Fragment implements FixturesListAdapter.ItemClickListener {
     PlannerViewModel mViewModel;
@@ -64,6 +68,9 @@ public class FixturesFragment extends Fragment implements FixturesListAdapter.It
         @Override
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
             //TODO start / delete fixture and move notify into cancel action for alert dialog
+            List<Fixture> fixtures = adapter.getFixtures();
+            Fixture fixture = fixtures.get(viewHolder.getAdapterPosition());
+            deleteFixtureDialog(fixture);
             adapter.notifyDataSetChanged();
         }
     };
@@ -85,5 +92,25 @@ public class FixturesFragment extends Fragment implements FixturesListAdapter.It
             recyclerView.setVisibility(View.VISIBLE);
             emptyListMessage.setVisibility(View.GONE);
         }
+    }
+
+    private void deleteFixtureDialog(final Fixture fixture) {
+        new AlertDialog.Builder(this.getActivity())
+                .setTitle("Delete Fixture")
+                .setMessage("Are you sure you wish to permanently delete this fixture?")
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        SchedulerV2 schedulerV2 =
+                                new SchedulerV2((AppCompatActivity) FixturesFragment.this.getActivity());
+                        schedulerV2.unschedule(fixture);
+                    }
+                })
+                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        adapter.notifyDataSetChanged();
+                    }
+                }).show();
     }
 }

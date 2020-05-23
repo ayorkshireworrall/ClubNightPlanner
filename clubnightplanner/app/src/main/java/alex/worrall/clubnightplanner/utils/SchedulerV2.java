@@ -61,6 +61,20 @@ public class SchedulerV2 {
         fixtureRepository.addFixture(new Fixture(timeslot, courts));
     }
 
+    public void unschedule(Fixture fixture) {
+        List<Court> courts = fixture.getCourts();
+        for (Court court : courts) {
+            if (court.getPlayerA() == null) {
+                continue;
+            }
+            String id1 = court.getPlayerA().getId();
+            String id2 = court.getPlayerB().getId();
+            historyRepository.deleteHistory(id1, id2);
+            historyRepository.deleteHistory(id2, id1);
+        }
+        fixtureRepository.deleteFixture(fixture);
+    }
+
     private List<Player[]> getPlayerMatchings(List<String> availableCourts, List<Player> players,
                                               List<Player> priorityPlayers) {
         int nonPriorityCap = 2*availableCourts.size() - priorityPlayers.size();
