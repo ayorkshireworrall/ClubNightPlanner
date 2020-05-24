@@ -8,8 +8,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
@@ -18,13 +20,16 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import alex.worrall.clubnightplanner.MainActivity;
 import alex.worrall.clubnightplanner.R;
 import alex.worrall.clubnightplanner.model.PlannerViewModel;
+import alex.worrall.clubnightplanner.model.fixture.Court;
 import alex.worrall.clubnightplanner.model.fixture.Fixture;
 import alex.worrall.clubnightplanner.utils.SchedulerV2;
+import alex.worrall.clubnightplanner.utils.Status;
 
 public class FixturesFragment extends Fragment implements FixturesListAdapter.ItemClickListener {
     PlannerViewModel mViewModel;
@@ -67,11 +72,17 @@ public class FixturesFragment extends Fragment implements FixturesListAdapter.It
 
         @Override
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-            //TODO start / delete fixture and move notify into cancel action for alert dialog
             List<Fixture> fixtures = adapter.getFixtures();
             Fixture fixture = fixtures.get(viewHolder.getAdapterPosition());
-            deleteFixtureDialog(fixture);
-            adapter.notifyDataSetChanged();
+            if (fixture.getId() == mViewModel.getChangeableFixture().getId()) {
+                changeFixture(fixture);
+            } else if (fixture.getPlayStatus() != Status.COMPLETED){
+                deleteFixtureDialog(fixture);
+            } else {
+                Toast.makeText(getContext(), "No actions available for completed fixtures",
+                        Toast.LENGTH_SHORT).show();
+                adapter.notifyDataSetChanged();
+            }
         }
     };
 
@@ -94,6 +105,64 @@ public class FixturesFragment extends Fragment implements FixturesListAdapter.It
         }
     }
 
+    private void changeFixture(Fixture fixture) {
+        if (fixture.getPlayStatus().equals(Status.LATER)) {
+            startFixtureDialog(fixture);
+        } else if (fixture.getPlayStatus().equals(Status.IN_PROGRESS)){
+            completeFixtureDialog(fixture);
+        }
+    }
+
+    private void startFixtureDialog(final Fixture fixture) {
+        new AlertDialog.Builder(this.getActivity())
+                .setTitle("Start Fixture")
+                .setMessage("Are you sure you wish to start this fixture?")
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        fixture.setPlayStatus(Status.IN_PROGRESS);
+                        Fixture nextFixture = getNextFixture(fixture);
+                        nextFixture.setPlayStatus(Status.NEXT);
+                        mViewModel.updateFixtures(fixture, nextFixture);
+                    }
+                })
+                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //Do nothing
+                        adapter.notifyDataSetChanged();
+                    }
+                }).show();
+    }
+
+    private void completeFixtureDialog(final Fixture fixture) {
+        new AlertDialog.Builder(this.getActivity())
+                .setTitle("Complete Fixture")
+                .setMessage("Are you sure you wish to mark this fixture as complete?")
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        fixture.setPlayStatus(Status.COMPLETED);
+                        Fixture inProgressFixture = getNextFixture(fixture);
+                        if (inProgressFixture != null) {
+                            inProgressFixture.setPlayStatus(Status.IN_PROGRESS);
+                        }
+                        Fixture nextFixture = getNextFixture(inProgressFixture);
+                        if (nextFixture != null) {
+                            nextFixture.setPlayStatus(Status.NEXT);
+                        }
+                        mViewModel.updateFixtures(fixture, inProgressFixture, nextFixture);
+                    }
+                })
+                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //Do nothing
+                        adapter.notifyDataSetChanged();
+                    }
+                }).show();
+    }
+
     private void deleteFixtureDialog(final Fixture fixture) {
         new AlertDialog.Builder(this.getActivity())
                 .setTitle("Delete Fixture")
@@ -104,6 +173,17 @@ public class FixturesFragment extends Fragment implements FixturesListAdapter.It
                         SchedulerV2 schedulerV2 =
                                 new SchedulerV2((AppCompatActivity) FixturesFragment.this.getActivity());
                         schedulerV2.unschedule(fixture);
+                        List<Fixture> laterFixtures = getFollowingFixtures(fixture.getTimeslot());
+                        for (Fixture later : laterFixtures) {
+                            schedulerV2.unschedule(later);
+                        }
+                        for (Fixture later : laterFixtures) {
+                            List<String> courtnames = new ArrayList<>();
+                            for (Court court : later.getCourts()) {
+                                courtnames.add(court.getCourtName());
+                            }
+                            schedulerV2.generateSchedule(later.getTimeslot(), courtnames);
+                        }
                     }
                 })
                 .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
@@ -112,5 +192,27 @@ public class FixturesFragment extends Fragment implements FixturesListAdapter.It
                         adapter.notifyDataSetChanged();
                     }
                 }).show();
+    }
+
+    private List<Fixture> getFollowingFixtures(int timeslot) {
+        List<Fixture> fixtures = new ArrayList<>();
+        for (Fixture fixture : adapter.getFixtures()) {
+            if (fixture.getTimeslot() > timeslot) {
+                fixtures.add(fixture);
+            }
+        }
+        return fixtures;
+    }
+
+    private Fixture getNextFixture(@Nullable Fixture current) {
+        if (current == null) {
+            return null;
+        }
+        for (Fixture fixture : adapter.getFixtures()) {
+            if (fixture.getTimeslot() > current.getTimeslot()) {
+                return fixture;
+            }
+        }
+        return null;
     }
 }

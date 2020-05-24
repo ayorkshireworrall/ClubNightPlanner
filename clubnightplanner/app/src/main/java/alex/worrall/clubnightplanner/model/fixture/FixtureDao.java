@@ -30,10 +30,27 @@ public interface FixtureDao {
     @Update
     void updateFixture(Fixture fixture);
 
-    @Query("SELECT * FROM fixtures WHERE play_status = 'Completed' OR play_status = 'In Progress'" +
-            " ORDER BY timeslot DESC LIMIT 1")
+    @Query("SELECT * FROM fixtures WHERE play_status = 'COMPLETED' OR play_status = 'IN_PROGRESS'" +
+            "AND session_id = 0 ORDER BY timeslot DESC LIMIT 1")
     Fixture getMostRecentFixture();
 
     @Query("SELECT * FROM fixtures WHERE id = :id")
     Fixture getFixtureById(int id);
+
+    //TODO reuse when > query actually works
+//    @Query("SELECT * FROM fixtures WHERE timeslot > :timeslot & session_id = 0 ORDER BY timeslot " +
+//            "ASC LIMIT 1")
+//    Fixture getNextFixture(int timeslot);
+//
+//    @Query("SELECT * FROM fixtures WHERE timeslot > :timeslot & session_id = 0")
+//    List<Fixture> getFollowingFixtures(int timeslot);
+
+    /**
+     * If there are no "IN PROGRESS" fixtures, the first "LATEST" fixture can be started so we
+     * return this. Else return the "IN PROGRESS" fixture
+     * @return a fixture that can be started or completed
+     */
+    @Query("SELECT * FROM fixtures where play_status = 'IN_PROGRESS' OR play_status = 'LATER' AND" +
+            " session_id = 0")
+    Fixture getChangeableFixture();
 }

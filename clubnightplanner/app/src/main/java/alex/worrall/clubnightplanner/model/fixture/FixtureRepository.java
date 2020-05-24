@@ -32,11 +32,13 @@ public class FixtureRepository {
     }
 
     public void addFixture(Fixture fixture) {
-        new insertFixtureAsyncTask(fixtureDao).execute(fixture);
+        fixtureDao.insert(fixture);
+//        new insertFixtureAsyncTask(fixtureDao).execute(fixture);
     }
 
     public void deleteFixture(Fixture fixture) {
-        new deleteFixtureAsyncTask(fixtureDao).execute(fixture);
+        fixtureDao.deleteFixture(fixture);
+//        new deleteFixtureAsyncTask(fixtureDao).execute(fixture);
     }
 
     public void deleteSessionFixtures(int seshId) {
@@ -46,8 +48,13 @@ public class FixtureRepository {
     public void updateFixture(Fixture fixture) {
         new updateFixtureAsyncTask(fixtureDao).execute(fixture);
     }
+
     public Fixture getMostRecentFixture() {
         return fixtureDao.getMostRecentFixture();
+    }
+
+    public Fixture getChangeableFixture() {
+        return fixtureDao.getChangeableFixture();
     }
 
     private static class insertFixtureAsyncTask extends AsyncTask<Fixture, Void, Void> {

@@ -15,7 +15,7 @@ public class Fixture {
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
     private int id;
-    @ColumnInfo(name = "timeslot")
+    @ColumnInfo(name = "timeslot", typeAffinity = 3)
     private int timeslot;
     @ColumnInfo(name = "play_status")
     private Status playStatus;

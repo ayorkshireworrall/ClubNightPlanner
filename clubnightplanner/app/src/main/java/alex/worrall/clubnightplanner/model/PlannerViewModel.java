@@ -94,6 +94,18 @@ public class PlannerViewModel extends AndroidViewModel {
         return mFixtureRepository.getMostRecentFixture();
     }
 
+    public Fixture getChangeableFixture() {
+        return mFixtureRepository.getChangeableFixture();
+    }
+
+    public void updateFixtures(Fixture... fixtures) {
+        for (Fixture fixture : fixtures) {
+            if (fixture != null) {
+                mFixtureRepository.updateFixture(fixture);
+            }
+        }
+    }
+
     public void deleteAllSessionFixtures(int seshId) {
         mFixtureRepository.deleteSessionFixtures(seshId);
         mHistoryRepository.deleteAllHistory();

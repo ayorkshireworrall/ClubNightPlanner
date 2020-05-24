@@ -75,10 +75,11 @@ public class SchedulerV2 {
         fixtureRepository.deleteFixture(fixture);
     }
 
-    private List<Player[]> getPlayerMatchings(List<String> availableCourts, List<Player> players,
+    private List<Player[]> getPlayerMatchings(List<String> availableCourts, List<Player> playerList,
                                               List<Player> priorityPlayers) {
         int nonPriorityCap = 2*availableCourts.size() - priorityPlayers.size();
         List<Player[]> finalPlayerMatchings = new ArrayList<>();
+        List<Player> players = new ArrayList<>(playerList);
         while (finalPlayerMatchings.size() < availableCourts.size() && players.size() > 1) {
             if (nonPriorityCap > 1) {
                 Player[] matchPair = getPair(players);

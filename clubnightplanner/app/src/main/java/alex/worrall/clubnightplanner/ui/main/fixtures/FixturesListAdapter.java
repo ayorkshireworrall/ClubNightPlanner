@@ -39,6 +39,8 @@ public class FixturesListAdapter extends RecyclerView.Adapter<FixturesListAdapte
             holder.time.setText(fixture.toString());
             if (fixture.getPlayStatus().equals(Status.COMPLETED)) {
                 holder.time.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+            } else {
+                holder.time.setPaintFlags(0);
             }
             holder.status.setText(fixture.getPlayStatus().getMessage());
         }

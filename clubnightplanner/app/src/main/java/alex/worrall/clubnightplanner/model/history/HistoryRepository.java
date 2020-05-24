@@ -26,7 +26,8 @@ public class HistoryRepository {
     }
 
     public void deleteHistory(String playerId, String opponentId) {
-        new deleteHistoryAsyncTask(dao).execute(playerId, opponentId);
+        dao.deleteHistory(playerId, opponentId);
+//        new deleteHistoryAsyncTask(dao).execute(playerId, opponentId);
     }
 
     public void deleteAllHistory() {
@@ -34,7 +35,8 @@ public class HistoryRepository {
     }
 
     public void insertHistory(History history) {
-        new insertHistoryAsyncTask(dao).execute(history);
+        dao.insertHistory(history);
+//        new insertHistoryAsyncTask(dao).execute(history);
     }
 
     private static class deleteHistoryAsyncTask extends AsyncTask<String, Void, Void> {

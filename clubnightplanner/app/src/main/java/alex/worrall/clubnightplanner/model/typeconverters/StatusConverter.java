@@ -16,18 +16,21 @@ public class StatusConverter implements Serializable {
         if (status == null) {
             return (null);
         }
-        Gson gson = new Gson();
-        Type type = new TypeToken<Status>(){}.getType();
-        return gson.toJson(status, type);
+
+//        Gson gson = new Gson();
+//        Type type = new TypeToken<Status>(){}.getType();
+//        return gson.toJson(status, type);
+        return status.toString();
     }
 
     @TypeConverter
-    public Status toStatus (String jsonString) {
-        if (jsonString == null) {
+    public Status toStatus (String statusString) {
+        if (statusString == null) {
             return (null);
         }
-        Gson gson = new Gson();
-        Type type = new TypeToken<Status>(){}.getType();
-        return gson.fromJson(jsonString, type);
+//        Gson gson = new Gson();
+//        Type type = new TypeToken<Status>(){}.getType();
+//        return gson.fromJson(jsonString, type);
+        return Status.valueOf(statusString);
     }
 }
