@@ -25,6 +25,7 @@ import java.util.List;
 
 import alex.worrall.clubnightplanner.model.PlannerViewModel;
 import alex.worrall.clubnightplanner.model.court.CourtName;
+import alex.worrall.clubnightplanner.model.fixture.Fixture;
 import alex.worrall.clubnightplanner.model.player.Player;
 import alex.worrall.clubnightplanner.ui.main.SectionsPagerAdapter;
 import alex.worrall.clubnightplanner.ui.main.TabPositions;
@@ -32,6 +33,7 @@ import alex.worrall.clubnightplanner.ui.main.fixtures.AddFixtureActivity;
 import alex.worrall.clubnightplanner.ui.main.players.AddPlayerActivity;
 import alex.worrall.clubnightplanner.utils.ClearDataActions;
 import alex.worrall.clubnightplanner.utils.CourtnameUtils;
+import alex.worrall.clubnightplanner.utils.SchedulerV2;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -63,6 +65,12 @@ public class MainActivity extends AppCompatActivity {
         tabs.setupWithViewPager(viewPager);
         final FloatingActionButton fab = findViewById(R.id.fab);
         mViewModel = new ViewModelProvider(this).get(PlannerViewModel.class);
+        mViewModel.getActivePlayers().observe(this, new Observer<List<Player>>() {
+            @Override
+            public void onChanged(List<Player> players) {
+                reschedule();
+            }
+        });
         mViewModel.getAllCourtsLive().observe(this, new Observer<List<CourtName>>() {
             @Override
             public void onChanged(List<CourtName> courtNames) {
@@ -216,5 +224,12 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == ADD_FIXTURE_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
             //fixture scheduling work will be done in the add fixture activity
         }
+    }
+
+    private void reschedule() {
+        List<Fixture> reschedulableFixtures =
+                mViewModel.getReschedulableFixtures();
+        SchedulerV2 schedulerV2 = new SchedulerV2(this);
+        schedulerV2.reschedule(reschedulableFixtures);
     }
 }

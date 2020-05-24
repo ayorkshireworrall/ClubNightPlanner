@@ -50,7 +50,11 @@ public interface FixtureDao {
      * return this. Else return the "IN PROGRESS" fixture
      * @return a fixture that can be started or completed
      */
-    @Query("SELECT * FROM fixtures where play_status = 'IN_PROGRESS' OR play_status = 'LATER' AND" +
-            " session_id = 0")
+    @Query("SELECT * FROM fixtures WHERE play_status = 'IN_PROGRESS' OR play_status = 'LATER' AND" +
+            " session_id = 0 ORDER BY timeslot ASC LIMIT 1")
     Fixture getChangeableFixture();
+
+    @Query("SELECT * FROM fixtures WHERE play_status = 'NEXT' OR play_status = 'LATER' AND " +
+            "session_id = 0")
+    List<Fixture> getReschedulableFixtures();
 }

@@ -9,6 +9,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -21,7 +22,8 @@ public class MatchListAdapter extends RecyclerView.Adapter<MatchListAdapter.View
 
     public MatchListAdapter(Context context, List<Court> courts) {
         inflater = LayoutInflater.from(context);
-        Collections.sort(courts);
+        List<Court> sortedCourts = courts != null ? courts : new ArrayList<Court>();
+        Collections.sort(sortedCourts);
         this.courts = courts;
     }
 

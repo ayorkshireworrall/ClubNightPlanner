@@ -76,6 +76,7 @@ public class PlannerViewModel extends AndroidViewModel {
 
     public void deletePlayer(Player player) {
         mPlayerRepository.deletePlayer(player);
+        mHistoryRepository.deletePlayerHistory(player.getId());
     }
 
     public void deleteAllPlayers() {
@@ -96,6 +97,10 @@ public class PlannerViewModel extends AndroidViewModel {
 
     public Fixture getChangeableFixture() {
         return mFixtureRepository.getChangeableFixture();
+    }
+
+    public List<Fixture> getReschedulableFixtures() {
+        return mFixtureRepository.getReschedulableFixtures();
     }
 
     public void updateFixtures(Fixture... fixtures) {

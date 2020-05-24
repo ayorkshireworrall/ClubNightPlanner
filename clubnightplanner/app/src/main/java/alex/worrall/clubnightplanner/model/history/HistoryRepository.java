@@ -25,6 +25,10 @@ public class HistoryRepository {
         return dao.getPlayerHistory(playerId);
     }
 
+    public void deletePlayerHistory(String playerId) {
+        dao.deletePlayerHistory(playerId);
+    }
+
     public void deleteHistory(String playerId, String opponentId) {
         dao.deleteHistory(playerId, opponentId);
 //        new deleteHistoryAsyncTask(dao).execute(playerId, opponentId);

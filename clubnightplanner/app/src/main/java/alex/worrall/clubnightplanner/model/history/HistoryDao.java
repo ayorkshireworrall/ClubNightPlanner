@@ -14,6 +14,9 @@ public interface HistoryDao {
     @Query("SELECT * FROM player_history WHERE player_id = :playerId")
     List<History> getPlayerHistory(String playerId);
 
+    @Query("DELETE FROM player_history WHERE player_id = :playerId")
+    void deletePlayerHistory(String playerId);
+
     @Query("DELETE FROM player_history WHERE player_id = :playerId AND opponent_id = :opponentId")
     void deleteHistory(String playerId, String opponentId);
 

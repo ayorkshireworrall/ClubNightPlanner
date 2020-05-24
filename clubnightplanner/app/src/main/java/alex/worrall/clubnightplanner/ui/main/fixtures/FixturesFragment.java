@@ -174,16 +174,7 @@ public class FixturesFragment extends Fragment implements FixturesListAdapter.It
                                 new SchedulerV2((AppCompatActivity) FixturesFragment.this.getActivity());
                         schedulerV2.unschedule(fixture);
                         List<Fixture> laterFixtures = getFollowingFixtures(fixture.getTimeslot());
-                        for (Fixture later : laterFixtures) {
-                            schedulerV2.unschedule(later);
-                        }
-                        for (Fixture later : laterFixtures) {
-                            List<String> courtnames = new ArrayList<>();
-                            for (Court court : later.getCourts()) {
-                                courtnames.add(court.getCourtName());
-                            }
-                            schedulerV2.generateSchedule(later.getTimeslot(), courtnames);
-                        }
+                        schedulerV2.reschedule(laterFixtures);
                     }
                 })
                 .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {

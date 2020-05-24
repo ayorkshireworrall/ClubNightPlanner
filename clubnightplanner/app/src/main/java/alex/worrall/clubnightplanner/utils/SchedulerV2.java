@@ -39,14 +39,13 @@ public class SchedulerV2 {
     public void generateSchedule(int timeslot, List<String> availableCourts) {
         populatePlayerHistoryMap();
         List<Player> players = playerRepository.getOrderedPlayers();
-        List<Court> courts = null;
+        List<Court> courts = new ArrayList<>();
         if (players.size() > 1) {
             populatePlayerIdMap(players);
             ScheduleRankings scheduleRankings = new ScheduleRankings(fixtureRepository, activity);
             scheduleRankings.addPlayerRankings(players, timeslot, availableCourts);
             List<Player> priorityPlayers = getPriorityPlayers(players);
             List<Player[]> playerMatchings = getPlayerMatchings(availableCourts, players, priorityPlayers);
-            courts = new ArrayList<>();
             for (int i = 0; i < availableCourts.size(); i++) {
                 if (playerMatchings.size() > i) {
                     Player[] match = playerMatchings.get(i);
@@ -56,6 +55,10 @@ public class SchedulerV2 {
                 } else {
                     courts.add(new Court(availableCourts.get(i), null, null));
                 }
+            }
+        } else {
+            for (int i = 0; i < availableCourts.size(); i++) {
+                courts.add(new Court(availableCourts.get(i), null, null));
             }
         }
         fixtureRepository.addFixture(new Fixture(timeslot, courts));
@@ -73,6 +76,19 @@ public class SchedulerV2 {
             historyRepository.deleteHistory(id2, id1);
         }
         fixtureRepository.deleteFixture(fixture);
+    }
+
+    public void reschedule(List<Fixture> laterFixtures) {
+        for (Fixture later : laterFixtures) {
+            unschedule(later);
+        }
+        for (Fixture later : laterFixtures) {
+            List<String> courtnames = new ArrayList<>();
+            for (Court court : later.getCourts()) {
+                courtnames.add(court.getCourtName());
+            }
+            generateSchedule(later.getTimeslot(), courtnames);
+        }
     }
 
     private List<Player[]> getPlayerMatchings(List<String> availableCourts, List<Player> playerList,
