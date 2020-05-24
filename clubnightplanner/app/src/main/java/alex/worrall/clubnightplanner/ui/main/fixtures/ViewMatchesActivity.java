@@ -1,9 +1,12 @@
 package alex.worrall.clubnightplanner.ui.main.fixtures;
 
+import android.content.Intent;
 import android.graphics.Paint;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -12,6 +15,7 @@ import alex.worrall.clubnightplanner.MainActivity;
 import alex.worrall.clubnightplanner.R;
 import alex.worrall.clubnightplanner.model.fixture.Fixture;
 import alex.worrall.clubnightplanner.model.fixture.FixtureRepository;
+import alex.worrall.clubnightplanner.ui.main.TabPositions;
 import alex.worrall.clubnightplanner.utils.Status;
 import alex.worrall.clubnightplanner.utils.TimeUtil;
 
@@ -35,6 +39,19 @@ public class ViewMatchesActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
         if (fixture != null && fixture.getPlayStatus().equals(Status.COMPLETED)) {
             fixtureTime.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                Intent replyIntent = new Intent();
+                setResult(RESULT_OK, replyIntent);
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 }

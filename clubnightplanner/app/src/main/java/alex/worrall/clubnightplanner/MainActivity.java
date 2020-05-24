@@ -47,13 +47,14 @@ public class MainActivity extends AppCompatActivity {
 
     private PlannerViewModel mViewModel;
     private boolean hasCourts;
+    private ViewPager viewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
-        ViewPager viewPager = findViewById(R.id.view_pager);
+        viewPager = findViewById(R.id.view_pager);
         viewPager.setAdapter(sectionsPagerAdapter);
         Bundle extras = getIntent().getExtras();
         int tabPosition = 0;
@@ -211,18 +212,23 @@ public class MainActivity extends AppCompatActivity {
 
         if (requestCode == ADD_PLAYER_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
             String playerName = data.getStringExtra(AddPlayerActivity.EXTRA_NAME);
-            int playerLevel = Integer.parseInt(data.getStringExtra(AddPlayerActivity.EXTRA_LEVEL));
-            mViewModel.addPlayer(new Player(playerLevel, playerName));
+            if (playerName != null) {
+                int playerLevel = Integer.parseInt(data.getStringExtra(AddPlayerActivity.EXTRA_LEVEL));
+                mViewModel.addPlayer(new Player(playerLevel, playerName));
+            }
         }
 
         if (requestCode == EDIT_PLAYER_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
             Bundle extras = data.getExtras();
-            Player player = extras.getParcelable(EXTRA_PLAYER);
-            mViewModel.updatePlayer(player);
+            if (extras != null) {
+                Player player = extras.getParcelable(EXTRA_PLAYER);
+                mViewModel.updatePlayer(player);
+            }
         }
 
         if (requestCode == ADD_FIXTURE_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
             //fixture scheduling work will be done in the add fixture activity
+            viewPager.setCurrentItem(TabPositions.FIXTURES);
         }
     }
 

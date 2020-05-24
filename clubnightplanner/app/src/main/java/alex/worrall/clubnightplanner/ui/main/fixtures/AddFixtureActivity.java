@@ -140,9 +140,9 @@ public class AddFixtureActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                Intent parentIntent = getParentActivityIntent();
-                parentIntent.putExtra(MainActivity.EXTRA_TAB_POSITION, TabPositions.FIXTURES);
-                navigateUpTo(parentIntent);
+                Intent replyIntent = new Intent();
+                setResult(RESULT_OK, replyIntent);
+                finish();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
