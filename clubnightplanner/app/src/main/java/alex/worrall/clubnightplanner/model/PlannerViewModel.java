@@ -10,8 +10,10 @@ import java.util.List;
 
 import alex.worrall.clubnightplanner.model.court.CourtName;
 import alex.worrall.clubnightplanner.model.court.CourtRepository;
+import alex.worrall.clubnightplanner.model.fixture.Court;
 import alex.worrall.clubnightplanner.model.fixture.Fixture;
 import alex.worrall.clubnightplanner.model.fixture.FixtureRepository;
+import alex.worrall.clubnightplanner.model.history.History;
 import alex.worrall.clubnightplanner.model.history.HistoryRepository;
 import alex.worrall.clubnightplanner.model.player.Player;
 import alex.worrall.clubnightplanner.model.player.PlayerRepository;
@@ -63,6 +65,7 @@ public class PlannerViewModel extends AndroidViewModel {
     }
 
     public void addPlayer(Player player) {
+        setPlayerPriority(player);
         mPlayerRepository.addPlayer(player);
     }
 
@@ -116,5 +119,26 @@ public class PlannerViewModel extends AndroidViewModel {
         mHistoryRepository.deleteAllHistory();
     }
 
-
+    /**
+     * Sets a new player to have priority status by filling history with arbitrary matches up to
+     * the number of current priority players
+     * @param player new player
+     */
+    private void setPlayerPriority(Player player) {
+        List<Player> orderedPlayers = mPlayerRepository.getOrderedPlayers();
+        List<Fixture> unchangeableFixtures = mFixtureRepository.getNonReschedulableFixtures();
+        int allocatedGameSpaces = 0;
+        for (Fixture fixture : unchangeableFixtures) {
+            for (Court court : fixture.getCourts()) {
+                if (court!= null && court.getPlayerA() != null) {
+                    allocatedGameSpaces += 2;
+                }
+            }
+        }
+        long avgGamesPerPlayer = allocatedGameSpaces / orderedPlayers.size();
+        int priorityNumber = (int) Math.floor(avgGamesPerPlayer);
+        for (int i = 0; i < priorityNumber; i++) {
+            mHistoryRepository.insertHistory(new History(player.getId(), "" + i));
+        }
+    }
 }

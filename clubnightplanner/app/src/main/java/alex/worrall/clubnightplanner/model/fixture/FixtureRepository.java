@@ -61,6 +61,10 @@ public class FixtureRepository {
         return fixtureDao.getReschedulableFixtures();
     }
 
+    public List<Fixture> getNonReschedulableFixtures() {
+        return fixtureDao.getNonReschedulableFixtures();
+    }
+
     private static class insertFixtureAsyncTask extends AsyncTask<Fixture, Void, Void> {
 
         FixtureDao mAsyncTaskDao;
