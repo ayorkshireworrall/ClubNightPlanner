@@ -6,95 +6,54 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
 import java.util.List;
 
 import alex.worrall.clubnightplanner.R;
-import alex.worrall.clubnightplanner.service.ServiceApi;
+import alex.worrall.clubnightplanner.model.PlannerViewModel;
+import alex.worrall.clubnightplanner.model.court.CourtName;
 
-public class CourtsFragment extends Fragment implements CourtRecyclerViewAdapter.ItemClickListener {
-
-    private CourtsViewModel mViewModel;
-    private RecyclerView recyclerView;
-    private CourtRecyclerViewAdapter adapter;
-    private ServiceApi service = ServiceApi.getInstance();
-    private static CourtsFragment courtsFragment;
-
-    private CourtsFragment() {
-
-    }
-
-    public static CourtsFragment getInstance() {
-        if (courtsFragment == null) {
-            courtsFragment = new CourtsFragment();
-        }
-        return courtsFragment;
-    }
-
-    public static CourtsFragment newInstance() {
-        return new CourtsFragment();
+public class CourtsFragment extends Fragment {
+    PlannerViewModel mViewModel;
+    private CourtListAdapter adapter;
+    RecyclerView courtRecyclerView;
+    TextView emptyListMessage;
+    public CourtsFragment() {
+        // Required empty public constructor
     }
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable final ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_courts, container, false);
-        FloatingActionButton fab = rootView.findViewById(R.id.fab_courts);
-        recyclerView = rootView.findViewById(R.id.courts_list);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        List<String> viewData = service.getAvailableCourts();
-        adapter = new CourtRecyclerViewAdapter(getContext(), viewData);
-        adapter.setmClickListener(this);
-        recyclerView.setAdapter(adapter);
-        new ItemTouchHelper(itemTouchHelper).attachToRecyclerView(recyclerView);
-        fab.setOnClickListener(new View.OnClickListener() {
+        mViewModel = new ViewModelProvider(getActivity()).get(PlannerViewModel.class);
+        courtRecyclerView = rootView.findViewById(R.id.courts_recyclerview);
+        adapter = new CourtListAdapter(getActivity());
+        courtRecyclerView.setAdapter(adapter);
+        courtRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        new ItemTouchHelper(simpleCallback).attachToRecyclerView(courtRecyclerView);
+        emptyListMessage = rootView.findViewById(R.id.empty_view_courts);
+        mViewModel.getAllCourtsLive().observe(getActivity(), new Observer<List<CourtName>>() {
             @Override
-            public void onClick(View v) {
-                List<String> courts = service.getAvailableCourts();
-                String newCourtName = null;
-                if (courts.size() > 0) {
-                    String lastCourtName = courts.get(courts.size() - 1);
-                    newCourtName = "";
-                    if (lastCourtName.matches("^Court \\d*$")) {
-                        int count = Integer.parseInt(lastCourtName.replace("Court " , ""));
-                        newCourtName = "Court " + (count + 1);
-                    } else {
-                        newCourtName = "Court " + (courts.size() + 1);
-                    }
-                } else {
-                    newCourtName = "Court 1";
-                }
-                service.addCourt(newCourtName);
-                adapter.notifyDataSetChanged();
+            public void onChanged(List<CourtName> courtNames) {
+                adapter.setmCourtNames(courtNames);
+                displayEmptyMessage(courtNames);
             }
         });
+
         return rootView;
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        mViewModel = ViewModelProviders.of(this).get(CourtsViewModel.class);
-        // TODO: Use the ViewModel
-    }
-
-    @Override
-    public void onItemClick() {
-        //currently do nothing but may change in future
-        System.out.println("Fragment Says Hello");
-    }
-
-    ItemTouchHelper.SimpleCallback itemTouchHelper = new ItemTouchHelper.SimpleCallback(0,
+    ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0,
             ItemTouchHelper.RIGHT) {
         @Override
         public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
@@ -103,17 +62,16 @@ public class CourtsFragment extends Fragment implements CourtRecyclerViewAdapter
 
         @Override
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-            List<String> data = service.getAvailableCourts();
-            final String court = data.get(viewHolder.getAdapterPosition());
+            List<CourtName> courtNames = adapter.getmCourtNames();
+            final CourtName courtName = courtNames.get(viewHolder.getAdapterPosition());
             new AlertDialog.Builder(getContext())
                     .setTitle("Remove Court")
-                    .setMessage("Are you sure you wish to remove " + court)
+                    .setMessage("Are you sure you wish to remove " + courtName.getName())
                     .setCancelable(false)
                     .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            service.removeCourt(court);
-                            adapter.notifyDataSetChanged();
+                            mViewModel.deleteCourt(courtName);
                         }
                     })
                     .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
@@ -121,7 +79,18 @@ public class CourtsFragment extends Fragment implements CourtRecyclerViewAdapter
                         public void onClick(DialogInterface dialog, int which) {
                             adapter.notifyDataSetChanged();
                         }
-                    }).show();
+                    })
+                    .show();
         }
     };
+
+    private void displayEmptyMessage(List<?> data) {
+        if (data == null || data.isEmpty()) {
+            courtRecyclerView.setVisibility(View.GONE);
+            emptyListMessage.setVisibility(View.VISIBLE);
+        } else {
+            courtRecyclerView.setVisibility(View.VISIBLE);
+            emptyListMessage.setVisibility(View.GONE);
+        }
+    }
 }

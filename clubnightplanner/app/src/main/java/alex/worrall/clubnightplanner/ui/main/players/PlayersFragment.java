@@ -7,95 +7,60 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
 import java.util.List;
 
-import alex.worrall.clubnightplanner.Observer;
+import alex.worrall.clubnightplanner.MainActivity;
 import alex.worrall.clubnightplanner.R;
-import alex.worrall.clubnightplanner.service.ServiceApi;
+import alex.worrall.clubnightplanner.model.PlannerViewModel;
+import alex.worrall.clubnightplanner.model.fixture.Fixture;
+import alex.worrall.clubnightplanner.model.player.Player;
+import alex.worrall.clubnightplanner.utils.SchedulerV2;
 
-import static alex.worrall.clubnightplanner.service.RequestCodes.EDIT_PLAYER_REQUEST;
+public class PlayersFragment extends Fragment implements PlayerListAdapter.ItemClickListener {
+    PlannerViewModel mViewModel;
+    RecyclerView recyclerView;
+    PlayerListAdapter adapter;
+    TextView emptyListMessage;
 
-public class PlayersFragment extends Fragment
-        implements PlayerRecyclerViewAdapter.ItemClickListener, Observer {
-
-    private PlayersViewModel viewModel;
-    private RecyclerView recyclerView;
-    private ServiceApi service = ServiceApi.getInstance();
-    private PlayerRecyclerViewAdapter adapter;
-    private static PlayersFragment instance;
-
-    public static PlayersFragment getInstance() {
-        if (instance == null) {
-            instance = new PlayersFragment();
-        }
-        return instance;
-    }
-
-    private PlayersFragment() {
-        subscribe();
+    public PlayersFragment() {
+        // Required empty public constructor
     }
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_players, container, false);
-        FloatingActionButton fab = root.findViewById(R.id.fab_players);
-        recyclerView = root.findViewById(R.id.players_list);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        List<Player> viewData = service.getPlayers();
-        adapter = new PlayerRecyclerViewAdapter(getContext(), viewData);
-        adapter.setClickListener(this);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_players, container, false);
+        recyclerView = rootView.findViewById(R.id.players_list);
+        adapter = new PlayerListAdapter(getActivity());
+        adapter.setItemClickListener(this);
         recyclerView.setAdapter(adapter);
-        new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recyclerView);
-        fab.setOnClickListener(new View.OnClickListener() {
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        new ItemTouchHelper(simpleCallback).attachToRecyclerView(recyclerView);
+        emptyListMessage = rootView.findViewById(R.id.empty_view_players);
+        mViewModel = new ViewModelProvider(getActivity()).get(PlannerViewModel.class);
+        mViewModel.getActivePlayers().observe(getActivity(), new Observer<List<Player>>() {
             @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), AddPlayerActivity.class);
-                startActivity(intent);
+            public void onChanged(List<Player> players) {
+                adapter.setPlayerList(players);
+                displayEmptyMessage(players);
             }
         });
-        return root;
+        return rootView;
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        viewModel = ViewModelProviders.of(this).get(PlayersViewModel.class);
-        // TODO: Use the ViewModel
-    }
-
-    @Override
-    public void onItemClick(View view, int position) {
-        List<Player> players = service.getPlayers();
-        Player player = players.get(position);
-        Intent intent = new Intent(getActivity(), EditPlayerActivity.class);
-        intent.putExtra(getString(R.string.player_uuid_key), player.getUuid());
-        startActivityForResult(intent, EDIT_PLAYER_REQUEST);
-    }
-
-    @Override
-    public void update() {
-        adapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public void subscribe() {
-        EditPlayerFragment.getInstance().register(this);
-    }
-
-    ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new ItemTouchHelper.SimpleCallback(0
-            , ItemTouchHelper.RIGHT) {
+    ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0,
+            ItemTouchHelper.RIGHT) {
         @Override
         public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
             return false;
@@ -103,17 +68,16 @@ public class PlayersFragment extends Fragment
 
         @Override
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-            List<Player> data = service.getPlayers();
-            final Player player = data.get(viewHolder.getAdapterPosition());
+            List<Player> players = adapter.getPlayerList();
+            final Player player = players.get(viewHolder.getAdapterPosition());
             new AlertDialog.Builder(getContext())
                     .setTitle("Remove Player")
-                    .setMessage("Are you sure you wish to remove " + player.getName())
+                    .setMessage("Are you sure you wish to remove " + player.getName() + "?")
                     .setCancelable(false)
                     .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            service.removePlayer(player.getUuid());
-                            adapter.notifyDataSetChanged();
+                            mViewModel.deletePlayer(player);
                         }
                     })
                     .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
@@ -121,7 +85,27 @@ public class PlayersFragment extends Fragment
                         public void onClick(DialogInterface dialog, int which) {
                             adapter.notifyDataSetChanged();
                         }
-                    }).show();
+                    })
+                    .show();
         }
     };
+
+    private void displayEmptyMessage(List<?> data) {
+        if (data == null || data.isEmpty()) {
+            recyclerView.setVisibility(View.GONE);
+            emptyListMessage.setVisibility(View.VISIBLE);
+        } else {
+            recyclerView.setVisibility(View.VISIBLE);
+            emptyListMessage.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void onItemClick(View view, int position) {
+        Player player = adapter.getPlayerList().get(position);
+        Intent intent = new Intent(getActivity(), EditPlayerActivity.class);
+        intent.putExtra(MainActivity.EXTRA_PLAYER, player);
+        getActivity().startActivityForResult(intent,
+                MainActivity.EDIT_PLAYER_ACTIVITY_REQUEST_CODE);
+    }
 }

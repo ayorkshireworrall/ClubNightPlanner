@@ -13,10 +13,6 @@ import alex.worrall.clubnightplanner.ui.main.courts.CourtsFragment;
 import alex.worrall.clubnightplanner.ui.main.fixtures.FixturesFragment;
 import alex.worrall.clubnightplanner.ui.main.players.PlayersFragment;
 
-import static alex.worrall.clubnightplanner.ui.main.TabPositions.COURTS;
-import static alex.worrall.clubnightplanner.ui.main.TabPositions.FIXTURES;
-import static alex.worrall.clubnightplanner.ui.main.TabPositions.PLAYERS;
-
 /**
  * A [FragmentPagerAdapter] that returns a fragment corresponding to
  * one of the sections/tabs/pages.
@@ -24,7 +20,8 @@ import static alex.worrall.clubnightplanner.ui.main.TabPositions.PLAYERS;
 public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
     @StringRes
-    private static final int[] TAB_TITLES = new int[]{R.string.tab_text_1, R.string.tab_text_2, R.string.tab_text_3};
+    private static final int[] TAB_TITLES = new int[]{R.string.tab_text_1, R.string.tab_text_2,
+            R.string.tab_text_3};
     private final Context mContext;
 
     public SectionsPagerAdapter(Context context, FragmentManager fm) {
@@ -34,24 +31,11 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        System.out.println(position);
-        // getItem is called to instantiate the fragment for the given page.
-        // Return a PlaceholderFragment (defined as a static inner class below).
-//        return PlaceholderFragment.newInstance(position + 1);
-        return getFragment(position);
-
-    }
-
-    private Fragment getFragment(int position) {
         switch (position) {
-            case PLAYERS:
-                return PlayersFragment.getInstance();
-            case COURTS:
-                return CourtsFragment.getInstance();
-            case FIXTURES:
-                return new FixturesFragment();
-            default:
-                return null;
+            case TabPositions.PLAYERS: return new PlayersFragment();
+            case TabPositions.COURTS: return new CourtsFragment();
+            case TabPositions.FIXTURES: return new FixturesFragment();
+            default: return null;
         }
     }
 
@@ -63,7 +47,6 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        // Show 2 total pages.
-        return 3;
+        return TAB_TITLES.length;
     }
 }
