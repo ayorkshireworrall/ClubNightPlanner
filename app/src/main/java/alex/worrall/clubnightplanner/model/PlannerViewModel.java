@@ -126,6 +126,9 @@ public class PlannerViewModel extends AndroidViewModel {
      */
     private void setPlayerPriority(Player player) {
         List<Player> orderedPlayers = mPlayerRepository.getOrderedPlayers();
+        if (orderedPlayers.isEmpty()) {
+            return;
+        }
         List<Fixture> unchangeableFixtures = mFixtureRepository.getNonReschedulableFixtures();
         int allocatedGameSpaces = 0;
         for (Fixture fixture : unchangeableFixtures) {
