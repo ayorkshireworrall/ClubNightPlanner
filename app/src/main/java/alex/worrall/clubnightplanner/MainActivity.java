@@ -4,27 +4,29 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-
-import com.google.android.material.appbar.MaterialToolbar;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.tabs.TabLayout;
-
-import androidx.annotation.Nullable;
-import androidx.appcompat.widget.Toolbar;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.viewpager.widget.ViewPager;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.viewpager.widget.ViewPager;
+
+import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.tabs.TabLayout;
+
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import alex.worrall.clubnightplanner.model.PlannerViewModel;
 import alex.worrall.clubnightplanner.model.court.CourtName;
+import alex.worrall.clubnightplanner.model.fixture.Court;
 import alex.worrall.clubnightplanner.model.fixture.Fixture;
 import alex.worrall.clubnightplanner.model.player.Player;
 import alex.worrall.clubnightplanner.ui.main.SectionsPagerAdapter;
@@ -69,13 +71,18 @@ public class MainActivity extends AppCompatActivity {
         mViewModel.getActivePlayers().observe(this, new Observer<List<Player>>() {
             @Override
             public void onChanged(List<Player> players) {
-                reschedule();
+                reschedule(null);
             }
         });
         mViewModel.getAllCourtsLive().observe(this, new Observer<List<CourtName>>() {
             @Override
             public void onChanged(List<CourtName> courtNames) {
                 hasCourts = !courtNames.isEmpty();
+                List<String> names = new ArrayList<>();
+                for (CourtName courtName : courtNames) {
+                    names.add(courtName.getName());
+                }
+                reschedule(names);
             }
         });
         MaterialToolbar toolbar = (MaterialToolbar) findViewById(R.id.topAppBar);
@@ -232,9 +239,25 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void reschedule() {
+    private void reschedule(@Nullable List<String> courtNames) {
         List<Fixture> reschedulableFixtures =
                 mViewModel.getReschedulableFixtures();
+        if (courtNames != null && !courtNames.isEmpty()) {
+            Iterator<Fixture> fixtureIterator = reschedulableFixtures.iterator();
+            fixtures: while (fixtureIterator.hasNext()) {
+                Fixture fixture = fixtureIterator.next();
+                List<Court> courts = fixture.getCourts();
+                Iterator<Court> courtIterator = courts.iterator();
+                while(courtIterator.hasNext()) {
+                    Court court = courtIterator.next();
+                    if (!courtNames.contains(court.getCourtName())) {
+                        courtIterator.remove();
+                        continue fixtures;
+                    }
+                }
+                fixtureIterator.remove();
+            }
+        }
         SchedulerV2 schedulerV2 = new SchedulerV2(this);
         schedulerV2.reschedule(reschedulableFixtures);
     }
