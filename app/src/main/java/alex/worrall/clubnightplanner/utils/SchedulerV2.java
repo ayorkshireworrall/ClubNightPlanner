@@ -5,6 +5,7 @@ import android.service.autofill.DateValueSanitizer;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -37,6 +38,7 @@ public class SchedulerV2 {
     }
 
     public void generateSchedule(int timeslot, List<String> availableCourts) {
+        Collections.sort(availableCourts);
         populatePlayerHistoryMap();
         List<Player> players = playerRepository.getOrderedPlayers();
         List<Court> courts = new ArrayList<>();
@@ -96,6 +98,14 @@ public class SchedulerV2 {
         int nonPriorityCap = 2*availableCourts.size() - priorityPlayers.size();
         List<Player[]> finalPlayerMatchings = new ArrayList<>();
         List<Player> players = new ArrayList<>(playerList);
+        //schedule matches for priority players first (in case of [2^n + 1] players and more
+        //court availability than players then lowest ranked players wouldn't get a game otherwise)
+        for (Player player : playerList) {
+            if (priorityPlayers.contains(player)) {
+                players.remove(player);
+                players.add(0, player);
+            }
+        }
         while (finalPlayerMatchings.size() < availableCourts.size() && players.size() > 1) {
             if (nonPriorityCap > 1) {
                 Player[] matchPair = getPair(players);
@@ -141,12 +151,13 @@ public class SchedulerV2 {
     //Get a best matching pair from a list of players
     private Player[] getPair(List<Player> players) {
         Player[] bestPair = new Player[2];
+        Player[] ifNothing = new Player[2];
         playerIterator: for (Player player : players) {
             Player opponent = getBestMatch(player, players);
             Player[] workingPair = new Player[] {player, opponent};
             //Should never return a null pair (breaks a lot of things)
-            if (bestPair[0] == null) {
-                bestPair = workingPair;
+            if (ifNothing[0] == null) {
+                ifNothing = workingPair;
             }
             //Check if choosing this working pair would result in a future pair who have already
             // played each other
@@ -170,7 +181,7 @@ public class SchedulerV2 {
                 return new Player[]{player, opponent};
             }
         }
-        return bestPair;
+        return bestPair[0] == null ? ifNothing : bestPair;
     }
 
     private Player[] getPair(List<Player> priorityPlayers, List<Player> players) {

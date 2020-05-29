@@ -38,7 +38,7 @@ public class PlayerRepository {
     }
 
     public Player getPlayerByName(String name) {
-        String modifiedName = dulllNameMap.get(name);
+        String modifiedName = dulllNameMap.get(name) == null ? name : dulllNameMap.get(name);
         return playerDao.getPlayerByName(modifiedName);
     }
 
