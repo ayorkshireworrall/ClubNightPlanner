@@ -1,20 +1,17 @@
 package alex.worrall.clubnightplanner.utils;
 
-import android.service.autofill.DateValueSanitizer;
-
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import alex.worrall.clubnightplanner.model.court.CourtRepository;
-import alex.worrall.clubnightplanner.model.fixture.Court;
 import alex.worrall.clubnightplanner.model.fixture.Fixture;
 import alex.worrall.clubnightplanner.model.fixture.FixtureRepository;
+import alex.worrall.clubnightplanner.model.fixture.court.Court;
 import alex.worrall.clubnightplanner.model.history.History;
 import alex.worrall.clubnightplanner.model.history.HistoryRepository;
 import alex.worrall.clubnightplanner.model.player.Player;
@@ -51,23 +48,23 @@ public class SchedulerV2 {
             for (int i = 0; i < availableCourts.size(); i++) {
                 if (playerMatchings.size() > i) {
                     Player[] match = playerMatchings.get(i);
-                    courts.add(new Court(availableCourts.get(i), match[0], match[1]));
+                    courts.add(new Court(timeslot, availableCourts.get(i), match[0], match[1]));
                     historyRepository.insertHistory(new History(match[0].getId(), match[1].getId()));
                     historyRepository.insertHistory(new History(match[1].getId(), match[0].getId()));
                 } else {
-                    courts.add(new Court(availableCourts.get(i), null, null));
+                    courts.add(new Court(timeslot, availableCourts.get(i), null, null));
                 }
             }
         } else {
             for (int i = 0; i < availableCourts.size(); i++) {
-                courts.add(new Court(availableCourts.get(i), null, null));
+                courts.add(new Court(timeslot, availableCourts.get(i), null, null));
             }
         }
-        fixtureRepository.addFixture(new Fixture(timeslot, courts));
+        fixtureRepository.addFixture(new Fixture(timeslot), courts);
     }
 
     public void unschedule(Fixture fixture) {
-        List<Court> courts = fixture.getCourts();
+        List<Court> courts = fixtureRepository.getCourtsByFixtureId(fixture.getId());
         for (Court court : courts) {
             if (court.getPlayerA() == null) {
                 continue;
@@ -86,7 +83,7 @@ public class SchedulerV2 {
         }
         for (Fixture later : laterFixtures) {
             List<String> courtnames = new ArrayList<>();
-            for (Court court : later.getCourts()) {
+            for (Court court : fixtureRepository.getCourtsByFixtureId(later.getId())) {
                 courtnames.add(court.getCourtName());
             }
             generateSchedule(later.getTimeslot(), courtnames);

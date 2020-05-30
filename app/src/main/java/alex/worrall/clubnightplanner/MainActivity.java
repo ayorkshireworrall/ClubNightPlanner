@@ -29,7 +29,7 @@ import java.util.List;
 
 import alex.worrall.clubnightplanner.model.PlannerViewModel;
 import alex.worrall.clubnightplanner.model.court.CourtName;
-import alex.worrall.clubnightplanner.model.fixture.Court;
+import alex.worrall.clubnightplanner.model.fixture.court.Court;
 import alex.worrall.clubnightplanner.model.fixture.Fixture;
 import alex.worrall.clubnightplanner.model.player.Player;
 import alex.worrall.clubnightplanner.ui.main.SectionsPagerAdapter;
@@ -272,7 +272,7 @@ public class MainActivity extends AppCompatActivity {
             Iterator<Fixture> fixtureIterator = reschedulableFixtures.iterator();
             fixtures: while (fixtureIterator.hasNext()) {
                 Fixture fixture = fixtureIterator.next();
-                List<Court> courts = fixture.getCourts();
+                List<Court> courts = mViewModel.getCourtsByFixtureId(fixture.getId());
                 Iterator<Court> courtIterator = courts.iterator();
                 while(courtIterator.hasNext()) {
                     Court court = courtIterator.next();

@@ -13,7 +13,7 @@ import java.util.List;
 @Dao
 public interface FixtureDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    void insert(Fixture fixture);
+    long insert(Fixture fixture);
 
     @Query("SELECT * FROM fixtures where session_id = :sessionId ORDER BY timeslot ASC")
     LiveData<List<Fixture>> getAllFixturesLive(int sessionId);

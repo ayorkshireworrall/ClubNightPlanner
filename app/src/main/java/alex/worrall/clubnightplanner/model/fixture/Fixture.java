@@ -7,6 +7,7 @@ import androidx.room.PrimaryKey;
 
 import java.util.List;
 
+import alex.worrall.clubnightplanner.model.fixture.court.Court;
 import alex.worrall.clubnightplanner.utils.Status;
 import alex.worrall.clubnightplanner.utils.TimeUtil;
 
@@ -19,14 +20,11 @@ public class Fixture {
     private int timeslot;
     @ColumnInfo(name = "play_status")
     private Status playStatus;
-    @ColumnInfo(name = "courts")
-    private List<Court> courts;
     @ColumnInfo(name = "session_id")
     private int sessionId;
 
-    public Fixture(int timeslot, List<Court> courts) {
+    public Fixture(int timeslot) {
         this.timeslot = timeslot;
-        this.courts = courts;
         this.playStatus = Status.LATER;
     }
 
@@ -44,14 +42,6 @@ public class Fixture {
 
     public void setPlayStatus(Status playStatus) {
         this.playStatus = playStatus;
-    }
-
-    public List<Court> getCourts() {
-        return courts;
-    }
-
-    public void setCourts(List<Court> courts) {
-        this.courts = courts;
     }
 
     public int getId() {

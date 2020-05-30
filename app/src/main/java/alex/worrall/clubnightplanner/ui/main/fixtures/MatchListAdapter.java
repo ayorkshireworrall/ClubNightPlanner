@@ -14,7 +14,7 @@ import java.util.Collections;
 import java.util.List;
 
 import alex.worrall.clubnightplanner.R;
-import alex.worrall.clubnightplanner.model.fixture.Court;
+import alex.worrall.clubnightplanner.model.fixture.court.Court;
 
 public class MatchListAdapter extends RecyclerView.Adapter<MatchListAdapter.ViewHolder> {
     LayoutInflater inflater;

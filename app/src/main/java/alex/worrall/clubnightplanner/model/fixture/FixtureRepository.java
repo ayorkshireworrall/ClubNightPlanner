@@ -8,14 +8,18 @@ import androidx.lifecycle.LiveData;
 import java.util.List;
 
 import alex.worrall.clubnightplanner.model.PlannerDatabase;
+import alex.worrall.clubnightplanner.model.fixture.court.Court;
+import alex.worrall.clubnightplanner.model.fixture.court.FixtureCourtDao;
 
 public class FixtureRepository {
     private FixtureDao fixtureDao;
+    private FixtureCourtDao fixtureCourtDao;
     private LiveData<List<Fixture>> fixtures;
 
     public FixtureRepository(Application application) {
         PlannerDatabase database = PlannerDatabase.getDatabase(application);
         fixtureDao = database.fixtureDao();
+        fixtureCourtDao = database.fixtureCourtDao();
         fixtures = fixtureDao.getAllFixturesLive(0);
     }
 
@@ -31,8 +35,12 @@ public class FixtureRepository {
         return fixtureDao.getFixtureById(id);
     }
 
-    public void addFixture(Fixture fixture) {
-        fixtureDao.insert(fixture);
+    public void addFixture(Fixture fixture, List<Court> courts) {
+        int fixtureId = (int) fixtureDao.insert(fixture);
+        for (Court court : courts) {
+            court.setFixtureId(fixtureId);
+            fixtureCourtDao.insert(court);
+        }
 //        new insertFixtureAsyncTask(fixtureDao).execute(fixture);
     }
 
@@ -63,6 +71,10 @@ public class FixtureRepository {
 
     public List<Fixture> getNonReschedulableFixtures() {
         return fixtureDao.getNonReschedulableFixtures();
+    }
+
+    public List<Court> getCourtsByFixtureId(int fixtureId) {
+        return fixtureCourtDao.getCourtsByFixtureId(fixtureId);
     }
 
     private static class insertFixtureAsyncTask extends AsyncTask<Fixture, Void, Void> {

@@ -26,7 +26,6 @@ import java.util.List;
 import alex.worrall.clubnightplanner.MainActivity;
 import alex.worrall.clubnightplanner.R;
 import alex.worrall.clubnightplanner.model.PlannerViewModel;
-import alex.worrall.clubnightplanner.model.fixture.Court;
 import alex.worrall.clubnightplanner.model.fixture.Fixture;
 import alex.worrall.clubnightplanner.utils.SchedulerV2;
 import alex.worrall.clubnightplanner.utils.Status;

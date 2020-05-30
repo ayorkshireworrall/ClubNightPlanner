@@ -28,4 +28,15 @@
         android:textSize="20sp"
         android:textColor="@color/textSecondaryLight" />
 
+    <TextView
+        android:id="@+id/next_game"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="16dp"
+        android:textSize="20sp"
+        android:textColor="@color/textSecondaryLight" />
+
 </LinearLayout>

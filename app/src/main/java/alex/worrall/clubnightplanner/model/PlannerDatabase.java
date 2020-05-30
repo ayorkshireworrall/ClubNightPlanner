@@ -11,28 +11,33 @@ import alex.worrall.clubnightplanner.model.court.CourtDao;
 import alex.worrall.clubnightplanner.model.court.CourtName;
 import alex.worrall.clubnightplanner.model.fixture.Fixture;
 import alex.worrall.clubnightplanner.model.fixture.FixtureDao;
+import alex.worrall.clubnightplanner.model.fixture.court.Court;
+import alex.worrall.clubnightplanner.model.fixture.court.FixtureCourtDao;
 import alex.worrall.clubnightplanner.model.history.History;
 import alex.worrall.clubnightplanner.model.history.HistoryDao;
 import alex.worrall.clubnightplanner.model.player.Player;
 import alex.worrall.clubnightplanner.model.player.PlayerDao;
 import alex.worrall.clubnightplanner.model.typeconverters.ListCourtConverter;
 import alex.worrall.clubnightplanner.model.typeconverters.ListStringConverter;
+import alex.worrall.clubnightplanner.model.typeconverters.PlayerConverter;
 import alex.worrall.clubnightplanner.model.typeconverters.StatusConverter;
 
 @Database(
-        version = 10,
+        version = 11,
         exportSchema = false,
         entities = {
             CourtName.class,
             Player.class,
             Fixture.class,
-            History.class
+            History.class,
+            Court.class,
         }
 )
 @TypeConverters({
         ListStringConverter.class,
         StatusConverter.class,
         ListCourtConverter.class,
+        PlayerConverter.class
 })
 public abstract class PlannerDatabase extends RoomDatabase {
 
@@ -40,6 +45,7 @@ public abstract class PlannerDatabase extends RoomDatabase {
     public abstract PlayerDao playerDao();
     public abstract FixtureDao fixtureDao();
     public abstract HistoryDao historyDao();
+    public abstract FixtureCourtDao fixtureCourtDao();
 
     private static PlannerDatabase INSTANCE;
 

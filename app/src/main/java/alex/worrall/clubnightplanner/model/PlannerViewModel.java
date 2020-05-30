@@ -10,9 +10,9 @@ import java.util.List;
 
 import alex.worrall.clubnightplanner.model.court.CourtName;
 import alex.worrall.clubnightplanner.model.court.CourtRepository;
-import alex.worrall.clubnightplanner.model.fixture.Court;
 import alex.worrall.clubnightplanner.model.fixture.Fixture;
 import alex.worrall.clubnightplanner.model.fixture.FixtureRepository;
+import alex.worrall.clubnightplanner.model.fixture.court.Court;
 import alex.worrall.clubnightplanner.model.history.History;
 import alex.worrall.clubnightplanner.model.history.HistoryRepository;
 import alex.worrall.clubnightplanner.model.player.Player;
@@ -119,6 +119,10 @@ public class PlannerViewModel extends AndroidViewModel {
         mHistoryRepository.deleteAllHistory();
     }
 
+    public List<Court> getCourtsByFixtureId(int fixtureId) {
+        return mFixtureRepository.getCourtsByFixtureId(fixtureId);
+    }
+
     /**
      * Sets a new player to have priority status by filling history with arbitrary matches up to
      * the number of current priority players
@@ -132,7 +136,7 @@ public class PlannerViewModel extends AndroidViewModel {
         List<Fixture> unchangeableFixtures = mFixtureRepository.getNonReschedulableFixtures();
         int allocatedGameSpaces = 0;
         for (Fixture fixture : unchangeableFixtures) {
-            for (Court court : fixture.getCourts()) {
+            for (Court court : mFixtureRepository.getCourtsByFixtureId(fixture.getId())) {
                 if (court!= null && court.getPlayerA() != null) {
                     allocatedGameSpaces += 2;
                 }

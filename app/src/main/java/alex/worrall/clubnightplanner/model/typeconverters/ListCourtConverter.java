@@ -9,7 +9,7 @@ import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.List;
 
-import alex.worrall.clubnightplanner.model.fixture.Court;
+import alex.worrall.clubnightplanner.model.fixture.court.Court;
 
 public class ListCourtConverter implements Serializable {
     @TypeConverter
