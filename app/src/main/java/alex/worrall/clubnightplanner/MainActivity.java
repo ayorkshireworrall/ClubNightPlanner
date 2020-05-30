@@ -1,12 +1,15 @@
 package alex.worrall.clubnightplanner;
 
 import android.app.AlertDialog;
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -50,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
     private PlannerViewModel mViewModel;
     private boolean hasCourts;
     private ViewPager viewPager;
+    private SearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -149,7 +153,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
                 switch (position) {
-                    case TabPositions.PLAYERS:setMenuItemsVisible(true, false, false);
+                    case TabPositions.PLAYERS:
+                        setMenuItemsVisible(true, false, false);
                         fab.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -181,6 +186,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             private void setMenuItemsVisible(boolean players, boolean courts, boolean fixtures) {
+                menu.findItem(R.id.search_players).setVisible(players);
                 menu.findItem(R.id.clear_players).setVisible(players);
                 menu.findItem(R.id.clear_courts).setVisible(courts);
                 menu.findItem(R.id.clear_fixtures).setVisible(fixtures);
@@ -194,6 +200,26 @@ public class MainActivity extends AppCompatActivity {
             public void onPageScrollStateChanged(int state) {
             }
         });
+        setSearchView(menu);
+    }
+
+    private void setSearchView(Menu menu) {
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        searchView = (SearchView) menu.findItem(R.id.search_players)
+                .getActionView();
+        searchView.setSearchableInfo(searchManager
+                .getSearchableInfo(getComponentName()));
+        searchView.setMaxWidth(Integer.MAX_VALUE);
+    }
+
+    @Override
+    public void onBackPressed() {
+        // close search view on back button pressed
+        if (!searchView.isIconified()) {
+            searchView.setIconified(true);
+            return;
+        }
+        super.onBackPressed();
     }
 
     private void addFixture() {

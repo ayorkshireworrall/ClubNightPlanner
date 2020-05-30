@@ -5,12 +5,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SearchView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -18,14 +19,14 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.appbar.MaterialToolbar;
+
 import java.util.List;
 
 import alex.worrall.clubnightplanner.MainActivity;
 import alex.worrall.clubnightplanner.R;
 import alex.worrall.clubnightplanner.model.PlannerViewModel;
-import alex.worrall.clubnightplanner.model.fixture.Fixture;
 import alex.worrall.clubnightplanner.model.player.Player;
-import alex.worrall.clubnightplanner.utils.SchedulerV2;
 
 public class PlayersFragment extends Fragment implements PlayerListAdapter.ItemClickListener {
     PlannerViewModel mViewModel;
@@ -56,7 +57,30 @@ public class PlayersFragment extends Fragment implements PlayerListAdapter.ItemC
                 displayEmptyMessage(players);
             }
         });
+        applySearchFilter();
         return rootView;
+    }
+
+    private void applySearchFilter() {
+        MaterialToolbar toolbar = (MaterialToolbar) getActivity().findViewById(R.id.topAppBar);
+        Menu menu = toolbar.getMenu();
+        SearchView searchView = (SearchView) menu.findItem(R.id.search_players)
+                .getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                // filter recycler view when query submitted
+                adapter.getFilter().filter(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String query) {
+                // filter recycler view when text is changed
+                adapter.getFilter().filter(query);
+                return false;
+            }
+        });
     }
 
     ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0,

@@ -2,6 +2,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/search_players"
+        android:title="@string/search_players"
+        android:icon="@drawable/ic_search_icon"
+        app:showAsAction="ifRoom"
+        app:actionViewClass="android.widget.SearchView" />
+    <item
         android:id="@+id/clear_players"
         android:title="@string/clear_players"
         app:showAsAction="never"/>

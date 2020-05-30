@@ -24,4 +24,6 @@
     <string name="select_courts">Select Courts</string>
     <string name="add_fixture">Add Fixture</string>
     <string name="view_matches">Fixtures</string>
+    <string name="search_players">Search Players</string>
+    <string name="search">Search</string>
 </resources>
