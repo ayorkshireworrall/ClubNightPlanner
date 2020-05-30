@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import java.io.Serializable;
@@ -22,7 +23,10 @@ public class Player implements Parcelable {
     private int level;
     @ColumnInfo(name = "name")
     private String name;
+    @Ignore
     private int scheduleRanking;
+    @Ignore
+    private String nextCourt;
 
     public Player(int level, String name) {
         this.level = level;
@@ -58,6 +62,14 @@ public class Player implements Parcelable {
 
     public void setScheduleRanking(int scheduleRanking) {
         this.scheduleRanking = scheduleRanking;
+    }
+
+    public String getNextCourt() {
+        return nextCourt;
+    }
+
+    public void setNextCourt(String nextCourt) {
+        this.nextCourt = nextCourt;
     }
 
     @NonNull

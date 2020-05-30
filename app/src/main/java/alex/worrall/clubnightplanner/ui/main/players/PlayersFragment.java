@@ -21,18 +21,25 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.appbar.MaterialToolbar;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import alex.worrall.clubnightplanner.MainActivity;
 import alex.worrall.clubnightplanner.R;
 import alex.worrall.clubnightplanner.model.PlannerViewModel;
+import alex.worrall.clubnightplanner.model.fixture.Court;
+import alex.worrall.clubnightplanner.model.fixture.Fixture;
 import alex.worrall.clubnightplanner.model.player.Player;
+import alex.worrall.clubnightplanner.utils.TimeUtil;
 
 public class PlayersFragment extends Fragment implements PlayerListAdapter.ItemClickListener {
     PlannerViewModel mViewModel;
     RecyclerView recyclerView;
     PlayerListAdapter adapter;
     TextView emptyListMessage;
+    private Map<String, List<Court>> playerCourtsMap;
 
     public PlayersFragment() {
         // Required empty public constructor
@@ -53,12 +60,61 @@ public class PlayersFragment extends Fragment implements PlayerListAdapter.ItemC
         mViewModel.getActivePlayers().observe(getActivity(), new Observer<List<Player>>() {
             @Override
             public void onChanged(List<Player> players) {
+                populatePlayerCourtsMap();
+                setPlayerNextCourts(players);
                 adapter.setPlayerList(players);
                 displayEmptyMessage(players);
             }
         });
         applySearchFilter();
         return rootView;
+    }
+
+    private void setPlayerNextCourts(List<Player> players) {
+        for (Player player : players) {
+            List<Court> courts = playerCourtsMap.get(player.getId());
+            if (courts == null) {
+                player.setNextCourt("No more matches");
+                continue;
+            }
+            Court nextCourtAppearance = null;
+            for (Court court : courts) {
+                if (nextCourtAppearance == null ||
+                        court.getTimeslot() < nextCourtAppearance.getTimeslot()) {
+                    nextCourtAppearance = court;
+                }
+            }
+            if (nextCourtAppearance != null) {
+                player.setNextCourt(nextCourtAppearance.getCourtName() + "@" +
+                        TimeUtil.timeConverter(nextCourtAppearance.getTimeslot()));
+            } else {
+                player.setNextCourt("Nothing Scheduled");
+            }
+        }
+    }
+
+    private void populatePlayerCourtsMap() {
+        playerCourtsMap = new HashMap<>();
+        List<Fixture> allFixtures = mViewModel.getReschedulableFixtures();
+        for (Fixture fixture : allFixtures) {
+            List<Court> courts = fixture.getCourts();
+            for (Court court : courts) {
+                Player playerA = court.getPlayerA();
+                List<Court> playerACourtList = playerCourtsMap.get(playerA.getId());
+                if (playerACourtList == null) {
+                    playerACourtList = new ArrayList<>();
+                }
+                playerACourtList.add(court);
+                Player playerB = court.getPlayerB();
+                List<Court> playerBCourtList = playerCourtsMap.get(playerB.getId());
+                if (playerBCourtList == null) {
+                    playerBCourtList = new ArrayList<>();
+                }
+                playerBCourtList.add(court);
+                playerCourtsMap.put(playerA.getId(), playerACourtList);
+                playerCourtsMap.put(playerB.getId(), playerBCourtList);
+            }
+        }
     }
 
     private void applySearchFilter() {

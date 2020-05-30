@@ -6,11 +6,13 @@ public class Court implements Comparable<Court> {
     private String courtName;
     private Player playerA;
     private Player playerB;
+    private int timeslot;
 
-    public Court(String courtName, Player playerA, Player playerB) {
+    public Court(String courtName, Player playerA, Player playerB, int timeslot) {
         this.courtName = courtName;
         this.playerA = playerA;
         this.playerB = playerB;
+        this.timeslot = timeslot;
     }
 
     public String getCourtName() {
@@ -35,6 +37,14 @@ public class Court implements Comparable<Court> {
 
     public void setPlayerB(Player playerB) {
         this.playerB = playerB;
+    }
+
+    public int getTimeslot() {
+        return timeslot;
+    }
+
+    public void setTimeslot(int timeslot) {
+        this.timeslot = timeslot;
     }
 
     @Override

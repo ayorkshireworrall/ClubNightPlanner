@@ -51,16 +51,16 @@ public class SchedulerV2 {
             for (int i = 0; i < availableCourts.size(); i++) {
                 if (playerMatchings.size() > i) {
                     Player[] match = playerMatchings.get(i);
-                    courts.add(new Court(availableCourts.get(i), match[0], match[1]));
+                    courts.add(new Court(availableCourts.get(i), match[0], match[1], timeslot));
                     historyRepository.insertHistory(new History(match[0].getId(), match[1].getId()));
                     historyRepository.insertHistory(new History(match[1].getId(), match[0].getId()));
                 } else {
-                    courts.add(new Court(availableCourts.get(i), null, null));
+                    courts.add(new Court(availableCourts.get(i), null, null, timeslot));
                 }
             }
         } else {
             for (int i = 0; i < availableCourts.size(); i++) {
-                courts.add(new Court(availableCourts.get(i), null, null));
+                courts.add(new Court(availableCourts.get(i), null, null, timeslot));
             }
         }
         fixtureRepository.addFixture(new Fixture(timeslot, courts));
