@@ -42,9 +42,9 @@ public class PlayerListAdapter extends RecyclerView.Adapter<PlayerListAdapter.Vi
             Player player = playerListFiltered.get(position);
             holder.name.setText(player.getName());
             Resources res = holder.level.getContext().getResources();
-            holder.level.setText(res.getString(R.string.level, player.getLevel()));
-            holder.current.setText("Now:\t" + player.getCurrentCourt());
-            holder.next.setText("Next:\t" + player.getNextCourt());
+            holder.level.setText(String.valueOf(player.getLevel()));
+            holder.current.setText(player.getCurrentCourt());
+            holder.next.setText(player.getNextCourt());
         }
     }
 

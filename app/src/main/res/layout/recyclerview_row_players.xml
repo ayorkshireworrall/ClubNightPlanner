@@ -22,7 +22,8 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:paddingLeft="8dp"
-        android:paddingRight="8dp">
+        android:paddingRight="8dp"
+        android:textSize="16sp">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -30,35 +31,70 @@
             android:orientation="vertical"
             android:layout_weight="0.7">
 
-            <TextView
-                android:id="@+id/player_current_court"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingTop="8dp"
-                android:paddingBottom="8dp"
-                android:textSize="16sp"
-                android:textColor="@color/textSecondaryLight"/>
+                android:paddingBottom="8dp">
 
-            <TextView
-                android:id="@+id/player_next_court"
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/now"
+                    style="@style/player_field_key"/>
+
+                <TextView
+                    android:id="@+id/player_current_court"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/player_field_value"/>
+
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingBottom="16dp"
-                android:textSize="16sp"
-                android:textColor="@color/textSecondaryLight"/>
+                android:paddingBottom="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/next"
+                    style="@style/player_field_key"/>
+
+                <TextView
+                    android:id="@+id/player_next_court"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/player_field_value"/>
+
+            </LinearLayout>
 
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/player_level"
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:layout_weight="0.3"
             android:paddingTop="8dp"
             android:paddingBottom="16dp"
             android:textSize="16sp"
-            android:textColor="@color/textSecondaryLight"
-            android:gravity="end"
-            android:layout_weight="0.3"/>
+            android:gravity="end">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/league"
+                style="@style/player_field_key"/>
+
+            <TextView
+                android:id="@+id/player_level"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/player_field_value"/>
+
+        </LinearLayout>
 
     </LinearLayout>
 

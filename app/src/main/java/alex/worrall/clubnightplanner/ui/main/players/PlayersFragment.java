@@ -87,7 +87,7 @@ public class PlayersFragment extends Fragment implements PlayerListAdapter.ItemC
             if (nextCourtAppearance != null) {
                 String court = nextCourtAppearance.getCourtName();
                 String time = TimeUtil.timeConverter(nextCourtAppearance.getTimeslot());
-                player.setNextCourt(time + " (" + court + ")");
+                player.setNextCourt(time + " - " + court);
             } else {
                 player.setNextCourt("Finished");
             }
@@ -147,7 +147,7 @@ public class PlayersFragment extends Fragment implements PlayerListAdapter.ItemC
             } else {
                 String courtName = court.getCourtName();
                 String time = TimeUtil.timeConverter(court.getTimeslot());
-                player.setCurrentCourt(time + "(" + courtName + ")");
+                player.setCurrentCourt(time + " - " + courtName);
             }
         }
     }

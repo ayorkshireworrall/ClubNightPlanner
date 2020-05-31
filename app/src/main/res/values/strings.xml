@@ -26,4 +26,7 @@
     <string name="view_matches">Fixtures</string>
     <string name="search_players">Search Players</string>
     <string name="search">Search</string>
+    <string name="now">"Now:\t\t"</string>
+    <string name="next">"Next:\t\t"</string>
+    <string name="league">"League:\t\t"</string>
 </resources>

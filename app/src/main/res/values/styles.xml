@@ -36,4 +36,13 @@
         <item name="android:background">@color/colorPrimary</item>
         <item name="android:textColor">@color/colorGeneralBackground</item>
     </style>
+
+    <style name="player_field_key">
+        <item name="android:textColor">@color/textPrimary</item>
+    </style>
+
+    <style name="player_field_value">
+        <item name="android:textColor">@color/textSecondaryLight</item>
+<!--        <item name="android:textStyle">bold</item>-->
+    </style>
 </resources>
