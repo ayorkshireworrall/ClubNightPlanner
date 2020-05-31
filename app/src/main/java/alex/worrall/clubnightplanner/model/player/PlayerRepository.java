@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 
 import androidx.lifecycle.LiveData;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +31,8 @@ public class PlayerRepository {
     }
 
     public List<Player> getOrderedPlayers() {
-        return this.orderedPlayers;
+        //Clone list to prevent base data being altered by anything
+        return new ArrayList<>(this.orderedPlayers);
     }
 
     public Player getPlayerById(String playerId) {

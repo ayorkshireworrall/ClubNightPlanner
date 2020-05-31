@@ -93,21 +93,12 @@ public class SchedulerV2 {
         }
     }
 
-    private List<Player[]> getPlayerMatchings(List<String> availableCourts, List<Player> playerList,
+    private List<Player[]> getPlayerMatchings(List<String> availableCourts, List<Player> players,
                                               List<Player> priorityPlayers) {
         int nonPriorityCap = 2*availableCourts.size() - priorityPlayers.size();
         List<Player[]> finalPlayerMatchings = new ArrayList<>();
-        List<Player> players = new ArrayList<>(playerList);
-        //schedule matches for priority players first (in case of [2^n + 1] players and more
-        //court availability than players then lowest ranked players wouldn't get a game otherwise)
-        for (Player player : playerList) {
-            if (priorityPlayers.contains(player)) {
-                players.remove(player);
-                players.add(0, player);
-            }
-        }
         while (finalPlayerMatchings.size() < availableCourts.size() && players.size() > 1) {
-            if (nonPriorityCap > 1) {
+            if (priorityPlayers.isEmpty() && nonPriorityCap > 1) {
                 Player[] matchPair = getPair(players);
                 finalPlayerMatchings.add(matchPair);
                 Player player1 = matchPair[0];
@@ -122,7 +113,7 @@ public class SchedulerV2 {
                 players.remove(player2);
                 priorityPlayers.remove(player1);
                 priorityPlayers.remove(player2);
-            } else if (nonPriorityCap == 1) {
+            } else if (!priorityPlayers.isEmpty() || nonPriorityCap == 1) {
                 Player[] matchPair = getPair(priorityPlayers, players);
                 finalPlayerMatchings.add(matchPair);
                 Player player1 = matchPair[0];

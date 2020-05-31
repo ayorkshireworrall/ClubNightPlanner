@@ -100,6 +100,9 @@ public class PlayersFragment extends Fragment implements PlayerListAdapter.ItemC
             List<Court> courts = fixture.getCourts();
             for (Court court : courts) {
                 Player playerA = court.getPlayerA();
+                if (playerA == null) {
+                    continue;
+                }
                 List<Court> playerACourtList = playerCourtsMap.get(playerA.getId());
                 if (playerACourtList == null) {
                     playerACourtList = new ArrayList<>();
