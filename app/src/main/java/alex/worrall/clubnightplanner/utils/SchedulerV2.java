@@ -113,7 +113,7 @@ public class SchedulerV2 {
                 players.remove(player2);
                 priorityPlayers.remove(player1);
                 priorityPlayers.remove(player2);
-            } else if (!priorityPlayers.isEmpty() || nonPriorityCap == 1) {
+            } else if (!priorityPlayers.isEmpty() && nonPriorityCap > 0) {
                 Player[] matchPair = getPair(priorityPlayers, players);
                 finalPlayerMatchings.add(matchPair);
                 Player player1 = matchPair[0];
