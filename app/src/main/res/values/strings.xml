@@ -12,7 +12,7 @@
     <string name="submit">Submit</string>
     <string name="level_hint">League (e.g. 10)</string>
     <string name="no_active_players">No Active Players</string>
-    <string name="level">Level: %1$d</string>
+    <string name="level">League: %1$d</string>
     <string name="add_player">Add Player</string>
     <string name="edit_player">Edit Player</string>
     <string name="clear_players">Clear Players</string>

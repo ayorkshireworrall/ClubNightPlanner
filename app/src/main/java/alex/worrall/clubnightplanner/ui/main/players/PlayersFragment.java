@@ -39,7 +39,6 @@ public class PlayersFragment extends Fragment implements PlayerListAdapter.ItemC
     RecyclerView recyclerView;
     PlayerListAdapter adapter;
     TextView emptyListMessage;
-    private Map<String, List<Court>> playerCourtsMap;
 
     public PlayersFragment() {
         // Required empty public constructor
@@ -60,7 +59,7 @@ public class PlayersFragment extends Fragment implements PlayerListAdapter.ItemC
         mViewModel.getActivePlayers().observe(getActivity(), new Observer<List<Player>>() {
             @Override
             public void onChanged(List<Player> players) {
-                populatePlayerCourtsMap();
+                setPlayerCurrentCourts(players);
                 setPlayerNextCourts(players);
                 adapter.setPlayerList(players);
                 displayEmptyMessage(players);
@@ -71,10 +70,11 @@ public class PlayersFragment extends Fragment implements PlayerListAdapter.ItemC
     }
 
     private void setPlayerNextCourts(List<Player> players) {
+        Map<String, List<Court>> playerNextCourtsMap = getPlayerNextCourtsMap();
         for (Player player : players) {
-            List<Court> courts = playerCourtsMap.get(player.getId());
+            List<Court> courts = playerNextCourtsMap.get(player.getId());
             if (courts == null) {
-                player.setNextCourt("No more matches");
+                player.setNextCourt("Finished");
                 continue;
             }
             Court nextCourtAppearance = null;
@@ -85,16 +85,17 @@ public class PlayersFragment extends Fragment implements PlayerListAdapter.ItemC
                 }
             }
             if (nextCourtAppearance != null) {
-                player.setNextCourt(nextCourtAppearance.getCourtName() + "@" +
-                        TimeUtil.timeConverter(nextCourtAppearance.getTimeslot()));
+                String court = nextCourtAppearance.getCourtName();
+                String time = TimeUtil.timeConverter(nextCourtAppearance.getTimeslot());
+                player.setNextCourt(time + " (" + court + ")");
             } else {
-                player.setNextCourt("Nothing Scheduled");
+                player.setNextCourt("Finished");
             }
         }
     }
 
-    private void populatePlayerCourtsMap() {
-        playerCourtsMap = new HashMap<>();
+    private Map<String, List<Court>> getPlayerNextCourtsMap() {
+        Map<String, List<Court>> playerNextCourtsMap = new HashMap<>();
         List<Fixture> allFixtures = mViewModel.getReschedulableFixtures();
         for (Fixture fixture : allFixtures) {
             List<Court> courts = fixture.getCourts();
@@ -103,19 +104,50 @@ public class PlayersFragment extends Fragment implements PlayerListAdapter.ItemC
                 if (playerA == null) {
                     continue;
                 }
-                List<Court> playerACourtList = playerCourtsMap.get(playerA.getId());
+                List<Court> playerACourtList = playerNextCourtsMap.get(playerA.getId());
                 if (playerACourtList == null) {
                     playerACourtList = new ArrayList<>();
                 }
                 playerACourtList.add(court);
                 Player playerB = court.getPlayerB();
-                List<Court> playerBCourtList = playerCourtsMap.get(playerB.getId());
+                List<Court> playerBCourtList = playerNextCourtsMap.get(playerB.getId());
                 if (playerBCourtList == null) {
                     playerBCourtList = new ArrayList<>();
                 }
                 playerBCourtList.add(court);
-                playerCourtsMap.put(playerA.getId(), playerACourtList);
-                playerCourtsMap.put(playerB.getId(), playerBCourtList);
+                playerNextCourtsMap.put(playerA.getId(), playerACourtList);
+                playerNextCourtsMap.put(playerB.getId(), playerBCourtList);
+            }
+        }
+        return playerNextCourtsMap;
+    }
+
+    private Map<String, Court> getPlayerCurrentCourtMap() {
+        Fixture currentFixture = mViewModel.getCurrentFixture();
+        Map<String, Court> playerCourtMap = new HashMap<>();
+        if (currentFixture != null) {
+            List<Court> courts = currentFixture.getCourts();
+            for (Court court : courts) {
+                if (court.getPlayerA() == null) {
+                    continue;
+                }
+                playerCourtMap.put(court.getPlayerA().getId(), court);
+                playerCourtMap.put(court.getPlayerB().getId(), court);
+            }
+        }
+        return playerCourtMap;
+    }
+
+    private void setPlayerCurrentCourts(List<Player> players) {
+        Map<String, Court> playerCourtMap = getPlayerCurrentCourtMap();
+        for (Player player : players) {
+            Court court = playerCourtMap.get(player.getId());
+            if (court == null) {
+                player.setCurrentCourt("Resting");
+            } else {
+                String courtName = court.getCourtName();
+                String time = TimeUtil.timeConverter(court.getTimeslot());
+                player.setCurrentCourt(time + "(" + courtName + ")");
             }
         }
     }

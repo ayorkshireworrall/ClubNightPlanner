@@ -53,6 +53,10 @@ public class FixtureRepository {
         return fixtureDao.getMostRecentFixture();
     }
 
+    public Fixture getCurrentFixture() {
+        return fixtureDao.getCurrentFixture();
+    }
+
     public Fixture getChangeableFixture() {
         return fixtureDao.getChangeableFixture();
     }

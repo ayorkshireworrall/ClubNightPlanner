@@ -98,6 +98,10 @@ public class PlannerViewModel extends AndroidViewModel {
         return mFixtureRepository.getMostRecentFixture();
     }
 
+    public Fixture getCurrentFixture() {
+        return mFixtureRepository.getCurrentFixture();
+    }
+
     public Fixture getChangeableFixture() {
         return mFixtureRepository.getChangeableFixture();
     }

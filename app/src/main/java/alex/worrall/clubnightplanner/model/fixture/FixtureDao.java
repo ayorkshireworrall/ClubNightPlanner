@@ -61,4 +61,7 @@ public interface FixtureDao {
     @Query("SELECT * FROM fixtures WHERE play_status = 'COMPLETED' OR play_status = 'IN_PROGRESS'" +
             " AND session_id = 0")
     List<Fixture> getNonReschedulableFixtures();
+
+    @Query("SELECT * FROM fixtures WHERE play_status = 'IN_PROGRESS'")
+    Fixture getCurrentFixture();
 }

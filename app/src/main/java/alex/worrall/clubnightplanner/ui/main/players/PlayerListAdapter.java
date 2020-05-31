@@ -43,7 +43,8 @@ public class PlayerListAdapter extends RecyclerView.Adapter<PlayerListAdapter.Vi
             holder.name.setText(player.getName());
             Resources res = holder.level.getContext().getResources();
             holder.level.setText(res.getString(R.string.level, player.getLevel()));
-            holder.next.setText(player.getNextCourt());
+            holder.current.setText("Now:\t" + player.getCurrentCourt());
+            holder.next.setText("Next:\t" + player.getNextCourt());
         }
     }
 
@@ -107,12 +108,14 @@ public class PlayerListAdapter extends RecyclerView.Adapter<PlayerListAdapter.Vi
         private TextView name;
         private TextView level;
         private TextView next;
+        private TextView current;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
             name = itemView.findViewById(R.id.player_name);
             level = itemView.findViewById(R.id.player_level);
             next = itemView.findViewById(R.id.player_next_court);
+            current = itemView.findViewById(R.id.player_current_court);
             itemView.setOnClickListener(this);
         }
 

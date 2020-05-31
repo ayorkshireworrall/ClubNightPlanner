@@ -122,7 +122,9 @@ public class FixturesFragment extends Fragment implements FixturesListAdapter.It
                     public void onClick(DialogInterface dialog, int which) {
                         fixture.setPlayStatus(Status.IN_PROGRESS);
                         Fixture nextFixture = getNextFixture(fixture);
-                        nextFixture.setPlayStatus(Status.NEXT);
+                        if (nextFixture != null) {
+                            nextFixture.setPlayStatus(Status.NEXT);
+                        }
                         mViewModel.updateFixtures(fixture, nextFixture);
                     }
                 })

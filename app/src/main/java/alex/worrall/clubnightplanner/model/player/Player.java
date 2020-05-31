@@ -27,6 +27,8 @@ public class Player implements Parcelable {
     private int scheduleRanking;
     @Ignore
     private String nextCourt;
+    @Ignore
+    private String currentCourt;
 
     public Player(int level, String name) {
         this.level = level;
@@ -70,6 +72,14 @@ public class Player implements Parcelable {
 
     public void setNextCourt(String nextCourt) {
         this.nextCourt = nextCourt;
+    }
+
+    public String getCurrentCourt() {
+        return currentCourt;
+    }
+
+    public void setCurrentCourt(String currentCourt) {
+        this.currentCourt = currentCourt;
     }
 
     @NonNull
