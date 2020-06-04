@@ -99,7 +99,7 @@ public class SchedulerV2 {
         List<Player[]> finalPlayerMatchings = new ArrayList<>();
         while (finalPlayerMatchings.size() < availableCourts.size() && players.size() > 1) {
             if (priorityPlayers.isEmpty() && nonPriorityCap > 1) {
-                Player[] matchPair = getPair(players);
+                Player[] matchPair = getPair(players, players);
                 finalPlayerMatchings.add(matchPair);
                 Player player1 = matchPair[0];
                 Player player2 = matchPair[1];
@@ -114,7 +114,7 @@ public class SchedulerV2 {
                 priorityPlayers.remove(player1);
                 priorityPlayers.remove(player2);
             } else if (!priorityPlayers.isEmpty() && nonPriorityCap > 0) {
-                Player[] matchPair = getPair(priorityPlayers, players);
+                Player[] matchPair = getPair(players, priorityPlayers);
                 finalPlayerMatchings.add(matchPair);
                 Player player1 = matchPair[0];
                 Player player2 = matchPair[1];
@@ -127,7 +127,7 @@ public class SchedulerV2 {
                 priorityPlayers.remove(player1);
                 priorityPlayers.remove(player2);
             } else {
-                Player[] matchPair = getPair(priorityPlayers);
+                Player[] matchPair = getPair(priorityPlayers, priorityPlayers);
                 finalPlayerMatchings.add(matchPair);
                 Player player1 = matchPair[0];
                 Player player2 = matchPair[1];
@@ -140,7 +140,7 @@ public class SchedulerV2 {
     }
 
     //Get a best matching pair from a list of players
-    private Player[] getPair(List<Player> players) {
+    private Player[] getPair(List<Player> players, List<Player> priorityPlayers) {
         Player[] bestPair = new Player[2];
         Player[] ifNothing = new Player[2];
         playerIterator: for (Player player : players) {
@@ -156,7 +156,10 @@ public class SchedulerV2 {
                 List<Player> modifiedList = new ArrayList<>(players);
                 modifiedList.remove(player);
                 modifiedList.remove(opponent);
-                Player[] pair = getPair(modifiedList);
+                List<Player> modifiedPriorityList = new ArrayList<>(priorityPlayers);
+                modifiedPriorityList.remove(player);
+                modifiedPriorityList.remove(opponent);
+                Player[] pair = getPair(modifiedList, modifiedPriorityList);
                 List<History> histories = playerHistoryMap.get(pair[0]);
                 for (History history : histories) {
                     if (history.getOpponentId().equals(pair[1].getId())) {
@@ -173,22 +176,6 @@ public class SchedulerV2 {
             }
         }
         return bestPair[0] == null ? ifNothing : bestPair;
-    }
-
-    private Player[] getPair(List<Player> priorityPlayers, List<Player> players) {
-        Map<Integer, Player[]> playerPlayerMap = new HashMap<>();
-        for (Player player : priorityPlayers) {
-            Player opponent = getBestMatch(player, players);
-            Player opponentsOpponent = getBestMatch(opponent, players);
-            Player[] matching = new Player[]{player, opponent};
-            if (player == opponentsOpponent) {
-                return matching;
-            }
-            int diff = player.getScheduleRanking() - opponent.getScheduleRanking();
-            playerPlayerMap.put(diff, matching);
-        }
-        Integer minDiff = Collections.min(playerPlayerMap.keySet());
-        return playerPlayerMap.get(minDiff);
     }
 
     private int evaluatePair(Player[] pair) {
