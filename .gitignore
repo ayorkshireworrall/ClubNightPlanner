@@ -24,3 +24,5 @@ clubnightplanner/app/gradle/wrapper/gradle-wrapper.jar
 clubnightplanner/app/gradle/wrapper/gradle-wrapper.properties
 
 clubnightplanner/app/gradlew
+
+app/release/

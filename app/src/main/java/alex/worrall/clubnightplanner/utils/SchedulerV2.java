@@ -143,7 +143,7 @@ public class SchedulerV2 {
     private Player[] getPair(List<Player> players, List<Player> priorityPlayers) {
         Player[] bestPair = new Player[2];
         Player[] ifNothing = new Player[2];
-        playerIterator: for (Player player : players) {
+        playerIterator: for (Player player : priorityPlayers) {
             Player opponent = getBestMatch(player, players);
             Player[] workingPair = new Player[] {player, opponent};
             //Should never return a null pair (breaks a lot of things)
@@ -152,7 +152,7 @@ public class SchedulerV2 {
             }
             //Check if choosing this working pair would result in a future pair who have already
             // played each other
-            if (players.size() < 8 && players.size() > 3) {
+            if (priorityPlayers.size() < 8 && priorityPlayers.size() > 3) {
                 List<Player> modifiedList = new ArrayList<>(players);
                 modifiedList.remove(player);
                 modifiedList.remove(opponent);
