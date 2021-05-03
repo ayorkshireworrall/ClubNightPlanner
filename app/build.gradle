@@ -4,12 +4,23 @@ android {
     compileSdkVersion 29
     buildToolsVersion "29.0.3"
 
+    sourceSets {
+        androidTest.assets.srcDirs += files("$projectDir/schemas".toString())
+    }
+
     defaultConfig {
         applicationId "alex.worrall.clubnightplanner"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 4
-        versionName "2.1"
+        versionCode 5
+        versionName "2.2"
+
+        defaultConfig {
+            javaCompileOptions {
+                annotationProcessorOptions {
+                    arguments += ["room.schemaLocation": "$projectDir/schemas".toString()]
+                }
+            }
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -42,4 +53,6 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    androidTestImplementation 'android.arch.persistence.room:testing:1.0.0-alpha5'
+}
 }

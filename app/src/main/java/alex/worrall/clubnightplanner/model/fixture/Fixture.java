@@ -10,12 +10,14 @@ import java.util.List;
 import alex.worrall.clubnightplanner.utils.Status;
 import alex.worrall.clubnightplanner.utils.TimeUtil;
 
+import static androidx.room.ColumnInfo.INTEGER;
+
 @Entity(tableName = "fixtures")
 public class Fixture {
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
     private int id;
-    @ColumnInfo(name = "timeslot", typeAffinity = 3)
+    @ColumnInfo(name = "timeslot", typeAffinity = INTEGER)
     private int timeslot;
     @ColumnInfo(name = "play_status")
     private Status playStatus;
