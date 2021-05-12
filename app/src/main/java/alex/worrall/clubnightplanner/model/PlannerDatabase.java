@@ -19,6 +19,7 @@ import alex.worrall.clubnightplanner.model.history.HistoryDao;
 import alex.worrall.clubnightplanner.model.player.Player;
 import alex.worrall.clubnightplanner.model.player.PlayerDao;
 import alex.worrall.clubnightplanner.model.settings.Preferences;
+import alex.worrall.clubnightplanner.model.settings.PreferencesDao;
 import alex.worrall.clubnightplanner.model.typeconverters.ListCourtConverter;
 import alex.worrall.clubnightplanner.model.typeconverters.ListStringConverter;
 import alex.worrall.clubnightplanner.model.typeconverters.StatusConverter;
@@ -64,8 +65,16 @@ public abstract class PlannerDatabase extends RoomDatabase {
     public abstract PlayerDao playerDao();
     public abstract FixtureDao fixtureDao();
     public abstract HistoryDao historyDao();
+    public abstract PreferencesDao preferencesDao();
 
     private static PlannerDatabase INSTANCE;
+
+    private static Callback CALLBACK = new Callback() {
+        @Override
+        public void onCreate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("INSERT INTO settings_preferences VALUES('DEFAULT', 20, 1150, 1)");
+        }
+    };
 
     public static PlannerDatabase getDatabase(final Context context) {
         if (INSTANCE == null) {
@@ -73,7 +82,7 @@ public abstract class PlannerDatabase extends RoomDatabase {
                 if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                             PlannerDatabase.class, "planner_database")
-//                            .fallbackToDestructiveMigration()
+                            .addCallback(CALLBACK)
                             .addMigrations(MIGRATION_1_11, MIGRATION_10_11)
                             .allowMainThreadQueries()
                             .build();

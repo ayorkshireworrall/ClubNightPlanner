@@ -29,6 +29,7 @@ import alex.worrall.clubnightplanner.R;
 import alex.worrall.clubnightplanner.model.PlannerViewModel;
 import alex.worrall.clubnightplanner.model.court.CourtName;
 import alex.worrall.clubnightplanner.model.fixture.Fixture;
+import alex.worrall.clubnightplanner.model.settings.Preferences;
 import alex.worrall.clubnightplanner.ui.main.TabPositions;
 import alex.worrall.clubnightplanner.utils.SchedulerV2;
 import alex.worrall.clubnightplanner.utils.TimeUtil;
@@ -39,8 +40,7 @@ public class AddFixtureActivity extends AppCompatActivity {
     CourtPickerListAdapter adapter;
     private int min;
     private int hr;
-    private int sessionLength = 20;
-    private int defaultStartTime = 1150; //7:30pm
+    private Preferences preferences;
     private TextView timeOutput;
     private boolean allCheckedDefault = true;
 
@@ -64,6 +64,7 @@ public class AddFixtureActivity extends AppCompatActivity {
                 adapter.setCheckedAll(allCheckedDefault);
             }
         });
+        preferences = viewModel.getActivePreferences();
         final CheckBox allSelected = findViewById(R.id.select_all_courts);
         allSelected.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,8 +96,8 @@ public class AddFixtureActivity extends AppCompatActivity {
 
     private void setInitialTime() {
         List<Integer> times = getFixtureTimes(viewModel.getAllFixtures());
-        int latest = times.isEmpty() ? defaultStartTime : Collections.max(times);
-        int initialTime = latest + sessionLength;
+        int latest = times.isEmpty() ? preferences.getStartTime() : Collections.max(times);
+        int initialTime = latest + preferences.getSessionLength();
         min = initialTime % 60;
         hr = (initialTime - min) / 60;
     }

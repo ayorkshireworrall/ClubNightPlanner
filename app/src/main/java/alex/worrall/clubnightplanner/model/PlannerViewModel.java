@@ -17,6 +17,8 @@ import alex.worrall.clubnightplanner.model.history.History;
 import alex.worrall.clubnightplanner.model.history.HistoryRepository;
 import alex.worrall.clubnightplanner.model.player.Player;
 import alex.worrall.clubnightplanner.model.player.PlayerRepository;
+import alex.worrall.clubnightplanner.model.settings.Preferences;
+import alex.worrall.clubnightplanner.model.settings.PreferencesRepository;
 
 public class PlannerViewModel extends AndroidViewModel {
 
@@ -24,6 +26,7 @@ public class PlannerViewModel extends AndroidViewModel {
     private PlayerRepository mPlayerRepository;
     private FixtureRepository mFixtureRepository;
     private HistoryRepository mHistoryRepository;
+    private PreferencesRepository mPreferencesRepository;
 
     private LiveData<List<CourtName>> mAllCourts;
     private LiveData<List<Player>> mAllPlayers;
@@ -35,6 +38,7 @@ public class PlannerViewModel extends AndroidViewModel {
         mPlayerRepository = new PlayerRepository(application);
         mFixtureRepository = new FixtureRepository(application);
         mHistoryRepository = new HistoryRepository(application);
+        mPreferencesRepository = new PreferencesRepository(application);
         mAllCourts = mCourtRepository.getAllCourtsLive();
         mAllPlayers = mPlayerRepository.getActivePlayers();
         mAllFixtures = mFixtureRepository.getFixturesLive();
@@ -147,5 +151,9 @@ public class PlannerViewModel extends AndroidViewModel {
         for (int i = 0; i < priorityNumber; i++) {
             mHistoryRepository.insertHistory(new History(player.getId(), "" + i));
         }
+    }
+
+    public Preferences getActivePreferences() {
+        return mPreferencesRepository.getActivePreferences();
     }
 }
