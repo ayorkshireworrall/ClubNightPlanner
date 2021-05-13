@@ -36,6 +36,7 @@ import alex.worrall.clubnightplanner.ui.main.SectionsPagerAdapter;
 import alex.worrall.clubnightplanner.ui.main.TabPositions;
 import alex.worrall.clubnightplanner.ui.main.fixtures.AddFixtureActivity;
 import alex.worrall.clubnightplanner.ui.main.players.AddPlayerActivity;
+import alex.worrall.clubnightplanner.ui.main.settings.ViewSettingsActivity;
 import alex.worrall.clubnightplanner.utils.ClearDataActions;
 import alex.worrall.clubnightplanner.utils.CourtnameUtils;
 import alex.worrall.clubnightplanner.utils.SchedulerV2;
@@ -46,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
     public static final int EDIT_PLAYER_ACTIVITY_REQUEST_CODE = 2;
     public static final int ADD_FIXTURE_ACTIVITY_REQUEST_CODE = 3;
     public static final int VIEW_MATCHES_ACTIVITY_REQUEST_CODE = 4;
+    public static final int VIEW_SETTINGS_ACTIVITY_REQUEST_CODE = 5;
     public static final String EXTRA_PLAYER = MainActivity.class.getName() + "PLAYER";
     public static final String EXTRA_TAB_POSITION = MainActivity.class.getName() + "TAB_POSITION";
     public static final String EXTRA_FIXTURE_ID = MainActivity.class.getName() + "FIXTURE_ID";
@@ -105,6 +107,9 @@ public class MainActivity extends AppCompatActivity {
                         return true;
                     case R.id.clear_all:
                         clearDialog(ClearDataActions.ALL);
+                        return true;
+                    case R.id.settings:
+                        accessSettings();
                         return true;
                 }
                 return false;
@@ -231,6 +236,11 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "To generate fixtures add at least one court",
                     Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void accessSettings() {
+        Intent intent = new Intent(MainActivity.this, ViewSettingsActivity.class);
+        startActivityForResult(intent, VIEW_SETTINGS_ACTIVITY_REQUEST_CODE);
     }
 
     private void addCourt() {
