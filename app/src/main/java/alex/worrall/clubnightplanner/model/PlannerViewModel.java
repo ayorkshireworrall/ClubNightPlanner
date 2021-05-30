@@ -156,4 +156,12 @@ public class PlannerViewModel extends AndroidViewModel {
     public Preferences getActivePreferences() {
         return mPreferencesRepository.getActivePreferences();
     }
+
+    public List<Preferences> getAllPreferences() {
+        return mPreferencesRepository.getAllPreferences();
+    }
+
+    public void updatePreferences(Preferences preferences) {
+        mPreferencesRepository.updatePreferences(preferences);
+    }
 }

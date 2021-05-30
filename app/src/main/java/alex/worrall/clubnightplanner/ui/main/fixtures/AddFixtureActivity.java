@@ -74,7 +74,7 @@ public class AddFixtureActivity extends AppCompatActivity {
 
         setInitialTime();
         timeOutput = findViewById(R.id.fixture_time_output);
-        timeOutput.setText(TimeUtil.timeConverter(hr, min));
+        timeOutput.setText(TimeUtil.convertTimeToString(hr, min));
         timeOutput.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -94,8 +94,15 @@ public class AddFixtureActivity extends AppCompatActivity {
 
     private void setInitialTime() {
         List<Integer> times = getFixtureTimes(viewModel.getAllFixtures());
-        int latest = times.isEmpty() ? preferences.getStartTime() : Collections.max(times);
-        int initialTime = latest + preferences.getSessionLength();
+        int latest;
+        int initialTime;
+        if (times.isEmpty()) {
+            latest = preferences.getStartTime();
+            initialTime = latest;
+        } else {
+            latest = Collections.max(times);
+            initialTime = latest + preferences.getSessionLength();
+        }
         min = initialTime % 60;
         hr = (initialTime - min) / 60;
     }
@@ -115,7 +122,7 @@ public class AddFixtureActivity extends AppCompatActivity {
         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
             hr = hourOfDay;
             min = minute;
-            timeOutput.setText(TimeUtil.timeConverter(hr, min));
+            timeOutput.setText(TimeUtil.convertTimeToString(hr, min));
         }
     };
 
@@ -125,7 +132,7 @@ public class AddFixtureActivity extends AppCompatActivity {
         int timeSlot = hr * 60 + min;
         Fixture earliestFixture = viewModel.getMostRecentFixture();
         if (earliestFixture != null && timeSlot < earliestFixture.getTimeslot()) {
-            String earliest = TimeUtil.timeConverter(earliestFixture.getTimeslot());
+            String earliest = TimeUtil.convertTimeToString(earliestFixture.getTimeslot());
             Toast.makeText(this, "Please ensure that the fixture time is later than " + earliest,
                     Toast.LENGTH_SHORT).show();
         }

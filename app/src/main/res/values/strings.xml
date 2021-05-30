@@ -30,4 +30,8 @@
     <string name="now">"Now:\t\t"</string>
     <string name="next">"Next:\t\t"</string>
     <string name="league">"League:\t\t"</string>
+    <string name="settings_spinner_label">Club Settings</string>
+    <string name="settings_start_time">Start Time</string>
+    <string name="settings_session_length">Session Length</string>
+    <string name="settings_session_length_suffix">" mins"</string>
 </resources>

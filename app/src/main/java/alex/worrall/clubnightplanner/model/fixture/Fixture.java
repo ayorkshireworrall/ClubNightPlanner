@@ -75,6 +75,6 @@ public class Fixture {
     @NonNull
     @Override
     public String toString() {
-        return TimeUtil.timeConverter(timeslot);
+        return TimeUtil.convertTimeToString(timeslot);
     }
 }

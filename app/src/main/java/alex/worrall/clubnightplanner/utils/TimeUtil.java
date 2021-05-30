@@ -1,7 +1,7 @@
 package alex.worrall.clubnightplanner.utils;
 
 public class TimeUtil {
-    public static String timeConverter(int hr, int min) {
+    public static String convertTimeToString(int hr, int min) {
         String am_pm, minutes;
         int hours;
         if (hr > 12) {
@@ -22,9 +22,13 @@ public class TimeUtil {
         return hours + ":" + minutes + am_pm;
     }
 
-    public static String timeConverter(int time) {
+    public static String convertTimeToString(int time) {
         int min = time % 60;
         int hour = (time - min) / 60;
-        return timeConverter(hour, min);
+        return convertTimeToString(hour, min);
+    }
+
+    public static int convertTimeToInt(int hr, int min) {
+        return hr * 60 + min;
     }
 }

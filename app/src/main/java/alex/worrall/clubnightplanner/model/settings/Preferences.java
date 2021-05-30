@@ -54,4 +54,10 @@ public class Preferences {
     public void setActive(boolean active) {
         isActive = active;
     }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return name;
+    }
 }

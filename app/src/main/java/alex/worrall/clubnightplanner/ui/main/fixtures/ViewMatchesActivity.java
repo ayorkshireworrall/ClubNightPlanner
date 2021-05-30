@@ -15,7 +15,6 @@ import alex.worrall.clubnightplanner.MainActivity;
 import alex.worrall.clubnightplanner.R;
 import alex.worrall.clubnightplanner.model.fixture.Fixture;
 import alex.worrall.clubnightplanner.model.fixture.FixtureRepository;
-import alex.worrall.clubnightplanner.ui.main.TabPositions;
 import alex.worrall.clubnightplanner.utils.Status;
 import alex.worrall.clubnightplanner.utils.TimeUtil;
 
@@ -32,7 +31,7 @@ public class ViewMatchesActivity extends AppCompatActivity {
         FixtureRepository fixtureRepository = new FixtureRepository(this.getApplication());
         final Fixture fixture = fixtureRepository.getFixtureById(fixtureId);
         TextView fixtureTime = findViewById(R.id.view_fixture_time);
-        fixtureTime.setText(TimeUtil.timeConverter(fixture.getTimeslot()));
+        fixtureTime.setText(TimeUtil.convertTimeToString(fixture.getTimeslot()));
         RecyclerView recyclerView = findViewById(R.id.view_fixture_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         MatchListAdapter adapter = new MatchListAdapter(this, fixture.getCourts());

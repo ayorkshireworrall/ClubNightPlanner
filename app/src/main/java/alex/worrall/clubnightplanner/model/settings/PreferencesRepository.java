@@ -2,6 +2,8 @@ package alex.worrall.clubnightplanner.model.settings;
 
 import android.app.Application;
 
+import java.util.List;
+
 import alex.worrall.clubnightplanner.model.PlannerDatabase;
 
 public class PreferencesRepository {
@@ -14,5 +16,13 @@ public class PreferencesRepository {
 
     public Preferences getActivePreferences() {
         return dao.getActivePreferences();
+    }
+
+    public List<Preferences> getAllPreferences() {
+        return dao.getPreferences();
+    }
+
+    public void updatePreferences(Preferences preferences) {
+        dao.updatePreferences(preferences);
     }
 }
