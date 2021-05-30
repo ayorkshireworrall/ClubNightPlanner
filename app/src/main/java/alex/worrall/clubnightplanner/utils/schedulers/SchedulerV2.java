@@ -1,11 +1,8 @@
-package alex.worrall.clubnightplanner.utils;
-
-import android.service.autofill.DateValueSanitizer;
+package alex.worrall.clubnightplanner.utils.schedulers;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -20,14 +17,10 @@ import alex.worrall.clubnightplanner.model.history.HistoryRepository;
 import alex.worrall.clubnightplanner.model.player.Player;
 import alex.worrall.clubnightplanner.model.player.PlayerRepository;
 
-public class SchedulerV2 {
+public class SchedulerV2 extends Scheduler {
     AppCompatActivity activity;
     Map<Player, List<History>> playerHistoryMap;
     Map<String, Player> playerIdMap;
-    PlayerRepository playerRepository;
-    FixtureRepository fixtureRepository;
-    CourtRepository courtRepository;
-    HistoryRepository historyRepository;
 
     public SchedulerV2(AppCompatActivity activity) {
         this.activity = activity;
@@ -37,6 +30,7 @@ public class SchedulerV2 {
         historyRepository = new HistoryRepository(activity.getApplication());
     }
 
+    @Override
     public void generateSchedule(int timeslot, List<String> availableCourts) {
         Collections.sort(availableCourts);
         populatePlayerHistoryMap();
@@ -64,33 +58,6 @@ public class SchedulerV2 {
             }
         }
         fixtureRepository.addFixture(new Fixture(timeslot, courts));
-    }
-
-    public void unschedule(Fixture fixture) {
-        List<Court> courts = fixture.getCourts();
-        for (Court court : courts) {
-            if (court.getPlayerA() == null) {
-                continue;
-            }
-            String id1 = court.getPlayerA().getId();
-            String id2 = court.getPlayerB().getId();
-            historyRepository.deleteHistory(id1, id2);
-            historyRepository.deleteHistory(id2, id1);
-        }
-        fixtureRepository.deleteFixture(fixture);
-    }
-
-    public void reschedule(List<Fixture> laterFixtures) {
-        for (Fixture later : laterFixtures) {
-            unschedule(later);
-        }
-        for (Fixture later : laterFixtures) {
-            List<String> courtnames = new ArrayList<>();
-            for (Court court : later.getCourts()) {
-                courtnames.add(court.getCourtName());
-            }
-            generateSchedule(later.getTimeslot(), courtnames);
-        }
     }
 
     private List<Player[]> getPlayerMatchings(List<String> availableCourts, List<Player> players,

@@ -13,6 +13,9 @@ public class FixtureRepository {
     private FixtureDao fixtureDao;
     private LiveData<List<Fixture>> fixtures;
 
+    public FixtureRepository() {
+    }
+
     public FixtureRepository(Application application) {
         PlannerDatabase database = PlannerDatabase.getDatabase(application);
         fixtureDao = database.fixtureDao();

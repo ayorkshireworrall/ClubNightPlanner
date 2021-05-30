@@ -13,6 +13,9 @@ public class CourtRepository {
     private CourtDao dao;
     private LiveData<List<CourtName>> courts;
 
+    public CourtRepository() {
+    }
+
     public CourtRepository(Application application) {
         PlannerDatabase database = PlannerDatabase.getDatabase(application);
         this.dao =database.courtDao();

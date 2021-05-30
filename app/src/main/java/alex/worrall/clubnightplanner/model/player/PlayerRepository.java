@@ -18,6 +18,9 @@ public class PlayerRepository {
     private List<Player> orderedPlayers;
     private Map<String, String> dulllNameMap;
 
+    public PlayerRepository() {
+    }
+
     public PlayerRepository(Application application) {
         PlannerDatabase database = PlannerDatabase.getDatabase(application);
         playerDao = database.playerDao();

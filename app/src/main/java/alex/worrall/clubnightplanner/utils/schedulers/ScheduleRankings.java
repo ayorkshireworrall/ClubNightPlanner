@@ -1,4 +1,4 @@
-package alex.worrall.clubnightplanner.utils;
+package alex.worrall.clubnightplanner.utils.schedulers;
 
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;

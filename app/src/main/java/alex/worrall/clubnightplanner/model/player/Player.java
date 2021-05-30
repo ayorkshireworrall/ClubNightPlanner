@@ -36,6 +36,13 @@ public class Player implements Parcelable {
         this.id = UUID.randomUUID().toString();
     }
 
+    @Ignore
+    public Player(@NonNull String id, int level, String name) {
+        this.id = id;
+        this.level = level;
+        this.name = name;
+    }
+
     @NonNull
     @Override
     public String toString() {

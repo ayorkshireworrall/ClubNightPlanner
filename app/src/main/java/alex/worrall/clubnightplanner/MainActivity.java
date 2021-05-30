@@ -39,7 +39,8 @@ import alex.worrall.clubnightplanner.ui.main.players.AddPlayerActivity;
 import alex.worrall.clubnightplanner.ui.main.settings.ViewSettingsActivity;
 import alex.worrall.clubnightplanner.utils.ClearDataActions;
 import alex.worrall.clubnightplanner.utils.CourtnameUtils;
-import alex.worrall.clubnightplanner.utils.SchedulerV2;
+import alex.worrall.clubnightplanner.utils.schedulers.Scheduler;
+import alex.worrall.clubnightplanner.utils.schedulers.SchedulerV3;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -294,7 +295,7 @@ public class MainActivity extends AppCompatActivity {
                 fixtureIterator.remove();
             }
         }
-        SchedulerV2 schedulerV2 = new SchedulerV2(this);
-        schedulerV2.reschedule(reschedulableFixtures);
+        Scheduler schedulerV3 = new SchedulerV3(this);
+        schedulerV3.reschedule(reschedulableFixtures);
     }
 }

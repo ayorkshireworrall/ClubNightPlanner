@@ -26,10 +26,10 @@ import java.util.List;
 import alex.worrall.clubnightplanner.MainActivity;
 import alex.worrall.clubnightplanner.R;
 import alex.worrall.clubnightplanner.model.PlannerViewModel;
-import alex.worrall.clubnightplanner.model.fixture.Court;
 import alex.worrall.clubnightplanner.model.fixture.Fixture;
-import alex.worrall.clubnightplanner.utils.SchedulerV2;
 import alex.worrall.clubnightplanner.utils.Status;
+import alex.worrall.clubnightplanner.utils.schedulers.Scheduler;
+import alex.worrall.clubnightplanner.utils.schedulers.SchedulerV3;
 
 public class FixturesFragment extends Fragment implements FixturesListAdapter.ItemClickListener {
     PlannerViewModel mViewModel;
@@ -172,11 +172,11 @@ public class FixturesFragment extends Fragment implements FixturesListAdapter.It
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        SchedulerV2 schedulerV2 =
-                                new SchedulerV2((AppCompatActivity) FixturesFragment.this.getActivity());
-                        schedulerV2.unschedule(fixture);
+                        Scheduler schedulerV3 =
+                                new SchedulerV3((AppCompatActivity) FixturesFragment.this.getActivity());
+                        schedulerV3.unschedule(fixture);
                         List<Fixture> laterFixtures = getFollowingFixtures(fixture.getTimeslot());
-                        schedulerV2.reschedule(laterFixtures);
+                        schedulerV3.reschedule(laterFixtures);
                     }
                 })
                 .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {

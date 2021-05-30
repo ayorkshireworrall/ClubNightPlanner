@@ -12,6 +12,9 @@ import alex.worrall.clubnightplanner.model.PlannerDatabase;
 public class HistoryRepository {
     private HistoryDao dao;
 
+    public HistoryRepository() {
+    }
+
     public HistoryRepository(Application application) {
         PlannerDatabase database = PlannerDatabase.getDatabase(application);
         this.dao = database.historyDao();

@@ -24,15 +24,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import alex.worrall.clubnightplanner.MainActivity;
 import alex.worrall.clubnightplanner.R;
 import alex.worrall.clubnightplanner.model.PlannerViewModel;
 import alex.worrall.clubnightplanner.model.court.CourtName;
 import alex.worrall.clubnightplanner.model.fixture.Fixture;
 import alex.worrall.clubnightplanner.model.settings.Preferences;
-import alex.worrall.clubnightplanner.ui.main.TabPositions;
-import alex.worrall.clubnightplanner.utils.SchedulerV2;
 import alex.worrall.clubnightplanner.utils.TimeUtil;
+import alex.worrall.clubnightplanner.utils.schedulers.SchedulerV3;
 
 public class AddFixtureActivity extends AppCompatActivity {
     PlannerViewModel viewModel;
@@ -132,7 +130,7 @@ public class AddFixtureActivity extends AppCompatActivity {
                     Toast.LENGTH_SHORT).show();
         }
         //TODO schedule fixture with timeslot and available courts
-        new SchedulerV2(this).generateSchedule(timeSlot, new ArrayList<>(checkedCourts));
+        new SchedulerV3(this).generateSchedule(timeSlot, new ArrayList<>(checkedCourts));
         setResult(RESULT_OK,replyIntent);
         finish();
     }
