@@ -58,9 +58,14 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager viewPager;
     private SearchView searchView;
 
+    private int playerChangeCount;
+    private int courtChangeCount;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        playerChangeCount = 0;
+        courtChangeCount = 0;
         setContentView(R.layout.activity_main);
         SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
         viewPager = findViewById(R.id.view_pager);
@@ -78,18 +83,24 @@ public class MainActivity extends AppCompatActivity {
         mViewModel.getActivePlayers().observe(this, new Observer<List<Player>>() {
             @Override
             public void onChanged(List<Player> players) {
-                reschedule(null);
+                if (playerChangeCount > 0) {
+                    reschedule(null);
+                }
+                playerChangeCount++;
             }
         });
         mViewModel.getAllCourtsLive().observe(this, new Observer<List<CourtName>>() {
             @Override
             public void onChanged(List<CourtName> courtNames) {
                 hasCourts = !courtNames.isEmpty();
-                List<String> names = new ArrayList<>();
-                for (CourtName courtName : courtNames) {
-                    names.add(courtName.getName());
+                if (courtChangeCount > 0) {
+                    List<String> names = new ArrayList<>();
+                    for (CourtName courtName : courtNames) {
+                        names.add(courtName.getName());
+                    }
+                    reschedule(names);
                 }
-                reschedule(names);
+                courtChangeCount++;
             }
         });
         MaterialToolbar toolbar = (MaterialToolbar) findViewById(R.id.topAppBar);
