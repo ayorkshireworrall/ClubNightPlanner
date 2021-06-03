@@ -54,7 +54,8 @@ public class SchedulerV3 extends Scheduler {
     public void generateSchedule(int timeslot, List<String> availableCourts) {
         List<Court> courts = new ArrayList<>();
         List<Player> players = playerRepository.getOrderedPlayers();
-        List<Player[]> playerPairings = getPlayerPairings(availableCourts.size(), players);
+        int targetPairings = (int) Math.min(availableCourts.size(), Math.floor(players.size() / 2));
+        List<Player[]> playerPairings = getPlayerPairings(targetPairings, players);
         if (players.size() > 1) {
             for (int i = 0; i < availableCourts.size(); i++) {
                 if (playerPairings.size() > i) {
@@ -195,31 +196,88 @@ public class SchedulerV3 extends Scheduler {
         }
         List<Edge> selectedEdges = new ArrayList<>();
         if (target > Math.floor(edges.size() / 2.0)) {
-            //edges are already ordered in path direction
-            for (int i = 0; i < edges.size(); i += 2) {
-                selectedEdges.add(edges.get(i));
-            }
+            selectedEdges = getEdgesSingleSolution(edges);
+        } else if (target == Math.floor(edges.size() / 2.0)) {
+            selectedEdges = getEdgesDualSolution(edges);
         } else {
-            while (selectedEdges.size() < target) {
-                Edge selected = null;
-                int index = 0;
-                int minWeight = Integer.MAX_VALUE;
-                for (int i = 0; i < edges.size(); i++) {
-                    Edge e = edges.get(i);
-                    if (e.getWeight() < minWeight) {
-                        selected = e;
-                        minWeight = e.getWeight();
-                        index = i;
-                    }
+            selectedEdges = getEdgesMultiSolution(edges, target);
+        }
+        return selectedEdges;
+    }
+
+    /**
+     * Returns a list of edges by choosing the first edge and every alternate edge from the
+     * edges provided ending with the final edge. For use in cases where there can only be one
+     * solution ie/ an odd number of edges.
+     * @param edges list of edges ordered by path position
+     * @return selected edges
+     */
+    List<Edge> getEdgesSingleSolution(List<Edge> edges) {
+        //edges are already ordered in path direction
+        List<Edge> selectedEdges = new ArrayList<>();
+        for (int i = 0; i < edges.size(); i += 2) {
+            selectedEdges.add(edges.get(i));
+        }
+        return selectedEdges;
+    }
+
+    /**
+     * Similar to the single solution this chooses alternate edges in the path, however in even
+     * cases it must also consider the complement of this set of nodes because that is also a
+     * potential solution.
+     * @param edges list of edges ordered by path position
+     * @return the lowest weight of the 2 best possible solutions
+     */
+    private List<Edge> getEdgesDualSolution(List<Edge> edges) {
+        List<Edge> selectedEdges;
+        List<Edge> workingEdges1 = new ArrayList<>();
+        List<Edge> workingEdges2 = new ArrayList<>();
+        //edges are already ordered in path direction
+        for (int i = 0; i < edges.size(); i+=2) {
+            workingEdges1.add(edges.get(i));
+        }
+        for (int i = 1; i < edges.size(); i+=2) {
+            workingEdges2.add(edges.get(i));
+        }
+        int w1 = getEdgesTotalWeight(workingEdges1);
+        int w2 = getEdgesTotalWeight(workingEdges2);
+        if (w2 < w1) {
+            selectedEdges = workingEdges2;
+        } else {
+            selectedEdges = workingEdges1;
+        }
+        return selectedEdges;
+    }
+
+    /**
+     * Picks lowest weight edge from the list provided and eliminates adjacent edges. Continues
+     * to do this until it has picked the desired number of edges. Used when the target number is
+     * less than half the number of edges.
+     * @param edges list of edges ordered by path position
+     * @param target desired number of edges
+     * @return best edges
+     */
+    private List<Edge> getEdgesMultiSolution(List<Edge> edges, int target) {
+        List<Edge> selectedEdges = new ArrayList<>();
+        while (selectedEdges.size() < target) {
+            Edge selected = null;
+            int index = 0;
+            int minWeight = Integer.MAX_VALUE;
+            for (int i = 0; i < edges.size(); i++) {
+                Edge e = edges.get(i);
+                if (e.getWeight() < minWeight) {
+                    selected = e;
+                    minWeight = e.getWeight();
+                    index = i;
                 }
-                selectedEdges.add(selected);
-                if (index + 1 < edges.size()) {
-                    edges.remove(index + 1);
-                }
-                edges.remove(index);
-                if (index -1 > 0) {
-                    edges.remove(index - 1);
-                }
+            }
+            selectedEdges.add(selected);
+            if (index + 1 < edges.size()) {
+                edges.remove(index + 1);
+            }
+            edges.remove(index);
+            if (index -1 > 0) {
+                edges.remove(index - 1);
             }
         }
         return selectedEdges;
