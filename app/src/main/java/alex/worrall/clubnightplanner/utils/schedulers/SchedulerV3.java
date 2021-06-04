@@ -260,11 +260,15 @@ public class SchedulerV3 extends Scheduler {
     private List<Edge> getEdgesMultiSolution(List<Edge> edges, int target) {
         List<Edge> selectedEdges = new ArrayList<>();
         while (selectedEdges.size() < target) {
+            int freeEdges = edges.size() - (target - selectedEdges.size()) * 2;
             Edge selected = null;
             int index = 0;
             int minWeight = Integer.MAX_VALUE;
             for (int i = 0; i < edges.size(); i++) {
                 Edge e = edges.get(i);
+                if (freeEdges < 1 && !hasLessThanTwoAdjacentEdges(edges, e)) {
+                    continue;
+                }
                 if (e.getWeight() < minWeight) {
                     selected = e;
                     minWeight = e.getWeight();
@@ -272,15 +276,30 @@ public class SchedulerV3 extends Scheduler {
                 }
             }
             selectedEdges.add(selected);
-            if (index + 1 < edges.size()) {
-                edges.remove(index + 1);
-            }
-            edges.remove(index);
-            if (index -1 > 0) {
-                edges.remove(index - 1);
+            edges.remove(selected);
+            for (Edge remove : selected.getAdjacentEdges()) {
+                edges.remove(remove);
             }
         }
         return selectedEdges;
+    }
+
+    /**
+     * Check that the two adjacent edges of the currently considered edge are not both still
+     * selectable so that we don't eliminate too many edges
+     * @param selectableEdges edges which can still be chosen from
+     * @param consideredEdge the current edge we're considering to add
+     * @return true if 1 or 0 adjacent edges that could be eliminated
+     */
+    private boolean hasLessThanTwoAdjacentEdges(List<Edge> selectableEdges, Edge consideredEdge) {
+        List<Edge> adjacentEdges = consideredEdge.getAdjacentEdges();
+        int count = 0;
+        for (Edge e : adjacentEdges) {
+            if (selectableEdges.contains(e)) {
+                count++;
+            }
+        }
+        return count < 2;
     }
 
     /**
@@ -296,7 +315,13 @@ public class SchedulerV3 extends Scheduler {
             if (nearestNeighbour == null) {
                 break;
             }
-            edges.add(new Edge(current.getName(), nearestNeighbour.getName(), current.getDistance()));
+            Edge newEdge = new Edge(current.getName(), nearestNeighbour.getName(), current.getDistance());
+            if (edges.size() > 0) {
+                Edge previousEdge = edges.get(edges.size() - 1);
+                previousEdge.getAdjacentEdges().add(newEdge);
+                newEdge.getAdjacentEdges().add(previousEdge);
+            }
+            edges.add(newEdge);
             current = nearestNeighbour;
         }
         return edges;

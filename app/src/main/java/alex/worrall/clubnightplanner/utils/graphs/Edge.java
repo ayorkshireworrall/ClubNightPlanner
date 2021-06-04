@@ -2,6 +2,9 @@ package alex.worrall.clubnightplanner.utils.graphs;
 
 import androidx.annotation.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * A class to represent a non-directional weighted edge between two vertices on a graph
  */
@@ -9,6 +12,7 @@ public class Edge {
     String sourceNode;
     String targetNode;
     int weight;
+    List<Edge> adjacentEdges = new ArrayList<>();
 
     public Edge(String sourceNode, String targetNode, int weight) {
         this.sourceNode = sourceNode;
@@ -28,6 +32,9 @@ public class Edge {
         return weight;
     }
 
+    public List<Edge> getAdjacentEdges() {
+        return adjacentEdges;
+    }
 
     // Overridden this way because nodes are not directional (sourceNode and targetNode can be
     // transposed)

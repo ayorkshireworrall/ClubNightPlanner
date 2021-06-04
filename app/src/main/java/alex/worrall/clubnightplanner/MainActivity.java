@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
         mViewModel.getActivePlayers().observe(this, new Observer<List<Player>>() {
             @Override
             public void onChanged(List<Player> players) {
-                if (playerChangeCount > 0) {
+                if (playerChangeCount > 0 && players.size() > 1) {
                     reschedule(null);
                 }
                 playerChangeCount++;
