@@ -25,7 +25,7 @@ import alex.worrall.clubnightplanner.model.typeconverters.ListStringConverter;
 import alex.worrall.clubnightplanner.model.typeconverters.StatusConverter;
 
 @Database(
-        version = 11,
+        version = 12,
         exportSchema = true,
         entities = {
             CourtName.class,
@@ -49,6 +49,13 @@ public abstract class PlannerDatabase extends RoomDatabase {
                     "session_length INTEGER NOT NULL, start_time INTEGER NOT NULL, is_active INTEGER" +
                     " NOT NULL, PRIMARY KEY (name))");
             database.execSQL("INSERT INTO settings_preferences VALUES('DEFAULT', 20, 1150, 1)");
+        }
+    };
+
+    private static final Migration MIGRATION_11_12 = new Migration(11, 12) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("UPDATE settings_preferences set start_time = 1170  where name='DEFAULT'");
         }
     };
 
@@ -83,7 +90,7 @@ public abstract class PlannerDatabase extends RoomDatabase {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                             PlannerDatabase.class, "planner_database")
                             .addCallback(CALLBACK)
-                            .addMigrations(MIGRATION_1_11, MIGRATION_10_11)
+                            .addMigrations(MIGRATION_1_11, MIGRATION_10_11, MIGRATION_11_12)
                             .allowMainThreadQueries()
                             .build();
                 }
